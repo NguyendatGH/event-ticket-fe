@@ -1,3 +1,5 @@
+// Primitive shadcn/Radix: Label.
+
 import * as React from "react"
 import { cn } from "@/lib/utils"
 import { Label as LabelPrimitive } from "radix-ui"

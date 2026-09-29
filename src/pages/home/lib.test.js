@@ -1,5 +1,7 @@
+// Test hàm thuần trang chủ.
+
 import { describe, expect, it } from "vitest";
-import { byStartsAt, cheapestPerEvent, mergeEvents, sectionStatus } from "./lib";
+import { byStartsAt, mergeEvents, sectionStatus } from "./lib";
 
 describe("home lib", () => {
   it("mergeEvents gộp nhiều danh sách, bỏ trùng theo id, giữ thứ tự đầu tiên, bỏ qua undefined", () => {
@@ -18,18 +20,6 @@ describe("home lib", () => {
     ];
     expect(byStartsAt(list).map((e) => e.id)).toEqual([3, 1, 2]);
     expect(list.map((e) => e.id)).toEqual([1, 2, 3]);
-  });
-
-  it("cheapestPerEvent giữ tin rẻ nhất mỗi sự kiện và đếm số tin còn lại", () => {
-    const groups = cheapestPerEvent([
-      { id: 1, price: 500, event: { id: "a" } },
-      { id: 2, price: 300, event: { id: "a" } },
-      { id: 3, price: 900, event: { id: "b" } },
-    ]);
-    expect(groups).toEqual([
-      { listing: { id: 2, price: 300, event: { id: "a" } }, others: 1 },
-      { listing: { id: 3, price: 900, event: { id: "b" } }, others: 0 },
-    ]);
   });
 
   describe("sectionStatus", () => {

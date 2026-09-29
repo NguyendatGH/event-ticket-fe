@@ -1,9 +1,7 @@
+// Dấu ngôn ngữ trên header (cờ + "VI"); chỉ để hiển thị, không phải nút bấm.
+
 import { cn } from "@/lib/utils";
 
-/**
- * Dấu ngôn ngữ trên header (cờ tròn + "VI"). Chỉ để báo giao diện đang là tiếng Việt: sản phẩm chưa có
- * ngôn ngữ khác nên đây KHÔNG phải nút (không mở menu), tránh control bấm vào không làm gì.
- */
 export function LanguageMark({ className }) {
   return (
     <span className={cn("inline-flex items-center gap-1.5 text-xs font-semibold text-white/90", className)} title="Tiếng Việt">

@@ -1,7 +1,8 @@
+// Khung chờ trang ban tổ chức.
+
 import { Container } from "@/components/site";
 import { Skeleton } from "@/components/ui/skeleton";
 
-/** Khung chờ trang ban tổ chức: dải bìa, logo, tên, mô tả. */
 export function OrganizerSkeleton() {
   return (
     <div role="status" aria-label="Đang tải ban tổ chức">

@@ -1,9 +1,6 @@
-/**
- * Trang chi tiết một sự kiện của ban tổ chức — route /organizer/events/:id
- * Đầu trang (trạng thái, lịch, nút Sửa / Xuất bản), số liệu bán vé, bảng hạng vé, danh sách đơn hàng.
- * Dữ liệu: useOrganizerEvent(id) (GET /organizer/events/{id}, kèm stats); đơn hàng tự tải trong EventOrders.
- * Xuất bản bản nháp: PublishEventDialog.
- */
+// Trang chi tiết một sự kiện của ban tổ chức — route /organizer/events/:id
+// Dữ liệu: useOrganizerEvent.
+
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { motion } from "motion/react";
@@ -20,7 +17,7 @@ import { EventOrders } from "./components/EventOrders";
 import { BlockTitle, EventLoadError, OrgHeader, StatStrip, StatStripSkeleton } from "./components/OrgUi";
 import { PublishEventDialog } from "./components/PublishEventDialog";
 import { TierTable } from "./components/TierTable";
-import { percentOf } from "./lib/helpers";
+import { percentOf } from "./lib";
 
 export default function OrganizerEventDetailPage() {
   const { id } = useParams();

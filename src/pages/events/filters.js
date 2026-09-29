@@ -1,13 +1,8 @@
-/*
- * Bộ lọc của trang /events. Nguồn sự thật là URL (?q=&category=&city=&when=&from=&to=&priceMin=&priceMax=&sort=):
- *   readFilters   URL → object bộ lọc sạch (bỏ giá trị sai)
- *   applyPatch    object bộ lọc thay đổi → URL mới
- *   activeChips   bộ lọc đang bật → danh sách chip để bấm bỏ
- */
+// Bộ lọc của trang /events. Nguồn sự thật là URL (?q=&category=&city=&when=&from=&to=&priceMin=&priceMax=&sort=):
+
 import { categoryLabel, EVENT_SORTS, WHEN_OPTIONS } from "@/lib/constants";
 import { formatDate, formatVND } from "@/lib/format";
 
-/** Tham số lọc của /events nằm trên URL (contract §4.3). */
 export const FILTER_KEYS = [
   "q",
   "category",
@@ -20,7 +15,6 @@ export const FILTER_KEYS = [
 ];
 export const DEFAULT_SORT = "date";
 
-/** Mức giá gợi ý. max null = không giới hạn trên. */
 export const PRICE_PRESETS = [
   { id: "free", label: "Miễn phí", min: null, max: 0 },
   { id: "u500", label: "Dưới 500.000đ", min: null, max: 500000 },
@@ -35,7 +29,6 @@ const intOrNull = (v) => {
   return Number.isFinite(n) && n >= 0 ? Math.floor(n) : null;
 };
 
-/** URLSearchParams → object params cho useInfiniteEvents (bỏ giá trị rỗng/sai). */
 export function readFilters(searchParams) {
   const get = (k) => searchParams.get(k)?.trim() || "";
   const sort = get("sort");
@@ -52,11 +45,6 @@ export function readFilters(searchParams) {
   };
 }
 
-/**
- * Áp một patch lên URLSearchParams hiện tại, trả bản mới.
- * Giá trị rỗng/null → xóa key. sort mặc định không ghi lên URL.
- * when và from/to loại trừ nhau: đặt cái này thì bỏ cái kia.
- */
 export function applyPatch(searchParams, patch) {
   const next = new URLSearchParams(searchParams);
   const p = { ...patch };
@@ -70,14 +58,12 @@ export function applyPatch(searchParams, patch) {
   return next;
 }
 
-/** Xóa mọi bộ lọc (giữ sort). */
 export function clearFilters(searchParams) {
   const next = new URLSearchParams(searchParams);
   FILTER_KEYS.forEach((k) => next.delete(k));
   return next;
 }
 
-/** Số nhóm bộ lọc đang bật (hiện trên nút "Bộ lọc" ở mobile). Khoảng ngày và mốc nhanh tính chung một nhóm. */
 export const activeCount = (f) =>
   [
     f.category,
@@ -86,14 +72,11 @@ export const activeCount = (f) =>
     f.priceMin != null || f.priceMax != null,
   ].filter(Boolean).length;
 
-/** Mức giá gợi ý khớp đúng khoảng giá đang lọc (hoặc undefined nếu người dùng tự nhập khoảng khác). */
 const matchingPreset = (f) =>
   PRICE_PRESETS.find((p) => p.min === f.priceMin && p.max === f.priceMax);
 
-/** id mức giá gợi ý đang chọn, null nếu không khớp mức nào. */
 export const presetOf = (f) => matchingPreset(f)?.id ?? null;
 
-/** Nhãn khoảng giá cho chip: tên mức gợi ý, hoặc "Từ X", "Đến Y", "X - Y". */
 function priceLabel(f) {
   const preset = matchingPreset(f);
   if (preset) return preset.label;
@@ -105,7 +88,6 @@ function priceLabel(f) {
   return "";
 }
 
-/** Nhãn các bộ lọc đang bật (chip xóa nhanh). */
 export function activeChips(f) {
   const chips = [];
   if (f.q) chips.push({ key: "q", label: `"${f.q}"`, patch: { q: null } });

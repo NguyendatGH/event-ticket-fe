@@ -1,3 +1,5 @@
+// Menu tài khoản trên header xanh (desktop).
+
 import { useNavigate } from "react-router-dom";
 import { ChevronDown, LayoutDashboard, LogOut, Receipt, Ticket, UserRound } from "lucide-react";
 import {
@@ -10,10 +12,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { UserAvatar } from "./UserAvatar";
 
-/**
- * Menu tài khoản trên header xanh (desktop): avatar tròn + tên (≥ xl), bấm mở Hồ sơ · Vé của tôi · Đơn hàng
- * · Dashboard (chỉ organizer) · Đăng xuất. Chỉ dùng trong Header.jsx.
- */
 export function HeaderAccountMenu({ user, isOrganizer, onLogout }) {
   const navigate = useNavigate();
   return (

@@ -1,3 +1,5 @@
+// Nút hiện/ẩn: memo để gõ phím (Input đổi value) không render lại AnimatePresence của icon.
+
 import { memo, useState } from "react";
 import { useWatch } from "react-hook-form";
 import { AnimatePresence, motion } from "motion/react";
@@ -7,7 +9,6 @@ import { DUR } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 import { Field } from "./Field";
 
-/** Nút hiện/ẩn: memo để gõ phím (Input đổi value) không render lại AnimatePresence của icon. */
 const VisibilityToggle = memo(function VisibilityToggle({ visible, setVisible }) {
   const Icon = visible ? EyeOff : Eye;
   return (
@@ -34,7 +35,6 @@ const VisibilityToggle = memo(function VisibilityToggle({ visible, setVisible })
   );
 });
 
-/** Ô mật khẩu có nút hiện/ẩn. Nhận mọi prop của Input (id, aria-* từ FormControl, field của RHF). */
 function PasswordInput({ className, ...props }) {
   const [visible, setVisible] = useState(false);
   return (
@@ -53,7 +53,6 @@ const STRENGTH = [
   { label: "Mạnh", tone: "bg-primary" },
 ];
 
-/** null khi trống; 0–4: đủ 8 ký tự là 1, cộng thêm khi dài ≥ 12, có chữ hoa + thường, có số, có ký tự đặc biệt. */
 function passwordScore(value) {
   if (!value) return null;
   if (value.length < 8) return 0;
@@ -61,10 +60,6 @@ function passwordScore(value) {
   return Math.min(4, 1 + extras.filter(Boolean).length);
 }
 
-/**
- * Thước 4 vạch dưới ô mật khẩu mới. Ẩn khi ô trống.
- * Tự theo dõi ô `name` bằng useWatch + compute: chỉ render lại khi điểm đổi, form cha không render theo từng phím.
- */
 function PasswordStrength({ control, name }) {
   const score = useWatch({ control, name, compute: passwordScore });
   if (score === null) return null;
@@ -85,11 +80,6 @@ function PasswordStrength({ control, name }) {
   );
 }
 
-/**
- * Field mật khẩu (ô có nút hiện/ẩn).
- *   <PasswordField control={form.control} name="password" label="Mật khẩu" strength />
- * `strength`: mật khẩu mới → thêm thước độ mạnh + gợi ý "Tối thiểu 8 ký tự.".
- */
 export function PasswordField({ strength = false, autoComplete = "new-password", autoFocus, ...props }) {
   return (
     <Field

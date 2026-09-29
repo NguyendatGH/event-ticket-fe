@@ -1,3 +1,5 @@
+// App chỉ có giao diện tối nên không cần next-themes.
+
 import {
   CircleCheckIcon,
   InfoIcon,
@@ -7,7 +9,6 @@ import {
 } from "lucide-react"
 import { Toaster as Sonner } from "sonner";
 
-// App chỉ có giao diện tối nên không cần next-themes.
 const Toaster = ({
   ...props
 }) => {
@@ -33,7 +34,6 @@ const Toaster = ({
       toastOptions={{
         duration: 4000,
         classNames: {
-          // Mép trái màu theo loại toast thay cho glow.
           toast: "font-sans !shadow-none !rounded-md border-l-2 data-[type=success]:!border-l-primary data-[type=error]:!border-l-destructive",
           description: "!text-muted-foreground",
         },

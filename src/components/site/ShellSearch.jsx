@@ -1,12 +1,9 @@
+// Chỉ dùng qua HeaderSearch variant="shell" (bản nháp giữ ở đó để gõ phím không render lại Header).
+
 import { useId } from "react";
 import { Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-/**
- * Ô tìm kiếm trắng trên header xanh (design-spec v2): kính lúp · ô nhập · | · nút "Tìm kiếm" nằm trong ô.
- * Controlled giống SearchInput: value + onChange(string), onSubmit(value đã trim) khi Enter hoặc bấm nút.
- * Chỉ dùng qua HeaderSearch variant="shell" (bản nháp giữ ở đó để gõ phím không render lại Header).
- */
 export function ShellSearch({ value = "", onChange, onSubmit, placeholder = "Tìm sự kiện", label = "Tìm kiếm sự kiện", className, autoFocus }) {
   const id = useId();
   return (

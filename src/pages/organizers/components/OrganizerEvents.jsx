@@ -1,3 +1,5 @@
+// Lưới sự kiện của một ban tổ chức theo tab, tải thêm khi cuộn.
+
 import { Link } from "react-router-dom";
 import { CalendarX2 } from "lucide-react";
 import { flattenPages, totalOf, useOrganizerPublicEvents } from "@/api";
@@ -22,10 +24,6 @@ const EMPTY_TEXT = {
   },
 };
 
-/**
- * Lưới sự kiện của một ban tổ chức theo tab (scope "upcoming" | "past"),
- * tải thêm khi cuộn (useOrganizerPublicEvents → GET /organizers/{slug}/events?scope=).
- */
 export function OrganizerEvents({ slug, scope }) {
   const query = useOrganizerPublicEvents(slug, { scope });
   const events = flattenPages(query.data);
@@ -52,7 +50,6 @@ export function OrganizerEvents({ slug, scope }) {
         {query.isPending ? " " : `${formatNumber(totalOf(query.data))} sự kiện`}
       </p>
       <EventGrid events={events} loading={query.isPending} skeletonCount={4} />
-      {/* Chỉ có 1 trang thì không cần dòng "đã hết" (endLabel undefined = nhãn mặc định, null = ẩn) */}
       {query.data ? (
         <InfiniteSentinel
           query={query}

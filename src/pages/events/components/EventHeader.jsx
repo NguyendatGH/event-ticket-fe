@@ -1,3 +1,5 @@
+// Trạng thái đáng báo cho khách. PUBLISHED (đang bán) là bình thường nên không gắn nhãn.
+
 import { Link } from "react-router-dom";
 import { motion } from "motion/react";
 import { CalendarDays, MapPin } from "lucide-react";
@@ -6,13 +8,8 @@ import { categoryLabel } from "@/lib/constants";
 import { formatDateLong, formatTimeRange } from "@/lib/format";
 import { heroLine, heroStagger } from "@/lib/motion";
 
-// Trạng thái đáng báo cho khách. PUBLISHED (đang bán) là bình thường nên không gắn nhãn.
 const SHOW_BADGE = new Set(["UPCOMING", "SOLD_OUT", "ENDED", "CANCELLED"]);
 
-/**
- * Phần đầu trang chi tiết: danh mục + nhãn trạng thái, tên, tagline, thời gian và địa điểm.
- * Nằm đè lên mép dưới ảnh bìa (margin âm); các dòng trồi lên lần lượt khi vào trang.
- */
 export function EventHeader({ event }) {
   const { venue } = event;
   return (

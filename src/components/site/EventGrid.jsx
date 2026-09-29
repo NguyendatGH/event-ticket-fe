@@ -1,3 +1,5 @@
+// Lưới sự kiện 4/2/1 cột, có skeleton khi đang tải.
+
 import { motion } from "motion/react";
 import { fadeUp, stagger } from "@/lib/motion";
 import { cn } from "@/lib/utils";
@@ -9,10 +11,6 @@ const COLS = {
   4: "sm:grid-cols-2 lg:grid-cols-4",
 };
 
-/**
- * Lưới sự kiện 4/2/1 cột (columns=3 cho cột nội dung hẹp).
- * loading → skeleton; renderItem để thay thẻ (vd. vé bán lại dùng thẻ riêng nhưng cùng lưới).
- */
 export function EventGrid({ events = [], loading = false, columns = 4, skeletonCount = 8, priorityCount = 0, renderItem, className }) {
   if (loading) return <EventGridSkeleton count={skeletonCount} className={cn(COLS[columns], className)} />;
   return (

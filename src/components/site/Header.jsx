@@ -1,3 +1,5 @@
+// Thanh danh mục đen (CategoryNav) nằm ngay dưới, không dính, do SiteLayout đặt.
+
 import { useRef, useState } from "react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useMotionValueEvent, useScroll } from "motion/react";
@@ -12,7 +14,6 @@ import { HeaderSearch } from "./HeaderSearch";
 import { LanguageMark } from "./LanguageMark";
 import { MobileSearchSheet } from "./MobileSearchSheet";
 
-/* Chữ trắng trên nền xanh header: gạch chân khi đang ở trang đó. */
 const barLink = ({ isActive }) =>
   cn(
     "inline-flex items-center gap-2 rounded-sm text-sm font-medium text-white transition-opacity hover:opacity-85",
@@ -20,21 +21,12 @@ const barLink = ({ isActive }) =>
     isActive && "underline decoration-2 underline-offset-8"
   );
 
-/**
- * Header v2 (design-spec mục v2): thanh xanh cao --header-h (56px mobile, 70px từ lg), dính trên cùng.
- *   Desktop: logo · ô tìm trắng có nút "Tìm kiếm" · pill "Tạo sự kiện" · "Vé của tôi" · Đăng nhập | Đăng ký (hoặc menu tài khoản) · VI
- *   < lg:    logo · nút tìm (mở MobileSearchSheet) · nút vé · nút menu (HeaderMobileMenu)
- * Thanh danh mục đen (CategoryNav) nằm ngay dưới, không dính, do SiteLayout đặt.
- * Tìm kiếm → /events?q=. "Tạo sự kiện" theo vai trò (createEventHref).
- */
 export function Header() {
   const { user, isAuthenticated, isOrganizer, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  // Cuộn quá 8px: thêm bóng dưới để header tách khỏi nội dung. Gắn thẳng data-condensed lên DOM
-  // (CSS lo phần còn lại) nên cuộn trang không render lại header.
   const headerRef = useRef(null);
   const { scrollY } = useScroll();
   useMotionValueEvent(scrollY, "change", (y) => headerRef.current?.toggleAttribute("data-condensed", y > 8));
@@ -113,7 +105,6 @@ export function Header() {
             links={[
               { to: "/", label: "Trang chủ", end: true },
               { to: "/events", label: "Tất cả sự kiện" },
-              { to: "/resale", label: "Vé bán lại" },
               { to: createHref, label: "Tạo sự kiện" },
               { to: "/me/tickets", label: "Vé của tôi" },
             ]}

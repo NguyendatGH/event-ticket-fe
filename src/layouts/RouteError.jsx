@@ -1,11 +1,10 @@
+// errorElement của router; bắt cả lỗi tải chunk lazy sau khi deploy bản mới.
+
 import { isRouteErrorResponse, Link, useRouteError } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Container, ErrorState } from "@/components/site";
 import { normalizeError } from "@/api";
 
-/**
- * errorElement của router: lỗi render / loader / tải chunk lazy thất bại (sau khi deploy bản mới).
- */
 export default function RouteError() {
   const error = useRouteError();
   const chunkFailed = /Failed to fetch dynamically imported module|Importing a module script failed|error loading dynamically imported module/i.test(

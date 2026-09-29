@@ -1,11 +1,9 @@
+// Hiển thị ApiError kèm traceId và nút thử lại.
+
 import { RotateCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-/**
- * Hiển thị ApiError: thông điệp BE (tiếng Việt), mã traceId nhỏ để báo lỗi, nút thử lại.
- *   if (query.isError) return <ErrorState error={query.error} onRetry={query.refetch} />
- */
 export function ErrorState({ error, onRetry, title, className, compact = false }) {
   const heading = title || (error?.status === 404 ? "Không tìm thấy" : "Không tải được dữ liệu");
   return (

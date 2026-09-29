@@ -1,20 +1,16 @@
+// Lịch sử vé (TicketHistoryItem[] cũ → mới) dạng timeline dọc, mới nhất ở trên.
+
 import { motion } from "motion/react";
 import { TICKET_HISTORY_LABEL } from "@/lib/constants";
 import { formatDateTime, formatVND } from "@/lib/format";
 import { DUR, EASE_OUT } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
-/**
- * Lịch sử vé (TicketHistoryItem[] cũ → mới) dạng timeline dọc, mới nhất ở trên.
- *   ● Chuyển nhượng   1.250.000đ
- *   │ Nguyen A. → Tran B.   24.10.2026 19:30
- */
 export function TicketHistory({ items = [] }) {
   if (!items.length) return <p className="text-sm text-muted-foreground">Chưa có giao dịch nào.</p>;
   const list = [...items].reverse();
   return (
     <ol className="relative ml-1.5">
-      {/* Trục dọc tự vẽ từ trên xuống, các mốc hiện lần lượt theo nó. */}
       <motion.span
         aria-hidden="true"
         className="absolute inset-y-0 left-0 w-px origin-top bg-border"

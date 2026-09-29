@@ -1,17 +1,12 @@
+// Đo bằng offsetLeft/offsetTop (không phụ thuộc scroll) nên dùng được cho chrome sticky: nav header, sidebar.
+
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { SPRING } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
-/**
- * Vạch chỉ báo đo bằng offsetLeft/offsetTop (không phụ thuộc scroll) cho chrome sticky: nav header, sidebar.
- * containerRef: phần tử `relative` chứa các link; mục đang chọn tìm theo [aria-current="page"].
- * activeKey: đổi khi mục chọn đổi (thường là pathname). axis "x" = vạch dưới, "y" = vạch trái.
- * Không có mục nào khớp → ẩn. Lần render đầu không bay vào (initial={false}).
- */
 export function SlidingIndicator({ containerRef, activeKey, axis = "x", className }) {
   const [box, setBox] = useState(null);
-  // useEffect (không phải layout effect): ref của container cha chỉ được gắn sau layout effect của con.
   useEffect(() => {
     const nav = containerRef.current;
     if (!nav) return undefined;
@@ -21,7 +16,7 @@ export function SlidingIndicator({ containerRef, activeKey, axis = "x", classNam
     };
     measure();
     if (typeof ResizeObserver === "undefined") return undefined;
-    const ro = new ResizeObserver(measure); // font tải xong, đổi kích thước
+    const ro = new ResizeObserver(measure);
     ro.observe(nav);
     return () => ro.disconnect();
   }, [containerRef, activeKey, axis]);

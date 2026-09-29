@@ -1,3 +1,5 @@
+// Trôi chậm hơn trang khi cuộn (tối đa 60px), mờ dần vào nền ở mép dưới (::after). Reduced motion → không trôi.
+
 import { useRef } from "react";
 import {
   motion,
@@ -8,10 +10,6 @@ import {
 import { ImageWithFallback } from "@/components/site";
 import { imageSettle } from "@/lib/motion";
 
-/**
- * Ảnh bìa đầu trang chi tiết: lắng xuống khi mount, trôi chậm hơn trang khi cuộn (tối đa 60px),
- * mờ dần vào nền trang ở mép dưới (lớp gradient ::after). Bật "giảm chuyển động" thì không trôi.
- */
 export function EventCover({ event }) {
   const ref = useRef(null);
   const reduce = useReducedMotion();

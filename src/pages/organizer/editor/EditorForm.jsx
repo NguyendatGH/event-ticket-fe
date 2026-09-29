@@ -1,12 +1,5 @@
-/**
- * Trình tạo / sửa sự kiện dạng 4 bước (EventEditorPage render sau khi đã có `event`, hoặc event rỗng khi tạo mới).
- *
- * - MỘT form react-hook-form cho cả 4 bước (schema ở ./schema.js); bước đang mở nằm trên URL (?step=1..4).
- * - "Lưu nháp": POST /organizer/events lần đầu (useCreateOrganizerEvent), PUT các lần sau (useUpdateOrganizerEvent).
- * - "Xuất bản": kiểm tra checklist ở FE trước → lưu → POST /organizer/events/{id}/publish (usePublishOrganizerEvent).
- * - Lỗi BE có field → đổ vào đúng ô, nhảy tới bước chứa ô đó (./serverErrors.js).
- * - Rời trang khi chưa lưu → hỏi lại (./useUnsavedChangesGuard.js).
- */
+// Trình tạo / sửa sự kiện dạng 4 bước (EventEditorPage render sau khi đã có `event`, hoặc event rỗng khi tạo mới).
+
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { FormProvider, useForm, useWatch } from "react-hook-form";
@@ -39,18 +32,14 @@ export function EditorForm({ event }) {
 
   const defaultValues = useMemo(() => (event ? toForm(event) : emptyForm()), [event]);
   const form = useForm({ resolver: zodResolver(draftSchema), defaultValues, mode: "onTouched" });
-  // Vì sao useWatch + compute: chỉ theo dõi KẾT QUẢ checklist (so sánh sâu), không theo dõi từng ô.
-  // Gõ phím không render lại cả trình sửa; chỉ render lại khi một mục checklist đổi trạng thái đạt/chưa đạt.
   const checklist = useWatch({ control: form.control, compute: publishChecklist });
   const { isDirty } = form.formState;
 
   const create = useCreateOrganizerEvent();
   const update = useUpdateOrganizerEvent();
   const publish = usePublishOrganizerEvent();
-  const [busy, setBusy] = useState(null); // "save" | "publish" | null
+  const [busy, setBusy] = useState(null);
 
-  // Hướng trượt khi đổi bước: bước sau → 1 (nội dung vào từ phải), bước trước → -1 (vào từ trái).
-  // Nhớ bước trước trong state và so ngay lúc render (mẫu "chỉnh state khi prop đổi" của React docs, không cần useEffect).
   const [stepNav, setStepNav] = useState({ step, dir: 1 });
   let dir = stepNav.dir;
   if (stepNav.step !== step) {
@@ -58,7 +47,6 @@ export function EditorForm({ event }) {
     setStepNav({ step, dir });
   }
 
-  // Field cần focus sau khi bước mới trượt vào xong (AnimatePresence mode="wait" mount bước mới sau exit).
   const pendingFocus = useRef(null);
 
   const goStep = (i, { focus } = {}) => {
@@ -76,7 +64,6 @@ export function EditorForm({ event }) {
     else pendingFocus.current = focus;
   };
 
-  // Lỗi BE mang theo khi chuyển từ /new sang /:id/edit (tạo xong nhưng xuất bản bị từ chối, xem onPublish).
   const carried = useRef(location.state?.serverError);
   useEffect(() => {
     const err = carried.current;
@@ -94,7 +81,6 @@ export function EditorForm({ event }) {
   const showServerError = (err) => {
     const first = applyServerErrors(form, err);
     if (first) goStep(stepOfField(first), { focus: first });
-    // 409 TIER_QUANTITY_BELOW_SOLD / TIER_PRICE_LOCKED… không kèm field (dữ liệu bán vừa đổi): đưa về bước hạng vé.
     else if (err?.code?.startsWith("TIER_")) {
       form.setError("tiers.root", { type: "server", message: err.message });
       goStep(2);
@@ -102,7 +88,6 @@ export function EditorForm({ event }) {
     toast.error(err.message || "Không lưu được sự kiện");
   };
 
-  /** Lưu (POST lần đầu, PUT các lần sau). Trả về OrganizerEventDetail. */
   const persist = async (vals) => {
     const body = toRequest(vals);
     const detail = event?.id ? await update.mutateAsync({ id: event.id, body }) : await create.mutateAsync(body);
@@ -110,7 +95,6 @@ export function EditorForm({ event }) {
     return detail;
   };
 
-  /** Form không qua được draftSchema: nhảy tới ô lỗi đầu tiên. */
   const onInvalid = (errors) => {
     const first = errorPaths(errors)[0];
     if (first) goStep(stepOfField(first), { focus: first.endsWith(".root") ? undefined : first });
@@ -131,7 +115,6 @@ export function EditorForm({ event }) {
   };
 
   const onPublish = async (vals) => {
-    // Kiểm tra điều kiện xuất bản ở FE trước để chỉ ra ngay mục thiếu (BE vẫn kiểm tra lại).
     const issues = validateForPublish(form.getValues());
     if (issues.length) {
       issues.forEach((i) => form.setError(i.path, { type: "publish", message: i.message }));
@@ -149,7 +132,6 @@ export function EditorForm({ event }) {
       leaveTo(`/organizer/events/${published.id}`);
     } catch (err) {
       if (detail && !event?.id) {
-        // Đã tạo bản nháp nhưng xuất bản bị từ chối: chuyển sang trang sửa, mang lỗi theo (location.state).
         toast.error(err.message || "Chưa xuất bản được");
         const first = err.errors?.[0]?.field ? normalizeServerField(err.errors[0].field) : null;
         leaveTo(`/organizer/events/${detail.id}/edit?step=${(first ? stepOfField(first) : step) + 1}`, { replace: true, state: { serverError: { code: err.code, message: err.message, errors: err.errors } } });
@@ -166,7 +148,6 @@ export function EditorForm({ event }) {
 
   const stepErrors = new Set(errorPaths(form.formState.errors).map(stepOfField));
   const stepHasError = (i) => i < 3 && stepErrors.has(i);
-  // Bước "xong" (hiện dấu tick) khi mọi mục checklist của bước đó đạt và bước không có lỗi.
   const stepDone = (i) => {
     if (i >= 3 || stepErrors.has(i)) return false;
     const items = checklist.filter((c) => c.step === i);
@@ -185,7 +166,6 @@ export function EditorForm({ event }) {
     />
   );
 
-  // Bấm một mục checklist: tới bước chứa mục đó và focus ô (trừ lỗi cả nhóm ".root" và ảnh bìa: không có ô để focus).
   const jump = (item) => goStep(item.step, { focus: item.path.endsWith(".root") || item.path === "coverImageUrl" ? undefined : item.path });
 
   return (
@@ -210,7 +190,6 @@ export function EditorForm({ event }) {
         className="border-b-0 pb-4 md:pb-6"
       />
 
-      {/* Thanh bước + hành động: dính dưới topbar (h-14) */}
       <div className="sticky top-14 z-20 -mx-5 border-y border-border bg-background/95 px-5 backdrop-blur-sm lg:-mx-10 lg:px-10">
         <div className="flex items-center justify-between gap-6">
           <StepNav step={step} hasError={stepHasError} isDone={stepDone} onGo={goStep} />
@@ -227,7 +206,6 @@ export function EditorForm({ event }) {
         className="grid gap-12 pt-10 pb-28 md:pb-10 xl:grid-cols-[minmax(0,1fr)_260px]"
       >
         <div className="min-w-0 overflow-x-clip">
-          {/* mode="wait": bước cũ trượt ra hết rồi bước mới mới trượt vào; `custom={dir}` chọn hướng trượt. */}
           <AnimatePresence mode="wait" initial={false} custom={dir}>
             <motion.div
               key={step}
@@ -265,7 +243,6 @@ export function EditorForm({ event }) {
         </aside>
       </form>
 
-      {/* Mobile: hành động dính đáy màn hình */}
       <div className="fixed inset-x-0 bottom-0 z-30 flex items-center justify-end gap-3 border-t border-border bg-background px-5 shadow-[0_-8px_24px_rgba(0,0,0,.4)] pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:hidden">
         {actions}
       </div>
@@ -284,10 +261,6 @@ export function EditorForm({ event }) {
   );
 }
 
-/**
- * Tiêu đề trang = tên sự kiện đang gõ. Vì sao tách thành component riêng: useWatch("name") ở đây chỉ làm
- * render lại dòng tiêu đề này mỗi phím, không render lại cả trình sửa (EditorForm).
- */
 function LiveTitle({ fallback }) {
   const name = useWatch({ name: "name" });
   return name?.trim() || fallback;

@@ -1,10 +1,6 @@
-/**
- * Trang tổng quan của ban tổ chức — route /organizer?range=7|30|90|custom&from=&to=&interval=day|week|month
- * Số liệu tổng, biểu đồ doanh thu + vé bán, sự kiện theo trạng thái, sự kiện bán chạy.
- * Khoảng thời gian nằm trên URL (đọc bằng resolveRange trong ./lib/helpers.js).
- * Dữ liệu: useDashboardSummary, useDashboardSales, useDashboardRevenue, useDashboardTopEvents
- * (4 query chạy song song, cùng tham số from/to/interval).
- */
+// Trang tổng quan của ban tổ chức — route /organizer?range=7|30|90|custom&from=&to=&interval=day|week|month
+// Dữ liệu: useDashboardRevenue, useDashboardSales, useDashboardSummary, useDashboardTopEvents.
+
 import { Link, useSearchParams } from "react-router-dom";
 import { motion } from "motion/react";
 import { ArrowRight, Plus } from "lucide-react";
@@ -22,12 +18,10 @@ import { EventStatusSummary } from "./components/EventStatusSummary";
 import { BlockTitle, OrgHeader, StatStrip, StatStripSkeleton } from "./components/OrgUi";
 import { RangeControls } from "./components/RangeControls";
 import { TopEvents } from "./components/TopEvents";
-import { formatRangeLabel, resolveRange } from "./lib/helpers";
+import { formatRangeLabel, resolveRange } from "./lib";
 
-// Mảng rỗng cố định: `data ?? NONE` không tạo mảng mới mỗi render (biểu đồ memo không bị phá).
 const NONE = [];
 
-/** Dòng phụ dưới mỗi số: "+12,4% so với kỳ trước", màu + mũi tên theo chiều tăng/giảm. */
 function vsPreviousPeriod(metric) {
   const pct = metric?.changePct;
   if (pct == null) return { sub: metric?.previous ? null : "Chưa có dữ liệu kỳ trước", toneClass: "text-disabled-foreground" };
@@ -49,7 +43,6 @@ export default function DashboardPage() {
   const revenue = useDashboardRevenue(apiParams);
   const top = useDashboardTopEvents({ ...apiParams, limit: 5 });
 
-  /** Ghi thay đổi lên URL; giá trị mặc định (30 ngày, gộp theo ngày) thì xóa khỏi URL cho gọn. */
   const update = (patch) =>
     setParams(
       (p) => {
@@ -139,7 +132,6 @@ export default function DashboardPage() {
         title="Tổng quan"
         meta={<span className="tabular-nums">{formatRangeLabel(s?.from || from, s?.to || to)}</span>}
       >
-        {/* key theo khoảng đang chọn: URL đổi (Back/Forward, bấm preset) → ô ngày tự chọn reset theo URL. */}
         {!isNew ? <RangeControls key={`${range}-${from}-${to}`} range={range} from={from} to={to} interval={interval} invalid={invalid} onChange={update} /> : null}
       </OrgHeader>
 

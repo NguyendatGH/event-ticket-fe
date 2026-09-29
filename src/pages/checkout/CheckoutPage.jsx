@@ -1,11 +1,6 @@
-/**
- * Trang thanh toán — route /checkout/:slug?tiers=<tierId>:<số lượng>,...
- *
- * - Tải sự kiện bằng useEvent(slug); giỏ vé nằm trên URL (?tiers=) để F5 / chia sẻ link không mất giỏ.
- * - Phần form (chọn vé + người nhận + tóm tắt + nút thanh toán) ở components/CheckoutForm.jsx,
- *   nơi gọi useCreateOrder (POST /orders) với Idempotency-Key rồi chuyển sang cổng thanh toán.
- * - Sơ đồ cả luồng mua vé: xem đầu file ./lib.js.
- */
+// Trang thanh toán — route /checkout/:slug?tiers=<tierId>:<số lượng>,...
+// Dữ liệu: useEvent.
+
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { useEvent } from "@/api";
 import { Container, EmptyState, ErrorState } from "@/components/site";

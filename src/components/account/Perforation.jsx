@@ -1,12 +1,7 @@
+// Thẻ cha phải `relative overflow-hidden` để hai khuyết tròn bị cắt còn nửa. Trang trí (aria-hidden).
+
 import { cn } from "@/lib/utils";
 
-/**
- * Đường răng cưa kiểu cuống vé: vạch đứt + hai khuyết tròn màu nền trang ở hai đầu. Trang trí (aria-hidden).
- * Thẻ cha phải `relative overflow-hidden` để khuyết tròn bị cắt còn nửa.
- *
- *   <Perforation />                        // ngang, đặt giữa hai phần của thẻ
- *   <Perforation orientation="vertical" /> // dọc, đặt trong một cột (cao bằng cột)
- */
 export function Perforation({ orientation = "horizontal", className }) {
   const vertical = orientation === "vertical";
   return (

@@ -1,13 +1,9 @@
+// Dải bìa đầu trang ban tổ chức, mờ dần vào nền trang ở mép dưới. Ưu tiên:
+
 import { motion } from "motion/react";
 import { ImageWithFallback } from "@/components/site";
 import { imageSettle } from "@/lib/motion";
 
-/**
- * Dải bìa đầu trang ban tổ chức, mờ dần vào nền trang ở mép dưới. Ưu tiên:
- *   1. ảnh bìa ban tổ chức tự tải lên (org.coverUrl)
- *   2. không có → ghép tối đa 3 ảnh bìa sự kiện sắp diễn ra (covers)
- *   3. không có gì → dải gradient thấp
- */
 export function CoverBand({ org, covers }) {
   const scrim = (
     <span

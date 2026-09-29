@@ -1,10 +1,5 @@
-/**
- * Các khối "tóm tắt đơn hàng" dùng chung cho trang checkout (success/failed) và trang /orders/:id:
- *   SPLIT_GRID / SPLIT_ASIDE  lưới 2 cột (nội dung | cột phụ)
- *   EventAside                ảnh + thông tin sự kiện ở cột phụ
- *   PaymentDetails            bảng thông tin thanh toán (đặt trong <Disclosure>)
- *   IssuedTickets             danh sách vé đã cấp kèm QR
- */
+// Khối tóm tắt đơn: lưới 2 cột, cột phụ sự kiện, thông tin thanh toán, vé đã cấp.
+
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { motion } from "motion/react";
@@ -14,16 +9,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { formatDateLong, formatDateTime, formatTimeRange } from "@/lib/format";
 import { rowItem } from "@/lib/motion";
 import { cn } from "@/lib/utils";
-import { QRReveal } from "@/pages/tickets/components/QRReveal";
-import { venueLine } from "../lib";
+import { QRReveal } from "@/components/site";
+import { venueLine } from "@/lib/checkout";
 
-/** Lưới 2 cột (nội dung 7 | cột phụ 4 lệch phải) của trang thành công, thất bại, đơn hàng. */
 export const SPLIT_GRID = "grid gap-14 pt-12 md:pt-16 lg:grid-cols-12 lg:gap-16";
 export const SPLIT_ASIDE = "lg:col-span-4 lg:col-start-9";
 
-/**
- * Ảnh + thông tin sự kiện ở cột phụ. `event` là EventResponse, hoặc chỉ { name, slug } khi chưa tải xong.
- */
 export function EventAside({ event, loading, className }) {
   if (loading) {
     return (
@@ -55,7 +46,6 @@ export function EventAside({ event, loading, className }) {
   );
 }
 
-/** Dòng thông tin thanh toán trong Disclosure. */
 export function PaymentDetails({ order }) {
   const p = order?.payment;
   const rows = [
@@ -78,11 +68,6 @@ export function PaymentDetails({ order }) {
   );
 }
 
-/**
- * Danh sách vé đã cấp của một đơn, mỗi vé kèm QR (khách vãng lai không có "Vé của tôi" nên QR phải hiện ở đây).
- * linkToTicket: người dùng đã đăng nhập → thêm "Xem vé" tới /me/tickets/:id.
- * delayRows: lùi nhịp xuất hiện (trang thành công chờ dấu tick vẽ xong). QR quét một lần cho vé còn hiệu lực.
- */
 export function IssuedTickets({ tickets = [], eventName, linkToTicket = false, qrSize = 112, delayRows = 0, className }) {
   if (!tickets.length) return null;
   return (

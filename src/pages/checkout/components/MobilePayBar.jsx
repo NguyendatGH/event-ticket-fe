@@ -1,3 +1,5 @@
+// Thanh thanh toán dính đáy màn hình điện thoại (ẩn từ lg).
+
 import { AnimatePresence, motion } from "motion/react";
 import { Loader2, Lock } from "lucide-react";
 import { AnimatedNumber } from "@/components/motion";
@@ -5,11 +7,6 @@ import { Button } from "@/components/ui/button";
 import { formatVND } from "@/lib/format";
 import { DUR, EASE_IN, EASE_OUT } from "@/lib/motion";
 
-/**
- * Thanh dưới đáy màn hình điện thoại (ẩn từ lg): giữ tổng tiền + nút thanh toán trong lúc khối tóm tắt
- * còn nằm dưới form. Trượt lên khi hiện, trượt xuống khi ẩn (AnimatePresence chạy animation `exit`).
- * Nút dùng `form="checkout-form"` nên submit đúng form dù nằm ngoài thẻ <form>.
- */
 export function MobilePayBar({ show, total, busy }) {
   return (
     <AnimatePresence>

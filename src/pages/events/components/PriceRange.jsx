@@ -1,12 +1,9 @@
+// Khoảng giá tự nhập (Từ / Đến), chỉ áp dụng khi bấm nút hoặc Enter (không lọc theo từng phím gõ).
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { MiniField } from "./MiniField";
 
-/**
- * Khoảng giá tự nhập (Từ / Đến), chỉ áp dụng khi bấm nút hoặc Enter (không lọc theo từng phím gõ).
- * Ô nhập giữ state riêng. Để state này khớp lại với URL khi bộ lọc đổi từ chỗ khác (bấm mức giá gợi ý,
- * xóa chip…), FilterPanel đặt key={`${priceMin}-${priceMax}`}: key đổi → React tạo lại component với state mới.
- */
 export function PriceRange({ filters, facets, onChange }) {
   const [min, setMin] = useState(filters.priceMin ?? "");
   const [max, setMax] = useState(filters.priceMax ?? "");

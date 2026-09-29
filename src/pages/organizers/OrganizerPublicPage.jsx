@@ -1,9 +1,6 @@
-/**
- * Trang công khai của ban tổ chức, route "/organizers/:slug".
- * Dữ liệu: useOrganizer (GET /organizers/{slug}) cho phần đầu trang;
- * useOrganizerPublicEvents (GET /organizers/{slug}/events?scope=upcoming|past) cho lưới sự kiện theo tab.
- * Tab đang chọn nằm trên URL (?scope=past). 404 → trang "không tìm thấy", giữ nguyên URL.
- */
+// Trang công khai của ban tổ chức, route "/organizers/:slug".
+// Dữ liệu: useOrganizer, useOrganizerPublicEvents.
+
 import { useParams, useSearchParams } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";
 import { BadgeCheck } from "lucide-react";
@@ -18,19 +15,17 @@ import {
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { formatNumber } from "@/lib/format";
 import { heroLine, heroStagger } from "@/lib/motion";
-import { NotFoundView } from "../NotFoundPage";
+import { NotFoundView } from "@/components/site";
 import { CoverBand } from "./components/CoverBand";
 import { OrganizerContacts } from "./components/OrganizerContacts";
 import { OrganizerEvents } from "./components/OrganizerEvents";
 import { OrganizerSkeleton } from "./components/OrganizerSkeleton";
 
-// Hai tab sự kiện (dùng lại CategoryTabs: cùng kiểu tab gạch chân, chỉ khác danh sách)
 const SCOPES = [
   { slug: "upcoming", label: "Sắp diễn ra" },
   { slug: "past", label: "Đã diễn ra" },
 ];
 
-// Đổi tab: lưới cũ mờ đi rồi lưới mới hiện lên
 const scopeSwap = {
   initial: { opacity: 0 },
   animate: { opacity: 1 },
@@ -38,8 +33,6 @@ const scopeSwap = {
   transition: { duration: 0.2 },
 };
 
-// Dùng làm `select`: chỉ lấy tối đa 3 ảnh bìa để ghép dải bìa. Component chỉ render lại khi danh sách ảnh đổi.
-// Đặt ngoài component để hàm giữ nguyên tham chiếu giữa các lần render.
 const coversOf = (data) =>
   flattenPages(data)
     .map((e) => e.coverImageUrl)
@@ -51,7 +44,6 @@ export default function OrganizerPublicPage() {
   const [params, setParams] = useSearchParams();
   const scope = params.get("scope") === "past" ? "past" : "upcoming";
   const orgQ = useOrganizer(slug);
-  // Gọi song song với request ban tổ chức (cùng key với tab "Sắp diễn ra", không tốn thêm request)
   const covers = useOrganizerPublicEvents(
     slug,
     { scope: "upcoming" },
@@ -60,7 +52,6 @@ export default function OrganizerPublicPage() {
   const org = orgQ.data;
   useDocumentTitle(org?.name ?? "Ban tổ chức");
 
-  // Tab "Sắp diễn ra" là mặc định nên không ghi lên URL; replace: đổi tab không thêm mục vào lịch sử
   const changeScope = (value) => {
     const next = new URLSearchParams(params);
     if (value === "upcoming") next.delete("scope");

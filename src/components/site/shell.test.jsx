@@ -1,3 +1,5 @@
+// Test khung trang: Header, CategoryNav, Footer.
+
 import { render, screen, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -22,10 +24,7 @@ describe("CategoryNav", () => {
     expect(within(nav).getByRole("link", { name: "Tất cả sự kiện" })).not.toHaveAttribute("aria-current");
   });
 
-  it("Vé bán lại active trên /resale/:id; trang khác không mục nào active", () => {
-    const { unmount } = renderAt(<CategoryNav />, "/resale/abc");
-    expect(screen.getByRole("link", { name: "Vé bán lại" })).toHaveAttribute("aria-current", "page");
-    unmount();
+  it("trang ngoài /events không mục nào active", () => {
     renderAt(<CategoryNav />, "/contact");
     expect(screen.queryByRole("link", { current: "page" })).toBeNull();
   });

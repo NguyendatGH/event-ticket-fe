@@ -1,3 +1,5 @@
+// Số thứ hạng chỉ để trang trí (aria-hidden); thứ hạng đọc ra qua "Hạng N:" ẩn.
+
 import { memo } from "react";
 import { Link } from "react-router-dom";
 import { ImageWithFallback } from "@/components/site";
@@ -5,18 +7,6 @@ import { imageAt } from "@/lib/image";
 import { cn } from "@/lib/utils";
 import { EventCaption } from "./EventCaption";
 
-/**
- * Thẻ có số thứ hạng lớn viền xanh (danh sách "Sự kiện xu hướng", GET /events?sort=popular): số rỗng ruột nằm
- * bên trái, ảnh 3:4 đè một phần lên số. Số chỉ để trang trí (aria-hidden); thứ hạng đọc ra qua "Hạng N:" ẩn.
- *
- *   <Carousel label="Sự kiện xu hướng" perView="ranked">
- *     {events.map((e, i) => <RankedEventCard key={e.id} event={e} rank={i + 1} />)}
- *   </Carousel>
- *
- * Props: event, rank (1…), imageWidth (mặc định 480), className. memo như PosterCard.
- * Cột số có độ rộng cố định (w-16 / md:w-22, số canh giữa) để mọi poster cùng cỡ dù "1" hẹp còn "4" rộng;
- * hạng 2 chữ số (10+) thu nhỏ chữ để không lấn sang thẻ trước.
- */
 export const RankedEventCard = memo(function RankedEventCard({ event, rank, imageWidth = 480, className }) {
   if (!event) return null;
   const { slug, name, coverImageUrl, coverImageAlt } = event;

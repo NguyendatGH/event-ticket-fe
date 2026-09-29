@@ -1,8 +1,8 @@
+// Nền chung cho ô nhập (Input, Textarea, SearchInput, NativeSelect):
+
 import * as React from "react"
 import { cn } from "@/lib/utils"
 
-// Nền chung cho ô nhập (Input, Textarea, SearchInput, NativeSelect, ô giá resale):
-// nền #171B19, viền 1px, radius 4px, hover sáng viền, focus = viền xanh, lỗi = viền đỏ.
 export const fieldClass =
   "rounded-md border border-input bg-input-bg text-sm text-foreground transition-colors outline-none placeholder:text-disabled-foreground hover:border-border-hover focus-visible:border-ring aria-invalid:border-destructive disabled:cursor-not-allowed disabled:opacity-50";
 

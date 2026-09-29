@@ -1,3 +1,5 @@
+// Providers toàn app: TanStack Query, MotionConfig, Tooltip, Router, Toaster.
+
 import { useState } from "react";
 import { RouterProvider } from "react-router-dom";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -9,7 +11,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { createRouter } from "@/app/router";
 import { createQueryClient } from "@/app/queryClient";
 
-/** Providers: TanStack Query, motion (tôn trọng prefers-reduced-motion), tooltip, router, toast. */
 export default function App() {
   const [queryClient] = useState(createQueryClient);
   const [router] = useState(createRouter);
@@ -21,7 +22,6 @@ export default function App() {
           <Toaster position="bottom-right" />
         </TooltipProvider>
       </MotionConfig>
-      {/* Nút devtools che nội dung: chỉ bật khi VITE_RQ_DEVTOOLS=true trong .env.development.local */}
       {import.meta.env.VITE_RQ_DEVTOOLS === "true" && <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-right" />}
     </QueryClientProvider>
   );

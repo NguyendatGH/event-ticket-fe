@@ -1,15 +1,13 @@
-/** Hằng số dùng chung. Nhãn tiếng Việt cho mọi enum BE (contract §1, §3). */
+// Hằng số dùng chung. Nhãn tiếng Việt cho mọi enum BE (contract §1, §3).
 
 export const BRAND = {
   name: "Encore",
   wordmark: "ENCORE",
   tagline: "Vé cho những khoảnh khắc đáng nhớ.",
   supportEmail: "hotro@encore.vn",
-  /** Giờ hỗ trợ (Footer, trang Liên hệ). Không có hotline: kênh hỗ trợ là email + biểu mẫu /contact. */
   supportHours: "Thứ hai - thứ sáu, 9:00-18:00",
 };
 
-/** Danh mục cố định (BE validate). */
 export const CATEGORIES = [
   { slug: "music", label: "Âm nhạc" },
   { slug: "theatre", label: "Sân khấu" },
@@ -32,13 +30,6 @@ export const EVENT_SORTS = [
   { value: "-date", label: "Ngày xa nhất" },
 ];
 
-export const RESALE_SORTS = [
-  { value: "newest", label: "Mới đăng" },
-  { value: "price", label: "Giá thấp đến cao" },
-  { value: "-price", label: "Giá cao đến thấp" },
-  { value: "date", label: "Ngày diễn ra" },
-];
-
 export const WHEN_OPTIONS = [
   { value: "today", label: "Hôm nay" },
   { value: "weekend", label: "Cuối tuần" },
@@ -52,10 +43,6 @@ export const DASHBOARD_INTERVALS = [
   { value: "month", label: "Tháng" },
 ];
 
-/**
- * Nhãn + tone cho StatusBadge. tone ∈ variant của components/ui/badge
- * (default = xanh, secondary, outline, destructive, warning, info, muted).
- */
 export const STATUS = {
   event: {
     PUBLISHED: ["Đang bán", "default"],
@@ -90,29 +77,14 @@ export const STATUS = {
     REFUND_PENDING: ["Chờ hoàn tiền", "warning"],
     REFUNDED: ["Đã hoàn tiền", "muted"],
   },
-  listing: {
-    ACTIVE: ["Đang bán", "default"],
-    RESERVED: ["Đang giữ chỗ", "warning"],
-    SOLD: ["Đã bán", "info"],
-    CANCELLED: ["Đã gỡ", "muted"],
-  },
-  orderKind: {
-    PRIMARY: ["Vé phát hành", "outline"],
-    RESALE: ["Vé bán lại", "info"],
-  },
 };
 
 export const statusLabel = (kind, status) => STATUS[kind]?.[status]?.[0] || status || "";
 
 export const TICKET_HISTORY_LABEL = {
   ISSUED: "Phát hành",
-  LISTED: "Đăng bán lại",
-  PRICE_CHANGED: "Đổi giá",
-  DELISTED: "Gỡ bán",
-  RESOLD: "Chuyển nhượng",
 };
 
-/** Ảnh sự kiện dự phòng khi URL lỗi / trống. */
 export const FALLBACK_EVENT_IMAGE =
   "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=1600&q=80";
 

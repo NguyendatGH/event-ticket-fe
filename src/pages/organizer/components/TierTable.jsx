@@ -1,3 +1,5 @@
+// Bảng hạng vé ở trang chi tiết sự kiện (organizer).
+
 import { Link } from "react-router-dom";
 import { formatNumber, formatVND } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -5,10 +7,6 @@ import { ROW, SoldMeter, TH, TH_ROW } from "./OrgUi";
 
 const TD_NUM = "py-4 pl-4 text-right tabular-nums";
 
-/**
- * Bảng hạng vé ở trang chi tiết sự kiện (organizer): giá, tổng, đã bán, đang giữ, còn lại, tiến độ, doanh thu
- * + hàng "Tổng" cộng dồn ở cuối. Chưa có hạng vé → link sang bước 3 của trình sửa.
- */
 export function TierTable({ eventId, tiers }) {
   if (!tiers.length)
     return (

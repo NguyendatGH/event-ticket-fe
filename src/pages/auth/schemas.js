@@ -1,11 +1,8 @@
-/*
- * Schema zod cho các form auth. Tên field khớp DTO BE (contract §4.2): trang chỉ cần bỏ
- * confirmPassword / agree (chỉ để kiểm tra ở FE) rồi gửi phần còn lại lên API.
- */
+// Schema zod cho các form auth; tên field khớp DTO BE (contract §4.2).
+
 import { z, v, passwordsMatch } from "@/lib/forms";
 import { isOrganizerRole } from "@/stores/auth";
 
-// "Nhập lại mật khẩu" phải khớp "Mật khẩu"; lỗi gắn vào ô confirmPassword.
 const match = passwordsMatch();
 const confirm = z.string().min(1, { error: "Hãy nhập lại mật khẩu" });
 
@@ -39,5 +36,4 @@ export const resetSchema = z
   .object({ password: v.password("Mật khẩu mới"), confirmPassword: confirm })
   .refine(match.check, match.params);
 
-/** Sau đăng nhập: về trang đang dở (state.from), không có thì organizer → dashboard, còn lại → trang chủ. */
 export const afterLoginPath = (from, user) => from || (isOrganizerRole(user) ? "/organizer" : "/");

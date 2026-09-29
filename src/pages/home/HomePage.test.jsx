@@ -1,3 +1,5 @@
+// Test trang chủ: mỗi section tự tải, section lỗi không kéo sập cả trang.
+
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
@@ -5,7 +7,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { useAuthStore } from "@/stores/auth";
 
-// Dữ liệu giả cho từng hook. Mỗi test đặt lại `state` rồi render; hook giả đọc từ đây.
 const ev = (id, extra = {}) => ({
   id,
   slug: `su-kien-${id}`,
@@ -37,7 +38,6 @@ const defaultState = () => ({
     conference: ok(page([])),
     workshop: ok(page([])),
   },
-  resale: ok([]),
   facets: ok({ cities: [{ name: "Hà Nội", count: 5 }] }),
 });
 
@@ -47,10 +47,8 @@ vi.mock("@/api", async (orig) => ({
   useUpcomingEvents: () => state.upcoming,
   useFeaturedOrganizers: () => state.organizers,
   useEvents: (params) => (params.sort === "popular" ? state.popular : state.byCategory[params.category]),
-  // select của hook thật (gom theo sự kiện) chạy trên data dạng infinite; ở đây trả thẳng kết quả sau select
-  useResaleListings: () => state.resale,
   useEventFacets: () => state.facets,
-  useAppConfig: () => ({ checkoutFee: 12000, resaleMinPrice: 10000, resaleMaxMarkupPercent: 20, resaleCutoffHours: 2 }),
+  useAppConfig: () => ({ checkoutFee: 12000 }),
 }));
 
 const { default: HomePage } = await import("./HomePage");
@@ -89,7 +87,6 @@ describe("HomePage", () => {
     renderPage();
     expect(within(section("Ban tổ chức nổi bật")).getByRole("link", { name: /Sunrise Live/ })).toHaveAttribute("href", "/organizers/sunrise-live");
 
-    // Sự kiện đặc biệt = nổi bật + sắp diễn ra, bỏ trùng f2
     const special = within(section("Sự kiện đặc biệt")).getAllByRole("heading", { level: 3 });
     expect(special.map((h) => h.textContent)).toEqual(["Sự kiện f1", "Sự kiện f2", "Sự kiện f3", "Sự kiện u1"]);
 
@@ -108,22 +105,6 @@ describe("HomePage", () => {
     expect(screen.getByRole("region", { name: "Nhạc sống" })).toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Thể thao" })).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Hội thảo & Workshop" })).not.toBeInTheDocument();
-  });
-
-  it("vé bán lại: ẩn khi chưa có tin; có tin thì hiện giá, giá gốc và trần giá từ cấu hình", () => {
-    const { unmount } = renderPage();
-    expect(screen.queryByRole("heading", { name: "Vé bán lại" })).not.toBeInTheDocument();
-    unmount();
-
-    state.resale = ok([
-      { listing: { id: "l1", price: 420000, originalPrice: 350000, verified: true, tier: { name: "GA" }, event: ev("r1") }, others: 2 },
-    ]);
-    renderPage();
-    const resale = within(section("Vé bán lại"));
-    expect(resale.getByRole("link", { name: /Sự kiện r1/ })).toHaveAttribute("href", "/resale/l1");
-    expect(resale.getByText("Giá gốc 350.000đ")).toBeInTheDocument();
-    expect(resale.getByText("+2 vé khác cho sự kiện này")).toBeInTheDocument();
-    expect(resale.getByText(/không vượt quá 120% giá gốc/)).toBeInTheDocument();
   });
 
   it("điểm đến: link lọc theo thành phố, số sự kiện từ facets, ô Vị trí khác", () => {
@@ -145,7 +126,6 @@ describe("HomePage", () => {
     const trending = screen.getByRole("heading", { name: /Sự kiện xu hướng/ }).closest("section");
     await userEvent.click(within(trending).getByRole("button", { name: "Thử lại" }));
     expect(state.popular.refetch).toHaveBeenCalledTimes(1);
-    // phần còn lại của trang không bị ảnh hưởng
     expect(section("Sự kiện đặc biệt")).toBeInTheDocument();
     expect(section("Nhạc sống")).toBeInTheDocument();
   });

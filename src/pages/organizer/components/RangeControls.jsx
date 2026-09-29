@@ -1,3 +1,5 @@
+// Bộ chọn khoảng thời gian của trang tổng quan: 7/30/90 ngày + tùy chọn (from/to), gộp theo ngày/tuần/tháng.
+
 import { useId, useState } from "react";
 import { LayoutGroup } from "motion/react";
 import { TabIndicator } from "@/components/motion";
@@ -6,14 +8,8 @@ import { Input } from "@/components/ui/input";
 import { DASHBOARD_INTERVALS } from "@/lib/constants";
 import { todayISODate } from "@/lib/format";
 import { cn } from "@/lib/utils";
-import { RANGE_PRESETS } from "../lib/helpers";
+import { RANGE_PRESETS } from "../lib";
 
-/**
- * Bộ chọn khoảng thời gian của trang tổng quan: 7/30/90 ngày + tùy chọn (from/to), gộp theo ngày/tuần/tháng.
- * Mọi thứ nằm trên URL; component chỉ gọi onChange(patch). Ô ngày tự chọn giữ bản nháp (`draft`) tới khi bấm
- * "Áp dụng" (trang cha đặt `key` theo khoảng đang chọn nên bản nháp tự reset khi URL đổi).
- * Mỗi nhóm nút bọc LayoutGroup riêng để vạch chọn (TabIndicator) chỉ trượt trong nhóm của nó.
- */
 export function RangeControls({ range, from, to, interval, invalid, onChange }) {
   const [draft, setDraft] = useState({ from, to });
   const today = todayISODate();

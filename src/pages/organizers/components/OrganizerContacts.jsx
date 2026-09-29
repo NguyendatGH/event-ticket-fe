@@ -1,8 +1,9 @@
+// "https://www.sunrise.vn/about" → "sunrise.vn" (chỉ lấy tên miền, bỏ www). URL hỏng → giữ nguyên.
+
 import { motion } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
 import { fadeUp } from "@/lib/motion";
 
-/** "https://www.sunrise.vn/about" → "sunrise.vn" (chỉ lấy tên miền, bỏ www). URL hỏng → giữ nguyên. */
 const hostOf = (url) => {
   try {
     return new URL(url).host.replace(/^www\./, "");
@@ -11,10 +12,6 @@ const hostOf = (url) => {
   }
 };
 
-/**
- * Bảng liên hệ bên phải phần đầu trang ban tổ chức (website, email, điện thoại, thành phố).
- * Chỉ hiện các dòng có dữ liệu; không có dòng nào thì không render gì.
- */
 export function OrganizerContacts({ org }) {
   const contacts = [
     org.website && {

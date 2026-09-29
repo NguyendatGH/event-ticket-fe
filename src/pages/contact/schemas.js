@@ -1,6 +1,7 @@
+// POST /contact {name(1-200), email, subject?(≤200), message(10-5000)} (contract §4.2)
+
 import { z, v } from "@/lib/forms";
 
-/** POST /contact {name(1-200), email, subject?(≤200), message(10-5000)} (contract §4.2) */
 export const contactSchema = z.object({
   name: v.required("Họ tên", 200),
   email: v.email(),
@@ -15,7 +16,6 @@ export const contactSchema = z.object({
 
 export const CONTACT_TOPICS = [
   "Vé và đơn hàng",
-  "Vé bán lại",
   "Dành cho ban tổ chức",
   "Góp ý khác",
 ];

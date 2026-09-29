@@ -1,8 +1,6 @@
-/**
- * Đăng nhập, route "/auth/login" → useLogin (POST /auth/login, lưu token vào store).
- * Thành công: về trang đang dở (location.state.from, do RequireAuth gửi sang), không có thì organizer → /organizer,
- * còn lại → "/" (afterLoginPath trong ./schemas.js). Sai mật khẩu: báo lỗi chung và xóa ô mật khẩu.
- */
+// Đăng nhập, route "/auth/login" → useLogin (POST /auth/login, lưu token vào store).
+// Dữ liệu: useLogin.
+
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -14,7 +12,7 @@ import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { applyApiErrors } from "@/lib/forms";
 import { riseSm } from "@/lib/motion";
 import { afterLoginPath, loginSchema } from "./schemas";
-import { AUTH_STAGGER, AuthFooter, AuthHeading } from "./components";
+import { AUTH_STAGGER, AuthFooter, AuthHeading, GoogleAuthButton } from "./components";
 
 export default function LoginPage() {
   useDocumentTitle("Đăng nhập");
@@ -31,7 +29,6 @@ export default function LoginPage() {
         onSuccess: (auth) => navigate(afterLoginPath(from, auth.user), { replace: true }),
         onError: (err) => {
           applyApiErrors(form, err);
-          // Sai email/mật khẩu: xóa ô mật khẩu để gõ lại từ đầu (lỗi hiện ở FormRootError)
           if (err.code === "BAD_CREDENTIALS") form.setValue("password", "");
         },
       }
@@ -41,7 +38,7 @@ export default function LoginPage() {
     <motion.div variants={AUTH_STAGGER} initial="hidden" animate="show" className="space-y-10">
       <AuthHeading
         title="Đăng nhập"
-        description={from ? "Đăng nhập để tiếp tục nơi bạn đang dở." : "Xem vé, theo dõi đơn hàng và bán lại vé của bạn."}
+        description={from ? "Đăng nhập để tiếp tục nơi bạn đang dở." : "Xem vé và theo dõi đơn hàng của bạn."}
       />
 
       <Form {...form}>
@@ -65,6 +62,8 @@ export default function LoginPage() {
           </motion.div>
         </form>
       </Form>
+
+      <GoogleAuthButton text="signin_with" onSuccess={(auth) => navigate(afterLoginPath(from, auth.user), { replace: true })} />
 
       <AuthFooter prompt="Bạn tổ chức sự kiện?" to="/auth/register-organizer">
         Đăng ký ban tổ chức

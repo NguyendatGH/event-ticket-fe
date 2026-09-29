@@ -1,3 +1,5 @@
+// Hộp xác nhận; onConfirm không tự đóng để trang hiện được loading và lỗi.
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,12 +13,6 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Loader2 } from "lucide-react";
 
-/**
- * Hộp xác nhận. Controlled (open/onOpenChange) hoặc truyền `trigger`.
- * onConfirm không tự đóng hộp: caller đóng khi mutation xong (để hiện loading và lỗi).
- *   <ConfirmDialog open={open} onOpenChange={setOpen} title="Gỡ tin bán lại?" destructive
- *     loading={m.isPending} onConfirm={() => m.mutate(id, { onSuccess: () => setOpen(false) })} />
- */
 export function ConfirmDialog({
   open,
   onOpenChange,

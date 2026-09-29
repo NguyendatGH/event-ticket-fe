@@ -1,14 +1,11 @@
-/**
- * Nâng tài khoản khách thành ban tổ chức, route "/become-organizer" (cần đăng nhập, nằm trong AccountLayout).
- * Bố cục: tiêu đề + 4 thẻ lợi ích (lưới 2 cột; mobile: hàng vuốt ngang để form không bị đẩy xuống xa) + form trong hai thẻ (Nhận diện, Liên hệ) + nút tạo hồ sơ.
- * Gửi form → useBecomeOrganizer (POST /me/organizer), xong chuyển vào /organizer.
- * Đã là organizer thì chuyển thẳng vào /organizer, không hiện form.
- */
+// Nâng tài khoản khách thành ban tổ chức, route "/become-organizer" (cần đăng nhập, nằm trong AccountLayout).
+// Dữ liệu: useBecomeOrganizer.
+
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Navigate, useNavigate } from "react-router-dom";
 import { motion } from "motion/react";
-import { BadgeCheck, CalendarPlus, ChartNoAxesColumnIncreasing, Contact, IdCard, Store } from "lucide-react";
+import { CalendarPlus, ChartNoAxesColumnIncreasing, Contact, IdCard, Receipt, Store } from "lucide-react";
 import { toast } from "sonner";
 import { CityInput, Field, FormRootError, SubmitButton } from "@/components/form";
 import { AccountPageHeader, AccountSection } from "@/components/account";
@@ -27,10 +24,9 @@ const BENEFITS = [
   [CalendarPlus, "Mở bán trong một buổi chiều", "Tạo sự kiện, đặt hạng vé và số lượng, xuất bản khi đã sẵn sàng. Bản nháp chỉ bạn thấy."],
   [ChartNoAxesColumnIncreasing, "Theo dõi doanh thu từng ngày", "Vé đã bán, doanh thu và sự kiện bán chạy trên cùng một bảng điều khiển."],
   [Store, "Trang ban tổ chức công khai", "Khán giả xem mọi sự kiện của bạn ở một địa chỉ, kèm logo và thông tin liên hệ."],
-  [BadgeCheck, "Bán lại có kiểm soát", "Vé chỉ được bán lại với giá trần, mã QR cũ bị vô hiệu sau mỗi lần chuyển nhượng."],
+  [Receipt, "Đơn hàng của từng sự kiện", "Xem người mua, số vé và trạng thái thanh toán của từng đơn, lọc và tìm kiếm ngay trong trang sự kiện."],
 ];
 
-// Stagger hằng: thẻ lợi ích 60ms/thẻ, khối form trễ 200ms.
 const BENEFITS_STAGGER = staggerOf(0.06);
 const FORM_STAGGER = staggerOf(0.06, 0.2);
 
@@ -43,7 +39,6 @@ export default function BecomeOrganizerPage() {
   const form = useForm({ resolver: zodResolver(becomeOrganizerSchema), defaultValues: DEFAULTS });
   const become = useBecomeOrganizer();
 
-  // Đã là organizer (kể cả vừa gửi form xong) → vào dashboard.
   if (isOrganizer && !become.isSuccess) return <Navigate to="/organizer" replace />;
 
   const onSubmit = (values) =>

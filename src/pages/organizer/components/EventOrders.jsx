@@ -1,3 +1,5 @@
+// Khối "Đơn hàng" ở trang chi tiết sự kiện (organizer). Lọc trạng thái (?orderStatus=) + tìm kiếm (?oq=)
+
 import { useSearchParams } from "react-router-dom";
 import { flattenPages, useInfiniteOrganizerEventOrders } from "@/api";
 import { DebouncedSearch, EmptyState, ErrorState } from "@/components/site";
@@ -18,18 +20,11 @@ const ORDER_STATUSES = [
   { value: "MANUAL_REVIEW", label: "Đang đối soát" },
 ];
 
-/**
- * Khối "Đơn hàng" ở trang chi tiết sự kiện (organizer).
- * Lọc trạng thái (?orderStatus=) + tìm kiếm (?oq=) nằm trên URL; "Tải thêm đơn" tải trang kế tiếp
- * (useInfiniteOrganizerEventOrders → GET /organizer/events/{id}/orders).
- * Điện thoại: danh sách xếp chồng; từ md: bảng 6 cột.
- */
 export function EventOrders({ eventId, isDraft }) {
   const [params, setParams] = useSearchParams();
   const status = params.get("orderStatus") || "";
   const q = params.get("oq") || "";
 
-  /** Ghi bộ lọc lên URL: { orderStatus, oq }; giá trị rỗng → xóa tham số. replace: không đầy lịch sử Back. */
   const setFilters = (patch) =>
     setParams(
       (p) => {
@@ -72,9 +67,7 @@ export function EventOrders({ eventId, isDraft }) {
     );
   } else {
     content = (
-      // Đổi bộ lọc: danh sách cũ mờ đi (isPlaceholderData) trong lúc chờ kết quả mới, không nháy skeleton.
       <div className={cn("transition-opacity", ordersQ.isPlaceholderData && "opacity-60")}>
-        {/* Mobile: danh sách xếp chồng thay cho bảng 6 cột */}
         <ul aria-label="Đơn hàng" className="border-t border-border md:hidden">
           {rows.map((o, i) => (
             <EventOrderItem key={o.id} index={i % ORDER_PAGE} order={o} />

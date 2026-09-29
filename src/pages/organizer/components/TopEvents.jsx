@@ -1,3 +1,5 @@
+// Thanh nhỏ cạnh doanh thu so với sự kiện đứng đầu (sự kiện đầu = thanh đầy).
+
 import { Link } from "react-router-dom";
 import { motion } from "motion/react";
 import { ErrorState, StatusBadge } from "@/components/site";
@@ -7,10 +9,6 @@ import { formatDate, formatNumber, formatVND } from "@/lib/format";
 import { riseSm } from "@/lib/motion";
 import { ROW, TH_ROW } from "./OrgUi";
 
-/**
- * Bảng "Sự kiện bán chạy" của trang tổng quan (query = useDashboardTopEvents).
- * Thanh nhỏ cạnh doanh thu so với sự kiện đứng đầu (sự kiện đầu = thanh đầy).
- */
 export function TopEvents({ query }) {
   if (query.isPending)
     return (

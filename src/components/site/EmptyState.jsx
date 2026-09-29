@@ -1,6 +1,7 @@
+// Trạng thái rỗng: không khung, chỉ chữ và khoảng trắng.
+
 import { cn } from "@/lib/utils";
 
-/** Trạng thái rỗng: không khung, chỉ chữ + khoảng trắng. */
 export function EmptyState({ icon: Icon, title, description, action, className }) {
   return (
     <div className={cn("flex flex-col items-center px-4 py-16 text-center md:py-20", className)}>

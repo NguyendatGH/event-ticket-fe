@@ -1,16 +1,9 @@
+// Khác SectionHeader (v1): không kẻ viền dưới.
+
 import { Link } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-/**
- * Tiêu đề section kiểu marketplace (design-spec v2): [icon] Tiêu đề đậm trắng ............ Xem thêm ›
- *
- *   <SectionTitle icon={Flame} iconClassName="text-orange-400" title="Sự kiện xu hướng" href="/events?sort=popular" />
- *
- * Props: icon (component lucide), iconClassName (mặc định xanh), title, href + linkLabel ("Xem thêm"),
- * as ("h2"), id (gắn cho aria-labelledby của section), description, children (khối phụ bên phải, vd bộ lọc).
- * Không kẻ viền dưới (khác SectionHeader v1).
- */
 export function SectionTitle({ icon: Icon, iconClassName, title, href, linkLabel = "Xem thêm", as: Tag = "h2", id, description, className, children }) {
   return (
     <div className={cn("mb-4 flex items-end justify-between gap-4 md:mb-5", className)}>

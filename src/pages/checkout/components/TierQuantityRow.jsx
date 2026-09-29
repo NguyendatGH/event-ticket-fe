@@ -1,3 +1,5 @@
+// Một hạng vé dạng dòng, có nút −/+ và vạch xanh khi đang chọn.
+
 import { memo, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Minus, Plus } from "lucide-react";
@@ -6,20 +8,11 @@ import { formatVND } from "@/lib/format";
 import { DUR, EASE_OUT } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
-/**
- * Một hạng vé dạng dòng (design-spec: ticket rows 0px radius, dòng đang chọn có vạch xanh bên trái).
- *   VIP                                   2.500.000đ
- *   Vị trí đẹp nhất                     [ − 2 + ]
- * onChange(tierId, quantity) phải ổn định (memo): đổi số lượng một hạng chỉ render lại đúng dòng đó.
- */
 export const TierQuantityRow = memo(function TierQuantityRow({ tier, quantity = 0, onChange, disabled }) {
   const limit = tierLimit(tier);
   const soldOut = limit === 0;
   const selected = quantity > 0;
   const set = (q) => onChange(tier.id, Math.max(0, Math.min(limit, q)));
-  // Hướng lăn số: tăng → số mới trồi từ dưới lên, giảm → rơi từ trên xuống.
-  // Mẫu "chỉnh state khi prop đổi" của React docs: so với giá trị lần trước ngay trong lúc render
-  // (không cần useEffect → không có một lần render thừa với hướng cũ).
   const [last, setLast] = useState(quantity);
   const [dir, setDir] = useState(1);
   if (quantity !== last) {
@@ -35,7 +28,6 @@ export const TierQuantityRow = memo(function TierQuantityRow({ tier, quantity = 
         soldOut && "opacity-60"
       )}
     >
-      {/* Vạch xanh bên trái của dòng đang chọn: kéo dài từ trên xuống (transform, không đổi layout). */}
       <motion.span
         aria-hidden="true"
         className="absolute inset-y-0 left-0 w-0.5 origin-top bg-primary"
@@ -102,7 +94,6 @@ export const TierQuantityRow = memo(function TierQuantityRow({ tier, quantity = 
   );
 });
 
-// Cùng kiểu nút +/- với TicketSelector (trang sự kiện): viền mảnh, nhấn lún nhẹ, focus-ring chuẩn.
 const STEP_BTN =
   "focus-ring grid size-9 cursor-pointer place-items-center rounded-md border border-border text-foreground transition hover:border-border-hover hover:bg-surface active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent";
 

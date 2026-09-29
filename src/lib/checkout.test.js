@@ -1,5 +1,7 @@
+// Test helper luồng mua vé: parse/serialize giỏ, kết quả đơn, link mua lại.
+
 import { describe, expect, it } from "vitest";
-import { failureReason, orderOutcome, parseTiers, retryHref, serializeTiers } from "./lib";
+import { failureReason, orderOutcome, parseTiers, retryHref, serializeTiers } from "./checkout";
 
 describe("checkout lib", () => {
   it("parseTiers đọc tiers=id:qty, bỏ phần hỏng, cộng dồn id trùng", () => {
@@ -27,9 +29,9 @@ describe("checkout lib", () => {
     expect(failureReason({ status: "PENDING_PAYMENT", payment: { status: "FAILED" } })).toBe("declined");
   });
 
-  it("retryHref dựng lại giỏ cũ, đơn resale quay về tin bán", () => {
-    const order = { kind: "PRIMARY", eventSlug: "lumiere", items: [{ tierId: "a", quantity: 2 }, { tierId: "b", quantity: 1 }] };
+  it("retryHref dựng lại giỏ cũ", () => {
+    const order = { eventSlug: "lumiere", items: [{ tierId: "a", quantity: 2 }, { tierId: "b", quantity: 1 }] };
     expect(retryHref(order)).toBe("/checkout/lumiere?tiers=a:2,b:1");
-    expect(retryHref({ kind: "RESALE", resaleListingId: "l1" })).toBe("/resale/l1");
+    expect(retryHref(null)).toBe("/events");
   });
 });

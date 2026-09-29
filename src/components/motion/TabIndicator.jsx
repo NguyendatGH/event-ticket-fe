@@ -1,13 +1,9 @@
+// Gạch chân trượt theo layoutId cho danh sách tab trong luồng trang (không sticky).
+
 import { motion } from "motion/react";
 import { SPRING } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
-/**
- * Gạch chân trượt theo layoutId cho danh sách tab trong luồng trang (không sticky).
- * Render CHỈ trong item đang chọn; item phải `relative`. Mỗi danh sách bọc <LayoutGroup id={useId()}>
- * để các instance không giành layoutId của nhau. Danh sách cuộn ngang: motion.ul + layoutScroll.
- *   variant "line": vạch 2px dưới đáy. "pill": nền trượt phía sau chữ (segmented control).
- */
 export function TabIndicator({ id = "tab-indicator", variant = "line", className }) {
   return (
     <motion.span

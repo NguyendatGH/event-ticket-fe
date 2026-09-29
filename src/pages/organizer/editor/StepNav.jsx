@@ -1,3 +1,5 @@
+// Thanh 4 bước của trình sửa sự kiện (nằm trong thanh dính dưới topbar).
+
 import { useEffect, useId, useRef } from "react";
 import { LayoutGroup, motion } from "motion/react";
 import { ArrowLeft, ArrowRight, Check } from "lucide-react";
@@ -6,17 +8,8 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { STEPS } from "./schema";
 
-/**
- * Thanh 4 bước của trình sửa sự kiện (nằm trong thanh dính dưới topbar).
- * Mỗi bước có 3 trạng thái hiển thị: có lỗi (đỏ + chấm) / xong (dấu tick) / chưa làm (mờ).
- *   step        bước đang mở (0-3)
- *   hasError(i) bước i có field lỗi không
- *   isDone(i)   bước i đã đủ mục checklist chưa
- *   onGo(i)     chuyển sang bước i
- */
 export function StepNav({ step, hasError, isDone, onGo }) {
   const groupId = useId();
-  // Điện thoại: thanh bước cuộn ngang; đưa bước đang chọn vào giữa (chỉ cuộn thanh, không cuộn trang).
   const navRef = useRef(null);
   useEffect(() => {
     const nav = navRef.current;
@@ -64,7 +57,6 @@ export function StepNav({ step, hasError, isDone, onGo }) {
   );
 }
 
-/** Nút "← bước trước" / "bước sau →" ở cuối mỗi bước. */
 export function StepPager({ step, onGo }) {
   return (
     <div className="mt-12 flex items-center justify-between gap-4 border-t border-border pt-6">

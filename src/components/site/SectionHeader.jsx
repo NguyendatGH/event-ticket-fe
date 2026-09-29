@@ -1,12 +1,9 @@
+// Tiêu đề section v1 kèm link "Xem tất cả".
+
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-/**
- * Tiêu đề section kiểu tạp chí:  SỰ KIỆN NỔI BẬT ............ Xem tất cả →
- *                               ────────────────────────────────────────
- * size="label" (mặc định): nhãn chữ hoa; size="title": tiêu đề H2.
- */
 export function SectionHeader({ title, href, linkLabel = "Xem tất cả", description, size = "label", as: Tag = "h2", className, children }) {
   return (
     <div className={cn("mb-8 flex items-end justify-between gap-6 border-b border-border pb-4", className)}>

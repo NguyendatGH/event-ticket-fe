@@ -1,26 +1,14 @@
-/**
- * Trang chi tiết sự kiện, route "/events/:slug".
- * Dữ liệu (4 request chạy song song, không chờ nhau):
- *   useEvent(slug)              GET /events/{slug}               nội dung chính + hạng vé
- *   useMoreFromOrganizer(slug)  GET /events/{slug}/more-from-organizer
- *   useRelatedEvents(slug)      GET /events/{slug}/related
- *   useResaleListings           GET /resale?eventId=&size=1      chỉ lấy tổng số tin bán lại
- * 404 → hiện trang "không tìm thấy" nhưng giữ nguyên URL. Chọn vé xong → /checkout/:slug?tiers=… (TicketSelector).
- */
+// Trang chi tiết sự kiện, route "/events/:slug".
+// Dữ liệu: useEvent, useMoreFromOrganizer, useRelatedEvents.
+
 import { useParams } from "react-router-dom";
 import { motion } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
-import {
-  totalOf,
-  useEvent,
-  useMoreFromOrganizer,
-  useRelatedEvents,
-  useResaleListings,
-} from "@/api";
+import { useEvent, useMoreFromOrganizer, useRelatedEvents } from "@/api";
 import { Container, ErrorState } from "@/components/site";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { inView as reveal, riseSm, stagger } from "@/lib/motion";
-import { NotFoundView } from "../NotFoundPage";
+import { NotFoundView } from "@/components/site";
 import { DetailBlock } from "./components/DetailBlock";
 import { EventCover } from "./components/EventCover";
 import { EventDetailSkeleton } from "./components/EventDetailSkeleton";
@@ -35,15 +23,8 @@ export default function EventDetailPage() {
   const { slug } = useParams();
   const eventQ = useEvent(slug);
   const event = eventQ.data;
-  // Hai rail chạy song song với request chi tiết (chỉ cần slug), không chờ event về
   const more = useMoreFromOrganizer(slug, 4);
   const related = useRelatedEvents(slug, 4);
-  // Chỉ cần tổng số tin bán lại. select: totalOf → component chỉ render lại khi con số này đổi.
-  // enabled: phải có event.id (từ request chi tiết) mới gọi được.
-  const resale = useResaleListings(
-    { eventId: event?.id, size: 1 },
-    { enabled: Boolean(event?.id), select: totalOf },
-  );
   useDocumentTitle(event?.name ?? (eventQ.isError ? "Sự kiện" : "Đang tải"));
 
   if (eventQ.isError) {
@@ -66,7 +47,6 @@ export default function EventDetailPage() {
   const { venue, organizer } = event;
   const description = toParagraphs(event.description);
   const schedule = event.schedule ?? [];
-  // Link Google Maps tìm theo tên + địa chỉ + thành phố (không cần API key)
   const mapQuery = [venue?.name, venue?.address, venue?.city]
     .filter(Boolean)
     .join(", ");
@@ -90,12 +70,7 @@ export default function EventDetailPage() {
               transition={{ delay: 0.2 }}
               className="lg:sticky lg:top-[94px]"
             >
-              {/* key: chuyển sang sự kiện khác (cùng component) thì số vé đã chọn tự reset */}
-              <TicketSelector
-                key={event.id}
-                event={event}
-                resaleCount={resale.data ?? 0}
-              />
+              <TicketSelector key={event.id} event={event} />
             </motion.div>
           </aside>
 

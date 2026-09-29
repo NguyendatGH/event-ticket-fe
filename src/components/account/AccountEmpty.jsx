@@ -1,10 +1,7 @@
+// Trạng thái rỗng khu tài khoản: icon lớn trong vòng tròn xanh, tiêu đề, mô tả, CTA.
+
 import { cn } from "@/lib/utils";
 
-/**
- * Trạng thái rỗng khu tài khoản: khung viền đứt, icon lớn trong vòng tròn xanh phát sáng nhẹ (thay minh họa), tiêu đề, mô tả, CTA.
- *
- *   <AccountEmpty icon={Ticket} title="Chưa có vé" description="…" action={<Button asChild><Link to="/events">Khám phá sự kiện</Link></Button>} />
- */
 export function AccountEmpty({ icon: Icon, title, description, action, className }) {
   return (
     <div className={cn("flex flex-col items-center rounded-card border border-dashed border-white/12 bg-card/40 px-5 py-14 text-center md:py-16", className)}>

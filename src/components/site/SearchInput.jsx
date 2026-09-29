@@ -1,12 +1,10 @@
+// Ô tìm kiếm vuông vức, controlled, submit bằng Enter.
+
 import { useId } from "react";
 import { Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { fieldClass } from "@/components/ui/input";
 
-/**
- * Ô tìm kiếm vuông vức (radius 4px, viền 1px). Controlled: value + onChange(string).
- * onSubmit(value) khi nhấn Enter (form role="search").
- */
 export function SearchInput({ value = "", onChange, onSubmit, placeholder = "Tìm sự kiện, nhà tổ chức", label = "Tìm kiếm", size = "md", className, autoFocus, name = "q" }) {
   const id = useId();
   return (

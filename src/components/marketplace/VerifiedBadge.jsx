@@ -1,10 +1,7 @@
+// Dấu tích xanh "đã xác minh" cạnh tên ban tổ chức.
+
 import { cn } from "@/lib/utils";
 
-/**
- * Dấu tích xanh "đã xác minh" (vòng tròn xanh, tích trắng) cạnh tên ban tổ chức.
- *   <VerifiedBadge />  (size-4 mặc định; đổi bằng className="size-5")
- * Có nhãn ẩn "Đã xác minh" cho trình đọc màn hình.
- */
 export function VerifiedBadge({ className }) {
   return (
     <span className={cn("inline-grid size-4 shrink-0 place-items-center", className)}>

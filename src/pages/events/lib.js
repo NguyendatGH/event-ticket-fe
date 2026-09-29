@@ -1,7 +1,7 @@
-/* Hàm thuần của khu sự kiện: trạng thái mua vé, tổng tiền giỏ, link sang checkout, mô tả. */
+// Hàm thuần khu sự kiện: trạng thái mua vé, tổng tiền giỏ, link checkout, mô tả.
+
 import { SERVICE_FEE } from "@/lib/business";
 
-/** Trạng thái sự kiện → có mua được không + nhãn nút. */
 export function purchaseState(status) {
   switch (status) {
     case "PUBLISHED":
@@ -35,7 +35,6 @@ export function purchaseState(status) {
   }
 }
 
-/** Tổng hợp giỏ: dòng đã chọn, tạm tính, phí, tổng. */
 export function summarize(tiers = [], quantities = {}, serviceFee = SERVICE_FEE) {
   const lines = tiers
     .filter((t) => (quantities[t.id] ?? 0) > 0)
@@ -47,16 +46,13 @@ export function summarize(tiers = [], quantities = {}, serviceFee = SERVICE_FEE)
     }));
   const count = lines.reduce((s, l) => s + l.quantity, 0);
   const subtotal = lines.reduce((s, l) => s + l.amount, 0);
-  // Phí chỉ để hiển thị ước tính; số thật lấy từ order.feeAmount BE trả về sau khi tạo đơn
   const fee = count > 0 ? serviceFee : 0;
   return { lines, count, subtotal, fee, total: subtotal + fee };
 }
 
-/** /checkout/:slug?tiers=<tierId>:<qty>,… (contract §6.2) */
 export const checkoutHref = (slug, lines) =>
   `/checkout/${slug}?tiers=${lines.map((l) => `${l.id}:${l.quantity}`).join(",")}`;
 
-/** Mô tả sự kiện → mảng đoạn văn. BE trả mảng; dữ liệu cũ có thể là một chuỗi hoặc trống. */
 export function toParagraphs(description) {
   if (Array.isArray(description)) return description;
   return description ? [description] : [];

@@ -1,3 +1,5 @@
+// Primitive shadcn: Textarea.
+
 import * as React from "react"
 import { cn } from "@/lib/utils"
 import { fieldClass } from "./input"

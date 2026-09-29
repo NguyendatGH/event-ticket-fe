@@ -1,10 +1,8 @@
+// Một khối nội dung của trang chi tiết sự kiện.
+
 import { motion } from "motion/react";
 import { fadeUp, inView as reveal } from "@/lib/motion";
 
-/**
- * Một khối nội dung của trang chi tiết (Giới thiệu, Lịch trình, Địa điểm, Ban tổ chức):
- * tiêu đề nhỏ bên trái, nội dung bên phải, divider phía trên; hiện dần khi cuộn tới.
- */
 export function DetailBlock({ title, children, id }) {
   return (
     <motion.section

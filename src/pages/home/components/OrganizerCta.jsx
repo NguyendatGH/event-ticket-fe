@@ -1,3 +1,5 @@
+// Nút theo vai trò: đã là organizer → trang quản lý; đã đăng nhập → /become-organizer; khách → đăng ký organizer.
+
 import { Link } from "react-router-dom";
 import { ArrowRight, BarChart3, QrCode, Ticket } from "lucide-react";
 import { Reveal } from "@/components/motion";
@@ -14,17 +16,12 @@ const SELLING_POINTS = [
   { icon: QrCode, text: "Khách nhận vé QR ngay sau thanh toán" },
 ];
 
-/** Nút theo vai trò: đã là organizer → trang quản lý; đã đăng nhập → /become-organizer; khách → đăng ký organizer. */
 function ctaFor({ isAuthenticated, isOrganizer }) {
   if (isOrganizer) return { to: "/organizer", label: "Vào trang quản lý" };
   if (isAuthenticated) return { to: "/become-organizer", label: "Trở thành nhà tổ chức" };
   return { to: "/auth/register-organizer", label: "Trở thành nhà tổ chức" };
 }
 
-/**
- * Banner kêu gọi ban tổ chức ở cuối trang chủ: khối bo 12px, ảnh sân khấu bên phải mờ dần về phía chữ,
- * quầng xanh nhẹ góc trái. Mobile: ảnh lên trên, chữ xuống dưới.
- */
 export function OrganizerCta() {
   const cta = ctaFor(useAuth());
   return (
@@ -41,7 +38,6 @@ export function OrganizerCta() {
               alt="Sân khấu ca nhạc với dàn đèn và khán giả phía trước"
               className="absolute inset-0 size-full"
             />
-            {/* Ảnh mờ dần về phía khối chữ (trái trên desktop, dưới trên mobile) */}
             <span aria-hidden="true" className="absolute inset-0 bg-linear-to-t from-card to-transparent to-60% md:bg-linear-to-r md:to-50%" />
           </div>
           <div className="relative flex flex-col items-start p-6 md:p-10">

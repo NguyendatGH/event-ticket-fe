@@ -1,3 +1,5 @@
+// Test trang thanh toán: điền sẵn, body gửi lên, Idempotency-Key, chuyển sang cổng.
+
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -25,11 +27,11 @@ vi.mock("@/api", () => ({
   useEvent: () => ({ isPending: false, isError: false, data: event, refetch: vi.fn() }),
   useCreateOrder: () => ({ mutate, isPending: false }),
   newIdempotencyKey: () => `key-${++keyN}`,
-  useAppConfig: () => ({ checkoutFee: 12000, resaleMinPrice: 10000, resaleMaxMarkupPercent: 20, resaleCutoffHours: 2 }),
+  useAppConfig: () => ({ checkoutFee: 12000 }),
 }));
 
 const gateway = vi.fn();
-vi.mock("./lib", async (orig) => ({ ...(await orig()), goToGateway: (url) => gateway(url) }));
+vi.mock("@/lib/checkout", async (orig) => ({ ...(await orig()), goToGateway: (url) => gateway(url) }));
 
 const { default: CheckoutPage } = await import("./CheckoutPage");
 
@@ -56,9 +58,8 @@ describe("CheckoutPage", () => {
     useAuthStore.getState().clear();
   });
 
-  it("khách vãng lai: báo lỗi form, không gửi đơn", async () => {
+  it("form thiếu/sai: báo lỗi, không gửi đơn", async () => {
     renderAt("/checkout/lumiere?tiers=vip:2");
-    expect(screen.getByRole("link", { name: "Đăng nhập để lưu vé vào tài khoản" })).toBeInTheDocument();
     await userEvent.type(screen.getByLabelText("Email"), "abc");
     await userEvent.click(screen.getByRole("button", { name: /Thanh toán/ }));
     expect(await screen.findByText("Họ và tên là bắt buộc")).toBeInTheDocument();
@@ -68,7 +69,7 @@ describe("CheckoutPage", () => {
 
   it("số lượng kẹp theo tồn kho, nút + tăng và lưu vào URL", async () => {
     const router = renderAt("/checkout/lumiere?tiers=vip:9,ga:2");
-    expect(screen.getByTestId("order-total")).toHaveTextContent("7.512.000đ"); // 3 × 2.500.000 + phí
+    expect(screen.getByTestId("order-total")).toHaveTextContent("7.512.000đ");
     await userEvent.click(screen.getByRole("button", { name: "Bớt một vé VIP" }));
     expect(router.state.location.search).toBe("?tiers=vip%3A2");
     expect(screen.getByRole("button", { name: "Thêm một vé VIP" })).toBeEnabled();

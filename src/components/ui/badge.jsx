@@ -1,8 +1,9 @@
+// Nhãn trạng thái nhỏ (ĐANG BÁN, BẢN NHÁP…): radius 2px, chữ hoa 11px, màu nền pha nhẹ, không pill to.
+
 import { cva } from "class-variance-authority";
 import { cn } from "@/lib/utils"
 import { Slot } from "radix-ui"
 
-// Nhãn trạng thái nhỏ (ĐANG BÁN, BẢN NHÁP…): radius 2px, chữ hoa 11px, màu nền pha nhẹ, không pill to.
 const badgeVariants = cva(
   "inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-sm border border-transparent px-1.5 py-0.5 text-2xs leading-4 font-medium tracking-caps uppercase whitespace-nowrap [&>svg]:pointer-events-none [&>svg]:size-3",
   {

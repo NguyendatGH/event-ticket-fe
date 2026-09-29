@@ -1,18 +1,14 @@
+// Hàng chip các bộ lọc đang bật, bấm một chip để bỏ.
+
 import { AnimatePresence, motion } from "motion/react";
 import { X } from "lucide-react";
 
-// Chip mới phóng nhẹ từ 96% lên; chip bị bỏ thu lại và mờ đi
 const chipMotion = {
   initial: { opacity: 0, scale: 0.96 },
   animate: { opacity: 1, scale: 1 },
   exit: { opacity: 0, scale: 0.96, transition: { duration: 0.15 } },
 };
 
-/**
- * Hàng chip các bộ lọc đang bật; bấm một chip để bỏ bộ lọc đó.
- * chips: từ activeChips(filters) ({ key, label, patch }); onRemove(patch) ghi patch lên URL.
- * `layout`: khi một chip biến mất, các chip còn lại trượt về chỗ thay vì nhảy.
- */
 export function ActiveFilterChips({ chips, onRemove }) {
   return (
     <ul

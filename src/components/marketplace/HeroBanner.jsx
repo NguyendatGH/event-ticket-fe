@@ -1,3 +1,5 @@
+// Cả banner là một link tới /events/:slug (nút "Xem chi tiết" chỉ là hình ảnh của link, không phải control thứ hai).
+
 import { memo } from "react";
 import { Link } from "react-router-dom";
 import { ImageWithFallback } from "@/components/site";
@@ -6,17 +8,6 @@ import { formatDate } from "@/lib/format";
 import { imageAt } from "@/lib/image";
 import { cn } from "@/lib/utils";
 
-/**
- * Banner hero 16:9 bo 12px (design-spec v2): ảnh bìa lớn, lớp phủ tối từ đáy, tên + ngày · thành phố,
- * nút trắng "Xem chi tiết" góc dưới trái. Cả banner là một link tới /events/:slug (nút chỉ là hình ảnh của link).
- *
- *   <Carousel label="Sự kiện nổi bật" perView="hero" arrows="always" dots>
- *     {featured.map((e, i) => <HeroBanner key={e.id} event={e} priority={i < 2} />)}
- *   </Carousel>
- *
- * Props: event (EventResponse summary), priority (2 banner đầu), ctaLabel ("Xem chi tiết"),
- * showMeta (true: hiện tên/ngày trên ảnh; ảnh seed là ảnh chụp không có chữ nên nên để true), imageWidth (1200), className.
- */
 export const HeroBanner = memo(function HeroBanner({ event, priority = false, ctaLabel = "Xem chi tiết", showMeta = true, imageWidth = 1200, className }) {
   if (!event) return null;
   const { slug, name, coverImageUrl, coverImageAlt, startsAt, venue, category } = event;

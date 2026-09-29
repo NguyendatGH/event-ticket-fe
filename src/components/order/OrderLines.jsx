@@ -1,18 +1,10 @@
+// Tóm tắt đơn kiểu biên nhận: dòng vé, phí dịch vụ, tổng.
+
 import { AnimatePresence, motion } from "motion/react";
 import { AnimatedNumber } from "@/components/motion";
 import { DUR, EASE_IN, EASE_OUT } from "@/lib/motion";
 import { formatVND } from "@/lib/format";
 
-/**
- * Tóm tắt đơn kiểu biên nhận:
- *   ĐƠN HÀNG CỦA BẠN
- *   GA 2  × 2                 1.600.000đ
- *   Phí dịch vụ                  12.000đ
- *   ─────────────────────────────────────
- *   TỔNG                      1.612.000đ
- * lines: [{ key, label, quantity, amount }]
- * live: giỏ đang chỉnh (checkout) → dòng vào/ra có chuyển động, tổng chạy số từ giá trị cũ sang mới.
- */
 export function OrderLines({ title = "Đơn hàng của bạn", lines = [], fee, total, empty = "Chưa chọn vé", live = false, className, children }) {
   return (
     <section aria-label={title} className={className}>

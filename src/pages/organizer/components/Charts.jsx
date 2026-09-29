@@ -1,16 +1,12 @@
-/**
- * Biểu đồ của trang tổng quan (DashboardPage), vẽ bằng recharts:
- *   RevenueChart  doanh thu theo thời gian (vùng + đường)
- *   TicketsChart  vé bán theo thời gian (cột)
- */
+// Màu SVG trỏ thẳng vào token trong index.css (thuộc tính fill/stroke nhận var()), không lặp mã hex.
+
 import { memo, useState } from "react";
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { motion, useReducedMotion } from "motion/react";
 import { DUR, EASE_INOUT, HAS_IO, VIEWPORT } from "@/lib/motion";
 import { formatCompactVND, formatNumber, formatVND } from "@/lib/format";
-import { formatBucketLabel, formatBucketTick } from "../lib/helpers";
+import { formatBucketLabel, formatBucketTick } from "../lib";
 
-/* Màu SVG trỏ thẳng vào token trong index.css (thuộc tính fill/stroke nhận var()), không lặp mã hex. */
 const C = {
   green: "var(--green)",
   grid: "var(--elevated)",
@@ -20,10 +16,6 @@ const C = {
   hover: "var(--green-bright)",
 };
 
-/**
- * Biểu đồ "vẽ" từ trái sang phải lần đầu vào màn hình: một lớp nền trượt đi (transform, không đụng SVG của recharts).
- * `left` chừa trục Y đứng yên. Đổi kỳ/gộp theo không wipe lại (chỉ mờ placeholder ở ChartBlock).
- */
 function ChartReveal({ left, children }) {
   const reduce = useReducedMotion();
   const to = { scaleX: 0, transition: { duration: DUR.slower + 0.1, ease: EASE_INOUT, delay: 0.1 } };
@@ -49,7 +41,6 @@ const axisProps = {
   tick: { fill: C.axis, fontSize: 12 },
 };
 
-/** Tooltip tối, viền 1px, radius 4px. */
 function ChartTooltip({ active, payload, label, interval, kind }) {
   if (!active || !payload?.length) return null;
   const value = payload[0].value;
@@ -64,25 +55,18 @@ function ChartTooltip({ active, payload, label, interval, kind }) {
   );
 }
 
-/** Khoảng cách tối thiểu (px) giữa 2 nhãn trục X: càng nhiều điểm dữ liệu thì nhãn càng thưa, để không chồng chữ. */
 function tickGap(pointCount) {
   if (pointCount > 60) return 32;
   if (pointCount > 20) return 24;
   return 12;
 }
 
-/**
- * Doanh thu theo thời gian: vùng xanh mờ dần xuống đáy + đường 2px.
- * Theo ngày: đường thẳng (linear) để các ngày 0đ không bị vẽ thành "gò" giả; tuần/tháng: monotoneX (không vọt quá dữ liệu).
- */
-// memo: trang render lại khi query khác xong (URL, summary…) thì biểu đồ bỏ qua nếu data/interval không đổi.
 export const RevenueChart = memo(function RevenueChart({ data, interval, height = 280 }) {
   const yWidth = 56;
   return (
     <ChartReveal left={yWidth}>
       <div style={{ height }} className="w-full">
         <ResponsiveContainer width="100%" height="100%">
-          {/* right 20: nhãn ngày cuối nằm ngay mép phải, chừa đủ nửa nhãn để không bị cắt ("27.0…") */}
           <AreaChart data={data} margin={{ top: 8, right: 20, bottom: 0, left: 0 }}>
             <defs>
               <linearGradient id="org-revenue-fill" x1="0" y1="0" x2="0" y2="1">
@@ -103,7 +87,6 @@ export const RevenueChart = memo(function RevenueChart({ data, interval, height 
               fill="url(#org-revenue-fill)"
               dot={false}
               activeDot={{ r: 4, fill: C.bg, stroke: C.green, strokeWidth: 2 }}
-              // Animation của recharts (stroke-dasharray) dễ kẹt nửa chừng khi đổi kỳ: tắt, dùng ChartReveal.
               isAnimationActive={false}
             />
           </AreaChart>
@@ -113,7 +96,6 @@ export const RevenueChart = memo(function RevenueChart({ data, interval, height 
   );
 });
 
-/** Vé bán theo thời gian: cột bo 2px; rê chuột vào một cột thì các cột khác lùi về 55%. */
 export const TicketsChart = memo(function TicketsChart({ data, interval, height = 240 }) {
   const [active, setActive] = useState(null);
   return (

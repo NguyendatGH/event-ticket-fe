@@ -1,32 +1,10 @@
+// Carousel ngang không thư viện: CSS scroll-snap + nút ‹ › + chấm trang (IntersectionObserver).
+
 import { Children, useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "motion/react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-/**
- * Carousel ngang không thư viện: CSS scroll-snap + nút ‹ › + chấm trang (IntersectionObserver).
- *
- *   <Carousel label="Sự kiện đặc biệt" perView="poster">
- *     {events.map((e) => <PosterCard key={e.id} event={e} />)}
- *   </Carousel>
- *
- * Props
- *   label        tên vùng cho trình đọc màn hình (bắt buộc)
- *   perView      số thẻ mỗi khung: preset "hero" | "poster" | "featured" | "tile" | "ranked" | "city", hoặc chuỗi class tự đặt
- *                biến CSS --pv theo breakpoint, vd "[--pv:1.2] md:[--pv:3]" (số lẻ = thẻ cuối lộ một phần, gợi ý cuộn)
- *   gap          "sm" 12px | "md" 16px (mặc định) | "lg" 20px
- *   arrows       "hover" (mặc định: hiện khi rê chuột / focus) | "always" | false. Máy cảm ứng: ẩn, vuốt tay.
- *   arrowClassName  chỉnh vị trí dọc nút (mặc định top-1/2), vd "top-[38%]" khi dưới ảnh còn chú thích
- *   dots         hiện chấm trang dưới carousel (hero)
- *   className, trackClassName
- *
- * Vì sao như vậy
- * - Độ rộng thẻ tính bằng CSS từ --pv/--gap nên không đo DOM, không nhảy layout lúc tải.
- * - IntersectionObserver (root = track) báo thẻ nào đang hiện → bật/tắt nút, tính chấm trang; không nghe sự kiện
- *   scroll nên cuộn không render lại. setState chỉ khi giá trị đổi.
- * - Bàn phím: nút ‹ › focus được (hiện ra khi focus); Tab qua link trong thẻ thì trình duyệt tự cuộn thẻ vào khung.
- * - prefers-reduced-motion: cuộn tức thì thay vì cuộn mượt.
- */
 const PER_VIEW = {
   hero: "[--pv:1.08] md:[--pv:2]",
   poster: "[--pv:2.2] sm:[--pv:3.3] md:[--pv:4] lg:[--pv:4.5]",
@@ -36,7 +14,6 @@ const PER_VIEW = {
   city: "[--pv:1.5] sm:[--pv:2.5] lg:[--pv:4]",
 };
 const GAP = { sm: "[--gap:0.75rem]", md: "[--gap:1rem]", lg: "[--gap:1.25rem]" };
-// Hằng số ngoài component: không tạo object style mới mỗi lần render.
 const ITEM_STYLE = { width: "calc((100% - (var(--pv) - 1) * var(--gap)) / var(--pv))" };
 const INITIAL = { canPrev: false, canNext: false, page: 0, pages: 1, perView: 1 };
 const same = (a, b) => a.canPrev === b.canPrev && a.canNext === b.canNext && a.page === b.page && a.pages === b.pages && a.perView === b.perView;
@@ -109,7 +86,6 @@ export function Carousel({ label, perView = "poster", gap = "md", arrows = "hove
       <div
         ref={trackRef}
         className={cn(
-          // px/-mx + py/-my: chừa chỗ cho viền focus và bóng glow của thẻ (overflow cắt mất nếu sát mép).
           "relative -mx-2 flex snap-x snap-mandatory scroll-px-2 gap-(--gap) overflow-x-auto overscroll-x-contain px-2 py-2 -my-2 no-scrollbar",
           trackClassName
         )}

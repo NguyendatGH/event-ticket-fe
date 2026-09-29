@@ -1,3 +1,5 @@
+// Thẻ "Ban tổ chức nổi bật": avatar tròn viền phát sáng, tên, dấu xác minh.
+
 import { memo } from "react";
 import { Link } from "react-router-dom";
 import { ImageWithFallback } from "@/components/site";
@@ -6,18 +8,6 @@ import { imageAt } from "@/lib/image";
 import { cn } from "@/lib/utils";
 import { VerifiedBadge } from "./VerifiedBadge";
 
-/**
- * Thẻ "Ban tổ chức nổi bật" (design-spec v2): khung bo 12px viền xanh phát sáng (glow-card), avatar tròn lớn có
- * vòng sáng (logo hoặc chữ viết tắt trên nền gradient xanh), tên 1 dòng (cắt "…") + dấu tích nếu verified.
- * Link tới /organizers/:slug.
- *
- *   <Carousel label="Ban tổ chức nổi bật" perView="featured" gap="sm">
- *     {organizers.map((o) => <FeaturedOrganizerCard key={o.id} organizer={o} />)}
- *   </Carousel>
- *
- * Props: organizer (OrganizerResponse: slug, name, imageUrl/logoUrl, verified, eventsCount?), showCount (hiện "N sự kiện"), className.
- * Ảnh: imageUrl do BE chọn sẵn (logo → ảnh bìa BTC → ảnh sự kiện sắp diễn ra); chỉ khi không có ảnh nào mới hiện chữ viết tắt.
- */
 export const FeaturedOrganizerCard = memo(function FeaturedOrganizerCard({ organizer, showCount = false, className }) {
   if (!organizer) return null;
   const { slug, name, verified, eventsCount } = organizer;

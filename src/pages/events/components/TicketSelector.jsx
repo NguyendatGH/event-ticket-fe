@@ -1,5 +1,7 @@
+// Nhãn nút mua: đóng bán → lý do (Đã hết vé…); chưa chọn → nhắc chọn; đã chọn → "Mua N vé".
+
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowRight } from "lucide-react";
 import { AnimatedNumber } from "@/components/motion";
@@ -13,7 +15,6 @@ import { cn } from "@/lib/utils";
 import { checkoutHref, purchaseState, summarize } from "../lib";
 import { QuantityStepper } from "./QuantityStepper";
 
-/** Dòng chú thích nhỏ dưới mỗi hạng vé. */
 function tierHint({ tier, soldOut, upcoming, low, open }) {
   if (soldOut) return "Hết vé";
   if (upcoming) return "Chưa mở bán";
@@ -22,29 +23,22 @@ function tierHint({ tier, soldOut, upcoming, low, open }) {
   return `Tối đa ${tier.maxPerOrder} vé mỗi đơn`;
 }
 
-/** Nhãn nút mua: đóng bán → lý do (Đã hết vé…); chưa chọn → nhắc chọn; đã chọn → "Mua N vé". */
 function buyLabel(state, count) {
   if (!state.open) return state.cta;
   if (count === 0) return "Chọn số lượng vé";
   return `Mua ${count} vé`;
 }
 
-/**
- * Chọn hạng vé (khối duy nhất có khung trên trang chi tiết). Không gọi API:
- * bấm "Mua" chỉ chuyển sang /checkout/:slug?tiers=<id>:<số lượng>, trang checkout mới tạo đơn.
- * Hạng hết vé bị khóa; số lượng giới hạn bởi min(available, maxPerOrder).
- */
-export function TicketSelector({ event, resaleCount = 0 }) {
+export function TicketSelector({ event }) {
   const navigate = useNavigate();
-  const [quantities, setQuantities] = useState({}); // { [tierId]: số vé đang chọn }
+  const [quantities, setQuantities] = useState({});
   const tiers = event.tiers ?? [];
   const state = purchaseState(event.status);
-  const { checkoutFee } = useAppConfig(); // phí dịch vụ BE đang cấu hình (GET /api/v1/config)
+  const { checkoutFee } = useAppConfig();
   const { lines, count, subtotal, fee, total } = summarize(tiers, quantities, checkoutFee);
 
   const setQuantity = (tierId, qty) =>
     setQuantities((prev) => ({ ...prev, [tierId]: qty }));
-  // Sự kiện chưa mở bán: available = 0 không có nghĩa là hết vé
   const upcoming = event.status === "UPCOMING";
 
   return (
@@ -74,7 +68,6 @@ export function TicketSelector({ event, resaleCount = 0 }) {
           {tiers.map((tier) => {
             const soldOut = !upcoming && (Number(tier.available) || 0) <= 0;
             const qty = quantities[tier.id] ?? 0;
-            // Còn ≤ 20 vé: đổi chú thích thành "Còn N vé" có nền vàng để khách biết sắp hết
             const low = state.open && !soldOut && tier.available <= 20;
             return (
               <li
@@ -188,24 +181,6 @@ export function TicketSelector({ event, resaleCount = 0 }) {
           </p>
         ) : null}
       </div>
-
-      {resaleCount > 0 ? (
-        <Link
-          to={`/resale?eventId=${event.id}`}
-          className="group arrow-nudge flex items-center justify-between gap-3 border-t border-border px-5 py-4 text-sm transition-colors hover:bg-surface"
-        >
-          <span className="text-secondary-foreground group-hover:text-foreground">
-            <span className="font-medium text-foreground tabular-nums">
-              {formatNumber(resaleCount)}
-            </span>{" "}
-            vé bán lại cho sự kiện này
-          </span>
-          <span className="inline-flex items-center gap-1 text-primary">
-            Xem
-            <ArrowRight className="size-4" aria-hidden="true" />
-          </span>
-        </Link>
-      ) : null}
     </div>
   );
 }

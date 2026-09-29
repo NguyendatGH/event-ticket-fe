@@ -1,3 +1,5 @@
+// Đổi mật khẩu → PUT /users/me/password. WRONG_PASSWORD gắn vào ô mật khẩu hiện tại.
+
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -9,7 +11,6 @@ import { passwordSchema } from "../schemas";
 
 const EMPTY = { currentPassword: "", newPassword: "", confirmPassword: "" };
 
-/** Đổi mật khẩu → PUT /users/me/password. WRONG_PASSWORD gắn vào ô mật khẩu hiện tại. */
 export function PasswordForm() {
   const form = useForm({ resolver: zodResolver(passwordSchema), defaultValues: EMPTY });
   const change = useChangePassword();

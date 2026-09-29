@@ -1,7 +1,5 @@
-/**
- * Query key factory. Key đi từ rộng → hẹp để invalidate theo tiền tố:
- *   queryClient.invalidateQueries({ queryKey: qk.events.all })   // mọi query sự kiện public
- */
+// Query key factory: key đi từ rộng → hẹp để invalidate theo tiền tố.
+
 export const qk = {
   config: ["config"],
   auth: {
@@ -54,14 +52,6 @@ export const qk = {
       detail: (id) => ["me", "tickets", "detail", id],
     },
   },
-  resale: {
-    all: ["resale"],
-    list: (params) => ["resale", "list", params],
-    detail: (id) => ["resale", "detail", id],
-    history: (id) => ["resale", "history", id],
-    related: (id, limit) => ["resale", "related", id, limit],
-  },
 };
 
-/** Query gắn với người dùng hiện tại: xóa khi đăng nhập/đăng xuất/đổi vai trò. */
-export const USER_SCOPED_KEYS = [qk.auth.all, qk.me.all, qk.organizer.all, qk.orders.all, qk.resale.all];
+export const USER_SCOPED_KEYS = [qk.auth.all, qk.me.all, qk.organizer.all, qk.orders.all];

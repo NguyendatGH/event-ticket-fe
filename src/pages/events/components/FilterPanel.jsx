@@ -1,3 +1,5 @@
+// Một nhóm lọc có tiêu đề (Danh mục, Thành phố…).
+
 import { useId, useState } from "react";
 import { LayoutGroup, motion } from "motion/react";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -9,7 +11,6 @@ import { PRICE_PRESETS, presetOf } from "../filters";
 import { MiniField } from "./MiniField";
 import { PriceRange } from "./PriceRange";
 
-/** Một lựa chọn dạng dòng chữ: đang chọn có vạch xanh 2px bên trái, vạch trượt giữa các dòng trong cùng nhóm. */
 function OptionRow({ active, label, count, onClick, disabled }) {
   return (
     <li>
@@ -44,11 +45,6 @@ function OptionRow({ active, label, count, onClick, disabled }) {
   );
 }
 
-/**
- * Một nhóm lọc có tiêu đề (Danh mục, Thành phố…).
- * LayoutGroup riêng cho mỗi nhóm: vạch xanh (layoutId="filter-active") chỉ trượt giữa các dòng trong cùng nhóm,
- * không bay sang nhóm khác dù các nhóm dùng chung layoutId.
- */
 function Group({ title, children, className }) {
   const id = useId();
   return (
@@ -78,11 +74,6 @@ function ListSkeleton({ rows = 4 }) {
   );
 }
 
-/**
- * Cột bộ lọc (desktop) / nội dung Sheet (mobile). Không khung, chỉ divider.
- * Mọi thay đổi gọi onChange(patch), EventsPage ghi patch lên URL; panel không giữ bộ lọc trong state.
- * facets = GET /events/facets ({categories:[{slug,count}], cities:[{name,count}], price:{min,max}}).
- */
 export function FilterPanel({
   filters,
   facets,
@@ -99,7 +90,6 @@ export function FilterPanel({
     ? facets.cities
     : CITIES.map((name) => ({ name, count: null }));
   const preset = presetOf(filters);
-  // "Chọn ngày" đã bấm nhưng chưa nhập ngày nào: URL chưa có from/to nên cần state riêng để giữ ô ngày mở
   const [customDates, setCustomDates] = useState(
     Boolean(filters.from || filters.to),
   );
@@ -197,7 +187,6 @@ export function FilterPanel({
             label="Chọn ngày"
             active={showDates && !filters.when}
             onClick={() => {
-              // Đang chọn mốc nhanh (Tuần này…) thì bỏ để hiện ô ngày
               setCustomDates(true);
               if (filters.when) onChange({ when: null });
             }}

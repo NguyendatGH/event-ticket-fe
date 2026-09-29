@@ -1,3 +1,5 @@
+// Test định dạng hiển thị, cố định theo giờ VN bất kể múi giờ máy chạy test.
+
 import { describe, expect, it } from "vitest";
 import {
   addDaysISO,
@@ -15,7 +17,6 @@ import {
   todayISODate,
 } from "./format";
 
-// 12:00Z = 19:00 giờ VN (UTC+7), bất kể múi giờ máy chạy test.
 const START = "2026-10-24T12:00:00Z";
 const END = "2026-10-24T15:30:00Z";
 
@@ -37,7 +38,6 @@ describe("format", () => {
     expect(formatTime(START)).toBe("19:00");
     expect(formatDateTime(START)).toBe("24.10.2026 19:00");
     expect(formatDateLong(START)).toBe("Thứ bảy, 24.10.2026");
-    // 18:00Z ngày 24 = 01:00 ngày 25 giờ VN
     expect(formatDate("2026-10-24T18:00:00Z")).toBe("25.10.2026");
   });
 

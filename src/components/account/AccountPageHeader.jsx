@@ -1,12 +1,7 @@
+// Tiêu đề trang khu tài khoản: ô icon xanh + H1 + mô tả, hành động bên phải.
+
 import { cn } from "@/lib/utils";
 
-/**
- * Tiêu đề trang trong khu tài khoản: ô icon xanh nhỏ + H1 đậm trắng + mô tả, hành động bên phải.
- *
- *   <AccountPageHeader icon={Ticket} title="Vé của tôi" description="Mang mã QR đến cổng soát vé." actions={<Button>…</Button>} />
- *
- * Props: icon (lucide), title, description, actions, className. Không kẻ viền dưới (khác PageHeader v1).
- */
 export function AccountPageHeader({ icon: Icon, title, description, actions, className }) {
   return (
     <header className={cn("mb-5 flex flex-wrap items-start justify-between gap-x-6 gap-y-4 md:mb-6", className)}>

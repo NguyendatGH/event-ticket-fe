@@ -1,3 +1,5 @@
+// Test trang danh sách sự kiện và bộ lọc trên URL.
+
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { createMemoryRouter, RouterProvider } from "react-router-dom";

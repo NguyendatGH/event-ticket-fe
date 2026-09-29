@@ -1,3 +1,5 @@
+// Bộ đếm ký tự phần giới thiệu: leaf tự useWatch, gõ phím không render lại cả form.
+
 import { useEffect } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,22 +17,16 @@ import { applyApiErrors, toPayload } from "@/lib/forms";
 import { DUR, EASE_IN, EASE_OUT } from "@/lib/motion";
 import { profileDefaults, userProfileSchema } from "../schemas";
 
-/** Bộ đếm ký tự phần giới thiệu: leaf tự useWatch, gõ phím không render lại cả form. */
 function BioCount({ control }) {
   const length = useWatch({ control, name: "bio", compute: (bio) => (bio || "").length });
   return `${length}/500 ký tự`;
 }
 
-/**
- * Thông tin cá nhân: ảnh đại diện, họ tên, SĐT, giới thiệu → PUT /users/me (hook ghi cache /auth/me, RootLayout đồng bộ store).
- * Nằm trong thẻ AccountSection của ProfilePage: ≥ md ảnh cột trái, ô nhập cột phải. Thanh lưu dính đáy màn hình khi có thay đổi.
- */
 export function ProfileForm({ user }) {
   const form = useForm({ resolver: zodResolver(userProfileSchema), defaultValues: profileDefaults(user) });
   const update = useUpdateProfile();
   const { isDirty } = form.formState;
 
-  // Dữ liệu mới từ server (vd refetch) → nạp lại form nếu người dùng chưa sửa gì.
   useEffect(() => {
     if (!form.formState.isDirty) form.reset(profileDefaults(user));
   }, [user, form]);
@@ -47,7 +43,6 @@ export function ProfileForm({ user }) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} noValidate className="space-y-8">
-        {/* ≥ md: ảnh đại diện cột trái, các ô nhập cột phải. */}
         <div className="grid gap-8 md:grid-cols-[160px_minmax(0,1fr)] md:gap-10">
           <div className="grid content-start gap-2">
             <Label htmlFor="avatar-upload">Ảnh đại diện</Label>
@@ -96,7 +91,6 @@ export function ProfileForm({ user }) {
 
         <FormRootError form={form} />
 
-        {/* Thanh lưu chỉ trượt lên khi có thay đổi; nằm trong <form> nên Enter/submit vẫn chạy. */}
         <AnimatePresence>
           {isDirty || update.isPending ? (
             <motion.div

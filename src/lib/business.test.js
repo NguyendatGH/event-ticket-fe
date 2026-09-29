@@ -1,3 +1,5 @@
+// Test hằng số nghiệp vụ và tierLimit.
+
 import { describe, expect, it } from "vitest";
 import { tierLimit } from "./business";
 

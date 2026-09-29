@@ -1,3 +1,5 @@
+// Test trang thanh toán thất bại.
+
 import { render, screen } from "@testing-library/react";
 import { createMemoryRouter, RouterProvider } from "react-router-dom";
 import { describe, expect, it, vi } from "vitest";
@@ -22,7 +24,7 @@ const renderAt = (path) => {
   return router;
 };
 
-const base = { id: "o1", orderCode: 1000038, kind: "PRIMARY", eventSlug: "jazz", eventName: "Jazz", items: [], feeAmount: 12000, totalAmount: 12000 };
+const base = { id: "o1", orderCode: 1000038, eventSlug: "jazz", eventName: "Jazz", items: [], feeAmount: 12000, totalAmount: 12000 };
 
 describe("CheckoutFailedPage", () => {
   it("đơn đã PAID (Back sau khi thanh toán lại) → sang trang thành công, không mời mua lại", async () => {

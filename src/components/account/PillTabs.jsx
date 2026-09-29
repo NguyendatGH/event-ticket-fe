@@ -1,3 +1,5 @@
+// Là WAI-ARIA tabs thật (Radix): mũi tên trái/phải chuyển tab, nội dung nằm trong tabpanel.
+
 import { useEffect, useId, useRef } from "react";
 import { Tabs as TabsPrimitive } from "radix-ui";
 import { LayoutGroup } from "motion/react";
@@ -5,19 +7,6 @@ import { TabIndicator } from "@/components/motion";
 import { formatNumber } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
-/**
- * Tab dạng pill (design-spec v2): pill đang chọn nền xanh chữ tối, nền xanh trượt sang pill mới (layoutId).
- * Là WAI-ARIA tabs thật (Radix): mũi tên trái/phải chuyển tab, nội dung nằm trong tabpanel.
- *
- *   <PillTabs label="Lọc vé" value={scope} onValueChange={setScope}
- *     items={[{ value: "upcoming", label: "Sắp diễn ra", count: 12, countLabel: "vé" }, …]}>
- *     {danh sách}
- *   </PillTabs>
- *
- * Props: label (aria-label của tablist), value, onValueChange, items [{ value, label, count?, countLabel? }]
- * (count null/undefined → không hiện số), children (nội dung tab đang chọn), className.
- * Mobile: hàng pill cuộn ngang; pill đang chọn tự cuộn vào tầm nhìn (vd mở thẳng /me/orders?status=cancelled), chỉ cuộn ngang.
- */
 export function PillTabs({ label, value, onValueChange, items, children, className }) {
   const id = useId();
   const listRef = useRef(null);

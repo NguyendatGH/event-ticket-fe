@@ -1,8 +1,9 @@
+// Nhóm field có nhãn nhỏ và divider.
+
 import { motion } from "motion/react";
 import { riseSm } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
-/** Nhóm field có nhãn nhỏ và divider phía trên (thay cho card). Nhãn nhóm là item của stagger cha. */
 export function FormSection({ title, description, children, className }) {
   return (
     <fieldset className={cn("space-y-6 border-t border-border pt-8", className)}>

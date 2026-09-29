@@ -1,3 +1,5 @@
+// Chọn ảnh → POST /uploads/images → onChange(url).
+
 import { useId, useRef, useState } from "react";
 import { ImagePlus, Loader2, RefreshCw, Trash2 } from "lucide-react";
 import { toast } from "sonner";
@@ -9,12 +11,6 @@ import { cn } from "@/lib/utils";
 
 const RATIO = { "4/3": "aspect-card", "16/9": "aspect-video", "1/1": "aspect-square", "3/1": "aspect-[3/1]" };
 
-/**
- * Chọn ảnh → POST /uploads/images → onChange(url). Dùng trực tiếp với react-hook-form:
- *   <Controller name="coverImageUrl" control={control}
- *     render={({ field }) => <ImageUpload folder="events" value={field.value} onChange={field.onChange} />} />
- * value: URL hiện tại (hoặc null). Xóa → onChange(null).
- */
 export function ImageUpload({
   value,
   onChange,

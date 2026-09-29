@@ -1,3 +1,6 @@
+// Trang chờ kết quả thanh toán — route /checkout/return?orderId=<id>
+// Dữ liệu: useOrder.
+
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
@@ -10,16 +13,8 @@ import { formatVND } from "@/lib/format";
 import { DUR, EASE_IN, EASE_INOUT, EASE_OUT } from "@/lib/motion";
 import { clearPendingOrder, readPendingOrder } from "@/lib/pendingOrder";
 import { cn } from "@/lib/utils";
-import { RETURN_TIMEOUT_MS, failureReason, orderOutcome } from "./lib";
+import { RETURN_TIMEOUT_MS, failureReason, orderOutcome } from "@/lib/checkout";
 
-/**
- * Trang chờ kết quả thanh toán — route /checkout/return?orderId=<id>
- * (không có ?orderId= thì đọc id đã nhớ bằng readPendingOrder, vì cổng thật không luôn trả orderId).
- *
- * Cổng thanh toán đưa khách về đây. Poll GET /orders/{id} (2s) tới khi đơn có kết quả rồi chuyển trang:
- * PAID → success; hết hạn/hủy/thanh toán lỗi → failed?reason=; MANUAL_REVIEW → giải thích tại chỗ;
- * quá 90 giây chưa có kết quả → mời xem trang đơn.
- */
 export default function CheckoutReturnPage() {
   useDocumentTitle("Đang xác nhận thanh toán");
   const [params] = useSearchParams();
@@ -118,7 +113,6 @@ export default function CheckoutReturnPage() {
             "Thanh toán"
           )}
         </p>
-        {/* Đang chờ → kết quả: nội dung cũ mờ đi rồi nội dung mới hiện lên (không nhảy chữ). */}
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={stateKey}
@@ -149,7 +143,6 @@ export default function CheckoutReturnPage() {
   );
 }
 
-/** 3 bước để người mua thấy tiến trình thay vì một vòng xoay: rời cổng ✓ → chờ ngân hàng (đang chạy) → phát hành vé. */
 function ProgressSteps({ confirmed }) {
   const steps = [
     { label: "Đã rời cổng thanh toán", state: "done" },
@@ -204,7 +197,6 @@ function StepDot({ state }) {
   );
 }
 
-/** Vạch chạy qua lại (không có % thật để hiện); reduced motion → vạch tĩnh. */
 function IndeterminateBar({ className }) {
   const reduce = useReducedMotion();
   return (

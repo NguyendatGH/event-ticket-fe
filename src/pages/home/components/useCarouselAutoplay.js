@@ -1,17 +1,7 @@
+// Tự cuộn <Carousel> sang trang kế sau mỗi `interval` ms, hết thì quay về đầu.
+
 import { useEffect } from "react";
 
-/**
- * Tự cuộn <Carousel> sang trang kế sau mỗi `interval` ms, hết thì quay về đầu.
- * Chỉ thao tác scrollLeft của track (DOM), không setState → component cha không render lại theo nhịp.
- *
- *   const rootRef = useRef(null);
- *   useCarouselAutoplay(rootRef, { enabled: !paused && !reduceMotion });
- *   <div ref={rootRef}><Carousel …/></div>
- *
- * Tự dừng khi: rê chuột / chạm vào carousel, focus bàn phím bên trong, tab trình duyệt ẩn,
- * carousel ra khỏi màn hình. `enabled` = false (nút tạm dừng, prefers-reduced-motion) → không chạy.
- * Track = phần tử cuộn ngang đầu tiên trong vùng carousel (Carousel ở @/components/marketplace).
- */
 export function useCarouselAutoplay(rootRef, { enabled = true, interval = 6000 } = {}) {
   useEffect(() => {
     const root = rootRef.current;
@@ -40,7 +30,6 @@ export function useCarouselAutoplay(rootRef, { enabled = true, interval = 6000 }
       if (hovering || focused || !onScreen || document.hidden) return;
       const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 8;
       if (atEnd) track.scrollTo({ left: 0, behavior: "smooth" });
-      // 0.9 khung như nút ›; scroll-snap kéo về đúng đầu thẻ kế tiếp.
       else track.scrollBy({ left: track.clientWidth * 0.9, behavior: "smooth" });
     }, interval);
 

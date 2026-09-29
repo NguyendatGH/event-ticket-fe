@@ -1,13 +1,9 @@
+// <img> có ảnh dự phòng khi src trống/lỗi, hiện dần khi tải xong.
+
 import { useState } from "react";
 import { FALLBACK_EVENT_IMAGE } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
-/**
- * <img> có ảnh dự phòng khi src trống/lỗi. fallback={null} → khối placeholder có thương hiệu
- * (gradient xanh nhạt + chữ cái đầu của fallbackLabel/alt) thay vì ô xám trống.
- * Ảnh hiện dần khi tải xong (opacity) để không "pop" trên lưới. Grade nhẹ saturate/contrast cho ảnh ngồi đúng nền tối.
- * Mặc định lazy + async decode; truyền priority cho ảnh hero (eager, fetchpriority high).
- */
 export function ImageWithFallback({ src, alt = "", fallback = FALLBACK_EVENT_IMAGE, fallbackLabel, priority = false, className, onLoad, ...props }) {
   const [failedSrc, setFailedSrc] = useState(null);
   const [loadedSrc, setLoadedSrc] = useState(null);
@@ -37,7 +33,6 @@ export function ImageWithFallback({ src, alt = "", fallback = FALLBACK_EVENT_IMA
   const loaded = loadedSrc === finalSrc;
   return (
     <img
-      // Ảnh đã có trong cache có thể complete trước khi React gắn onLoad.
       ref={(img) => {
         if (img?.complete && img.naturalWidth > 0 && loadedSrc !== finalSrc) setLoadedSrc(finalSrc);
       }}

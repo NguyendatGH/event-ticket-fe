@@ -1,15 +1,16 @@
+// Test axios client: gắn Bearer, refresh single-flight, đua giữa các tab, retry 401.
+
 import { AxiosError } from "axios";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { client, onSessionExpired } from "./client";
 import { ApiError } from "./errors";
 import { useAuthStore } from "@/stores/auth";
 
-/** Adapter giả: route(config) trả [status, body]; ghi lại mọi request. */
 function mockServer(route) {
   const calls = [];
   client.defaults.adapter = async (config) => {
     calls.push({ method: config.method, url: config.url, auth: config.headers.Authorization, data: config.data });
-    await new Promise((r) => setTimeout(r, 5)); // cho request song song chồng lên nhau
+    await new Promise((r) => setTimeout(r, 5));
     const [status, data] = await route(config);
     const response = { status, data, headers: {}, config, statusText: String(status) };
     if (status >= 400) throw new AxiosError(`HTTP ${status}`, "ERR_BAD_REQUEST", config, null, response);
@@ -23,7 +24,6 @@ const session = (over = {}) =>
 
 const AUTH = { accessToken: "new", refreshToken: "r2", expiresIn: 900, tokenType: "Bearer", user: { id: "u1", role: "CUSTOMER" } };
 
-/** /auth/refresh trả AUTH; endpoint khác 401 nếu Bearer không phải "new". */
 const refreshOk = (config) => {
   if (config.url === "/auth/refresh") return [200, AUTH];
   return config.headers.Authorization === "Bearer new" ? [200, { ok: config.url }] : [401, { code: "UNAUTHORIZED", detail: "Hết hạn" }];
@@ -67,7 +67,7 @@ describe("api client", () => {
 
     expect(err).toBeInstanceOf(ApiError);
     expect(err.status).toBe(401);
-    expect(calls.filter((c) => c.url === "/me/orders")).toHaveLength(1); // không retry khi refresh hỏng
+    expect(calls.filter((c) => c.url === "/me/orders")).toHaveLength(1);
     expect(listener).toHaveBeenCalledTimes(1);
     expect(listener.mock.calls[0][0].code).toBe("REFRESH_TOKEN_INVALID");
     expect(useAuthStore.getState()).toMatchObject({ accessToken: null, refreshToken: null, user: null });
@@ -77,9 +77,9 @@ describe("api client", () => {
     session();
     const calls = mockServer(refreshOk);
 
-    const results = await Promise.all([client.get("/me/tickets"), client.get("/me/orders"), client.get("/me/listings")]);
+    const results = await Promise.all([client.get("/me/tickets"), client.get("/me/orders"), client.get("/users/me")]);
 
-    expect(results.map((r) => r.ok)).toEqual(["/me/tickets", "/me/orders", "/me/listings"]);
+    expect(results.map((r) => r.ok)).toEqual(["/me/tickets", "/me/orders", "/users/me"]);
     expect(calls.filter((c) => c.url === "/auth/refresh")).toHaveLength(1);
     expect(calls.filter((c) => c.auth === "Bearer new")).toHaveLength(3);
   });
@@ -103,7 +103,7 @@ describe("api client", () => {
     expect(err.message).toBe("Email hoặc mật khẩu không đúng");
     expect(calls).toHaveLength(1);
     expect(calls[0].auth).toBeUndefined();
-    expect(useAuthStore.getState().refreshToken).toBe("r1"); // phiên không bị đụng
+    expect(useAuthStore.getState().refreshToken).toBe("r1");
   });
 
   it("lỗi mạng khi refresh → giữ phiên để thử lại sau", async () => {
@@ -120,7 +120,6 @@ describe("api client", () => {
   });
 
   describe("nhiều tab", () => {
-    /** Giả lập tab khác ghi phiên mới vào localStorage (không qua store của tab này). */
     const otherTabWrites = (state) => localStorage.setItem("nhip.auth", JSON.stringify({ state, version: 0 }));
 
     it("tab khác đã xoay token → dùng phiên của tab đó, không gửi refresh token cũ", async () => {
@@ -142,7 +141,6 @@ describe("api client", () => {
         if (config.url !== "/auth/refresh") return refreshOk(config);
         const { refreshToken } = JSON.parse(config.data);
         if (refreshToken === "r1") {
-          // Tab khác thắng cuộc đua: đã đổi r1 → r2 (access token của nó cũng đã hết hạn).
           otherTabWrites({ accessToken: "x", refreshToken: "r2", expiresAt: Date.now() - 1000, user: { id: "u1" } });
           return [401, { code: "REFRESH_TOKEN_INVALID" }];
         }

@@ -1,3 +1,5 @@
+// Primitive shadcn/Radix: Sheet (ngăn trượt).
+
 import * as React from "react"
 import { cn } from "@/lib/utils"
 import { XIcon } from "lucide-react"

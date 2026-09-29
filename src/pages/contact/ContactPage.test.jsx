@@ -1,3 +1,5 @@
+// Test trang Liên hệ và form gửi tin nhắn.
+
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
@@ -6,7 +8,6 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ApiError } from "@/api/errors";
 
 const send = vi.fn();
-// Mutation giả: gọi send(payload) rồi chuyển kết quả vào onSuccess/onError như useMutation.
 vi.mock("@/api", async (orig) => ({
   ...(await orig()),
   useSendContact: () => ({
@@ -55,18 +56,18 @@ describe("ContactPage", () => {
     renderPage();
     await user.type(screen.getByLabelText("Họ tên"), "Lê Thu Hà");
     await user.type(screen.getByLabelText("Email"), "thuha@example.com");
-    await user.click(screen.getByRole("button", { name: "Vé bán lại" }));
+    await user.click(screen.getByRole("button", { name: "Vé và đơn hàng" }));
     await user.type(
       screen.getByLabelText("Nội dung"),
-      "Tôi muốn hỏi về giới hạn giá bán lại.",
+      "Tôi muốn hỏi về phí dịch vụ của đơn hàng.",
     );
     await user.click(screen.getByRole("button", { name: "Gửi tin nhắn" }));
     await waitFor(() => expect(send).toHaveBeenCalled());
     expect(send.mock.calls[0][0]).toEqual({
       name: "Lê Thu Hà",
       email: "thuha@example.com",
-      subject: "Vé bán lại",
-      message: "Tôi muốn hỏi về giới hạn giá bán lại.",
+      subject: "Vé và đơn hàng",
+      message: "Tôi muốn hỏi về phí dịch vụ của đơn hàng.",
     });
     expect(await screen.findByText("Đã gửi tin nhắn")).toBeInTheDocument();
   });

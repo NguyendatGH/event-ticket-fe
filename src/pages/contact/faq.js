@@ -1,4 +1,5 @@
-/** Câu hỏi thường gặp hiện cuối trang Liên hệ. Số liệu (phí 12.000đ, giá bán lại 10.000đ-120%, 2 giờ) khớp @/lib/business. */
+// Câu hỏi thường gặp hiện cuối trang Liên hệ. Số liệu (phí 12.000đ) khớp @/lib/business.
+
 export const FAQ = [
   {
     q: "Mua xong, vé của tôi nằm ở đâu?",
@@ -7,10 +8,6 @@ export const FAQ = [
   {
     q: "Có cần in vé không?",
     a: "Không cần. Mở mã QR trên điện thoại khi tới cổng soát vé. Mỗi mã chỉ dùng được một lần, đừng chia sẻ ảnh chụp mã cho người khác.",
-  },
-  {
-    q: "Tôi có bán lại vé được không?",
-    a: "Được, với vé còn hiệu lực trong tài khoản của bạn. Giá bán lại có giới hạn: từ 10.000đ và không quá 120% giá gốc. Việc đăng bán đóng 2 giờ trước giờ diễn. Khi vé được bán, mã QR cũ bị vô hiệu và người mua nhận mã mới.",
   },
   {
     q: "Tôi muốn hoàn tiền thì làm thế nào?",

@@ -1,7 +1,8 @@
+// Tiêu đề màn auth: H1 + mô tả ngắn.
+
 import { motion } from "motion/react";
 import { riseSm } from "@/lib/motion";
 
-/** Tiêu đề màn auth: H1 + mô tả ngắn. Là item đầu tiên của stagger trong trang. */
 export function AuthHeading({ title, description, eyebrow }) {
   return (
     <motion.div variants={riseSm} className="space-y-3">

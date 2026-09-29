@@ -1,12 +1,9 @@
+// Khung QR hiện ra (scale .96 → 1) rồi một vạch quét xanh 1px chạy qua đúng một lần: "vé này đang hiệu lực".
+
 import { motion, useReducedMotion } from "motion/react";
 import { DUR, EASE_INOUT, EASE_OUT } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
-/**
- * Khung QR hiện ra (scale .96 → 1) rồi một vạch quét xanh 1px chạy qua đúng một lần: "vé này đang hiệu lực".
- * Vạch quét: lớp phủ cao bằng khung, vạch ở mép trên → translateY 100% = quét hết chiều cao (chỉ transform).
- * live=false (vé đã hoàn tiền/đã qua/đang rao bán) → chỉ hiện, không quét. Reduced motion → không quét.
- */
 export function QRReveal({ live = true, delay = 0.25, className, children }) {
   const reduce = useReducedMotion();
   return (

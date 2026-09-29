@@ -1,3 +1,5 @@
+// Test đổi cỡ ảnh Unsplash.
+
 import { describe, expect, it } from "vitest";
 import { imageAt } from "./image";
 

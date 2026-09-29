@@ -1,8 +1,6 @@
-/**
- * Quên mật khẩu, route "/auth/forgot-password" → useForgotPassword (POST /auth/forgot-password).
- * BE luôn trả thành công (không tiết lộ email có tồn tại hay không). Ở môi trường dev, BE trả thêm
- * devResetUrl để mở thẳng trang đặt lại vì không có email thật.
- */
+// Quên mật khẩu, route "/auth/forgot-password" → useForgotPassword (POST /auth/forgot-password).
+// Dữ liệu: useForgotPassword.
+
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -20,7 +18,6 @@ import { riseSm } from "@/lib/motion";
 import { forgotSchema } from "./schemas";
 import { AUTH_STAGGER, AuthHeading } from "./components";
 
-/** URL tuyệt đối cùng origin → đường dẫn nội bộ để mở bằng router. */
 const toInternal = (url) => {
   try {
     const u = new URL(url, window.location.origin);
@@ -32,7 +29,7 @@ const toInternal = (url) => {
 
 export default function ForgotPasswordPage() {
   useDocumentTitle("Quên mật khẩu");
-  const [sent, setSent] = useState(null); // { email, expiresInMinutes, devResetUrl }
+  const [sent, setSent] = useState(null);
   const form = useForm({ resolver: zodResolver(forgotSchema), defaultValues: { email: "" } });
   const forgot = useForgotPassword();
 

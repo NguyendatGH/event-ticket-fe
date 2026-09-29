@@ -1,3 +1,5 @@
+// Dấu tick tự vẽ (vòng tròn rồi nét tick), 40px, hiện khi gửi xong.
+
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -22,10 +24,6 @@ import { EASE_IN, EASE_OUT } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 import { CONTACT_TOPICS, contactSchema } from "../schemas";
 
-/**
- * Dấu tick tự vẽ (vòng tròn rồi nét tick), 40px, hiện khi gửi xong.
- * Khác SuccessMark của checkout (56px, nét mảnh, có vòng lan tỏa) nên giữ riêng.
- */
 function SentMark() {
   const draw = (delay) => ({
     initial: { pathLength: 0, opacity: 0 },
@@ -55,14 +53,12 @@ function SentMark() {
   );
 }
 
-// Đổi giữa form và thông báo "Đã gửi": cái cũ trượt lên mờ đi, cái mới trượt lên hiện ra
 const swap = {
   initial: { opacity: 0, y: 8 },
   animate: { opacity: 1, y: 0, transition: { duration: 0.32, ease: EASE_OUT } },
   exit: { opacity: 0, y: -8, transition: { duration: 0.18, ease: EASE_IN } },
 };
 
-/** Chủ đề gợi ý: bấm để điền ô Chủ đề, bấm lại để bỏ. */
 function TopicChips({ value, onPick }) {
   return (
     <div className="flex flex-wrap gap-2 pt-1" aria-label="Chủ đề gợi ý">
@@ -86,12 +82,6 @@ function TopicChips({ value, onPick }) {
   );
 }
 
-/**
- * Form liên hệ → useSendContact (POST /contact). Đã đăng nhập thì điền sẵn họ tên + email.
- * Gửi xong: form được thay bằng thông báo "Đã gửi" (AnimatePresence đổi qua lại), nút "Gửi tin nhắn khác" để quay lại.
- * Form này dùng FormField của shadcn trực tiếp (không qua <Field>) vì bố cục khác: nhãn "(không bắt buộc)" nằm cạnh
- * tên ô, có hàng chip chủ đề dưới ô, và các ô không trượt vào theo stagger như form auth.
- */
 export function ContactForm() {
   const { user } = useAuth();
   const [sentTo, setSentTo] = useState(null);
@@ -111,11 +101,9 @@ export function ContactForm() {
     send.mutate(toPayload(values), {
       onSuccess: () => {
         setSentTo(values.email);
-        // Xóa chủ đề + nội dung, giữ họ tên và email cho lần gửi sau
         form.reset({ ...defaults, name: values.name, email: values.email });
       },
       onError: (err) => {
-        // Lỗi gắn được vào ô (VALIDATION_ERROR) thì hiện dưới ô; lỗi khác (mạng, 500…) báo bằng toast
         const fieldCount = applyApiErrors(form, err, { root: false });
         if (fieldCount === 0) toast.error(err.message);
       },

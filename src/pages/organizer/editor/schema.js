@@ -1,14 +1,9 @@
+// Form trình tạo/sửa sự kiện. Một form RHF cho cả 4 bước.
+
 import { z, v } from "@/lib/forms";
 import { CATEGORY_LABEL } from "@/lib/constants";
 import { formatNumber } from "@/lib/format";
-import { isoToLocalInput, localInputToIso, paragraphsToText, textToParagraphs } from "../lib/helpers";
-
-/**
- * Form trình tạo/sửa sự kiện. Một form RHF cho cả 4 bước.
- *  - draftSchema: lưu nháp (chỉ bắt buộc tên; field đã nhập thì phải hợp lệ) — contract §4.4 EventUpsertRequest.
- *  - publishSchema: draftSchema + điều kiện xuất bản (category, description, cover, startsAt > now, venue, ≥ 1 tier…).
- * Số (giá, số lượng) giữ dạng chuỗi trong form, schema chuyển sang số.
- */
+import { isoToLocalInput, localInputToIso, paragraphsToText, textToParagraphs } from "../lib";
 
 export const STEPS = [
   { key: "info", label: "Thông tin sự kiện" },
@@ -19,7 +14,6 @@ export const STEPS = [
 
 const MAX_SAFE = 9_000_000_000_000;
 
-/** Số nguyên không âm từ ô nhập ("1.500.000" hoặc "1500000"). */
 const intText = (label, { min = 0, max = MAX_SAFE } = {}) =>
   z
     .union([z.string(), z.number()])
@@ -38,11 +32,9 @@ const intText = (label, { min = 0, max = MAX_SAFE } = {}) =>
         .max(max, { error: `${label} tối đa ${formatNumber(max)}` })
     );
 
-/** Dòng hạng vé mới chưa nhập gì: bỏ qua khi lưu nháp. */
 const isBlankTier = (t) =>
   !t?.id && ["name", "description", "price", "totalQuantity"].every((k) => String(t?.[k] ?? "").trim() === "");
 
-/** Số đã nhập trong ô (chuỗi) → number | null. */
 export const readInt = (val) => {
   const s = String(val ?? "").replace(/[.\s,]/g, "");
   return /^\d+$/.test(s) ? Number(s) : null;
@@ -81,7 +73,6 @@ export const draftSchema = z
       address: v.text(300, "Địa chỉ"),
     }),
     schedule: z.array(scheduleSchema),
-    // Kiểm tra từng hạng trong superRefine để bỏ qua dòng trống mà vẫn giữ đúng chỉ số (tiers.2.price…).
     tiers: z.array(z.any()),
   })
   .superRefine((val, ctx) => {
@@ -109,10 +100,6 @@ export const draftSchema = z
     });
   });
 
-/**
- * Điều kiện xuất bản (contract §4.4) trên giá trị form thô. Dùng cho checklist và publishSchema.
- * Mỗi mục: { key, step, path, label, ok, message }.
- */
 export function publishChecklist(values, now = Date.now()) {
   const start = localInputToIso(values.startsAt);
   const end = localInputToIso(values.endsAt);
@@ -158,13 +145,11 @@ const publishSchema = draftSchema.superRefine((val, ctx) => {
   publishChecklist(val).forEach((item) => {
     if (!item.ok) ctx.addIssue({ code: "custom", path: item.path.split(".").map((s) => (/^\d+$/.test(s) ? Number(s) : s)), message: item.message });
   });
-  // Thiếu cả tên địa điểm lẫn thành phố: đánh dấu luôn ô thành phố (checklist chỉ gộp một dòng).
   if (!String(val.venue?.name || "").trim() && !String(val.venue?.city || "").trim()) {
     ctx.addIssue({ code: "custom", path: ["venue", "city"], message: "Nhập thành phố" });
   }
 });
 
-/** Dùng publishSchema trên giá trị form → danh sách lỗi [{ path, message }] (rỗng = xuất bản được). */
 export function validateForPublish(values) {
   const res = publishSchema.safeParse(values);
   if (res.success) return [];
@@ -173,8 +158,6 @@ export function validateForPublish(values) {
     .map((i) => ({ path: i.path.join(".") === "tiers" ? "tiers.root" : i.path.join("."), message: i.message }))
     .filter((i) => (seen.has(i.path) ? false : seen.add(i.path)));
 }
-
-/* ---------- Chuyển đổi DTO ⇄ form ---------- */
 
 export const emptyTier = () => ({ id: null, name: "", description: "", price: "", totalQuantity: "", maxPerOrder: "4", sold: 0, reserved: 0, originalPrice: null });
 
@@ -192,7 +175,6 @@ export const emptyForm = () => ({
   tiers: [emptyTier()],
 });
 
-/** OrganizerEventDetail → giá trị form. */
 export function toForm(detail) {
   if (!detail) return emptyForm();
   return {
@@ -225,7 +207,6 @@ const blank = (s) => {
   return t === "" ? null : t;
 };
 
-/** Giá trị form (đã qua draftSchema) → EventUpsertRequest. */
 export function toRequest(values) {
   const venue = { name: blank(values.venue?.name), city: blank(values.venue?.city), address: blank(values.venue?.address) };
   return {
@@ -250,9 +231,6 @@ export function toRequest(values) {
   };
 }
 
-/* ---------- Field lỗi → bước + nhãn (lỗi từ BE: xem ./serverErrors.js) ---------- */
-
-/** Bước chứa field: 0 thông tin, 1 thời gian/địa điểm, 2 hạng vé. */
 export function stepOfField(path = "") {
   if (path.startsWith("tiers")) return 2;
   if (/^(startsAt|endsAt|venue|schedule)/.test(path)) return 1;
@@ -273,7 +251,6 @@ const FIELD_LABELS = {
   "venue.address": "Địa chỉ",
 };
 
-/** Nhãn tiếng Việt ngắn cho một path lỗi. */
 export function fieldLabel(path = "") {
   if (FIELD_LABELS[path]) return FIELD_LABELS[path];
   const tier = path.match(/^tiers\.(\d+)/);
@@ -284,7 +261,6 @@ export function fieldLabel(path = "") {
   return path;
 }
 
-/** Đường dẫn các field đang lỗi (đệ quy) theo thứ tự xuất hiện. */
 export function errorPaths(errors, prefix = "") {
   if (!errors || typeof errors !== "object") return [];
   if (typeof errors.message === "string" && errors.type) return [prefix.replace(/\.$/, "")];

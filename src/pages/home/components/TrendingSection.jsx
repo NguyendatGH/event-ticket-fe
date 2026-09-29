@@ -1,3 +1,5 @@
+// Hằng số ngoài component: object params giữ nguyên tham chiếu giữa các lần render.
+
 import { Flame } from "lucide-react";
 import { useEvents } from "@/api";
 import { Carousel, RankedEventCard } from "@/components/marketplace";
@@ -5,13 +7,8 @@ import { sectionStatus } from "../lib";
 import { HomeSection } from "./HomeSection";
 import { RowSkeleton } from "./HomeSkeletons";
 
-// Hằng số ngoài component: object params giữ nguyên tham chiếu giữa các lần render.
 const PARAMS = { sort: "popular", size: 10 };
 
-
-/**
- * "Sự kiện xu hướng" (useEvents → GET /events?sort=popular&size=10): thẻ poster có số thứ hạng 1..10 viền xanh.
- */
 export function TrendingSection() {
   const query = useEvents(PARAMS);
   const events = query.data?.content ?? [];

@@ -1,3 +1,5 @@
+// Bước 3 trình sửa sự kiện: hạng vé; đã bán/giữ thì khóa giá và không cho xóa.
+
 import { useFieldArray, useFormContext, useWatch } from "react-hook-form";
 import { Lock, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -7,10 +9,6 @@ import { AnimatedItem, AnimatedList } from "@/components/motion";
 import { OrgField } from "../components/OrgUi";
 import { emptyTier, readInt } from "./schema";
 
-/**
- * Hạng vé: các dòng sửa được. Sau khi đã có vé bán/giữ (sold + reserved > 0): khóa giá, không xóa,
- * số lượng không dưới sold + reserved (contract §4.4).
- */
 export function StepTiers({ disabled, published }) {
   const {
     register,
@@ -18,7 +16,6 @@ export function StepTiers({ disabled, published }) {
     formState: { errors },
   } = useFormContext();
   const tiers = useFieldArray({ control, name: "tiers", keyName: "key" });
-  // useWatch("tiers"): giá trị đang gõ của mọi hạng, để tính tổng vé / doanh thu tối đa và gợi ý giá ngay khi gõ.
   const values = useWatch({ name: "tiers" }) || [];
   const totalQty = values.reduce((s, t) => s + (readInt(t.totalQuantity) ?? 0), 0);
   const maxRevenue = values.reduce((s, t) => s + (readInt(t.totalQuantity) ?? 0) * (readInt(t.price) ?? 0), 0);
@@ -134,7 +131,6 @@ export function StepTiers({ disabled, published }) {
   );
 }
 
-/** Dòng gợi ý dưới ô giá: giá đã khóa → giải thích; đã nhập → "Miễn phí" hoặc giá dạng tiền; chưa nhập → không có. */
 function tierPriceHint(price, priceLocked) {
   if (priceLocked) return "Đã có vé bán, không đổi được giá.";
   if (price == null) return null;

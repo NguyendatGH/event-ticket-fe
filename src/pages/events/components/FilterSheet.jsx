@@ -1,3 +1,5 @@
+// Bộ lọc dưới lg: ngăn trượt chứa cùng FilterPanel như cột trái desktop.
+
 import { SlidersHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,11 +13,6 @@ import {
 import { formatNumber } from "@/lib/format";
 import { FilterPanel } from "./FilterPanel";
 
-/**
- * Bộ lọc trên mobile/tablet (dưới lg): nút "Bộ lọc" (kèm số bộ lọc đang bật) mở ngăn trượt từ trái,
- * bên trong là cùng FilterPanel như cột trái desktop. Lọc áp dụng ngay khi bấm; nút "Xem N kết quả" chỉ đóng ngăn.
- * panelProps: props truyền nguyên cho FilterPanel. total/loading: số kết quả hiện ở nút đóng.
- */
 export function FilterSheet({
   open,
   onOpenChange,

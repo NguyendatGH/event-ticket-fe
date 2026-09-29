@@ -1,6 +1,5 @@
-/**
- * Trang Liên hệ, route "/contact": thông tin hỗ trợ, form gửi tin nhắn (ContactForm → POST /contact) và FAQ.
- */
+// Trang Liên hệ, route "/contact": thông tin hỗ trợ, form gửi tin nhắn (ContactForm → POST /contact) và FAQ.
+
 import { Link } from "react-router-dom";
 import { motion } from "motion/react";
 import { ArrowRight } from "lucide-react";
@@ -38,7 +37,7 @@ export default function ContactPage() {
       <PageHeader
         eyebrow="Hỗ trợ"
         title="Liên hệ"
-        description="Hỏi về vé, đơn hàng, vé bán lại hay cách tổ chức sự kiện. Chúng tôi trả lời qua email."
+        description="Hỏi về vé, đơn hàng hay cách tổ chức sự kiện. Chúng tôi trả lời qua email."
       />
 
       <motion.div
@@ -105,7 +104,7 @@ export default function ContactPage() {
             className="mb-4 border-b-0 pb-0"
           />
           <p className="max-w-[36ch] text-sm leading-relaxed text-muted-foreground">
-            Những câu hỏi về vé, bán lại và phí dịch vụ. Không thấy câu trả lời?{" "}
+            Những câu hỏi về vé, đơn hàng và phí dịch vụ. Không thấy câu trả lời?{" "}
             <a href="#contact-form-title" className="link-accent">
               Gửi tin nhắn cho chúng tôi
             </a>

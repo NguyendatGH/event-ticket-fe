@@ -1,7 +1,8 @@
+// Các dải sóng (viewBox 1440×400). Ngoài component: không tạo lại mảng mỗi lần render.
+
 import { useId } from "react";
 import { cn } from "@/lib/utils";
 
-// Các dải sóng (viewBox 1440×400). Hằng số ngoài component.
 const WAVES_A = [
   { d: "M-40 330 C 280 120, 560 60, 820 180 S 1260 360, 1480 120", w: 2.5 },
   { d: "M-40 200 C 240 60, 520 120, 760 240 S 1180 330, 1480 220", w: 1.5 },
@@ -16,7 +17,6 @@ function WaveLayer({ waves, gradientId, filterId, className }) {
   return (
     <div aria-hidden="true" className={cn("absolute inset-y-0 -left-[10%] w-[120%] will-change-transform", className)}>
       <svg viewBox="0 0 1440 400" preserveAspectRatio="none" className="size-full">
-        {/* Lớp mờ (quầng sáng) dưới + nét mảnh sắc trên. */}
         <g filter={`url(#${filterId})`} opacity="0.75">
           {waves.map((w) => (
             <path key={w.d} d={w.d} fill="none" stroke={`url(#${gradientId})`} strokeWidth={w.w * 5} strokeLinecap="round" />
@@ -30,25 +30,12 @@ function WaveLayer({ waves, gradientId, filterId, className }) {
   );
 }
 
-/**
- * Nền "sóng ánh sáng" xanh chảy ngang (design-spec v2, sau hàng Ban tổ chức nổi bật). Thuần SVG + CSS, chỉ trang trí
- * (aria-hidden, pointer-events-none). Hai lớp trôi chậm ngược chiều bằng transform (GPU, không vẽ lại filter);
- * prefers-reduced-motion → đứng yên.
- *
- *   <section className="relative isolate overflow-hidden">
- *     <GlowWaves />
- *     <Container className="relative">…</Container>
- *   </section>
- *
- * Props: className (vd đổi độ mờ "opacity-70"). Cha cần `relative` + `overflow-hidden` (+ `isolate` để nằm dưới nội dung).
- */
 export function GlowWaves({ className }) {
   const uid = useId().replace(/:/g, "");
   const gradientId = `gw-grad-${uid}`;
   const filterId = `gw-blur-${uid}`;
   return (
     <div aria-hidden="true" className={cn("pointer-events-none absolute inset-0 -z-10 overflow-hidden", className)}>
-      {/* Quầng xanh tối phía sau, giống vùng sáng mờ của tham chiếu. */}
       <div className="absolute inset-0 bg-[radial-gradient(60%_70%_at_20%_45%,rgba(45,194,117,0.16),transparent_70%),radial-gradient(50%_60%_at_85%_60%,rgba(45,194,117,0.10),transparent_70%)]" />
       <svg width="0" height="0" className="absolute">
         <defs>

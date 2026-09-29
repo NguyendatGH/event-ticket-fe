@@ -1,8 +1,6 @@
-/**
- * Danh sách đơn hàng của tôi, route "/me/orders?status=paid|pending|cancelled" (cần đăng nhập, nằm trong AccountLayout).
- * Tab pill lọc trạng thái (ORDER_FILTERS trong ./lib.js, tab nằm trên URL), thẻ đơn gom theo tháng đặt.
- * Dữ liệu: useMyOrders({ status, size }) (GET /me/orders?status=, tải thêm khi cuộn). Bấm một đơn → /orders/:id.
- */
+// Danh sách đơn hàng của tôi, route "/me/orders?status=paid|pending|cancelled" (cần đăng nhập, nằm trong AccountLayout).
+// Dữ liệu: useMyOrders.
+
 import { Link, useSearchParams } from "react-router-dom";
 import { Receipt } from "lucide-react";
 import { flattenPages, totalOf, useMyOrders } from "@/api";
@@ -14,10 +12,8 @@ import { formatNumber } from "@/lib/format";
 import { OrderCard, OrderCardsSkeleton } from "./components/OrderCard";
 import { ORDER_FILTERS, groupByMonth, orderFilterOf } from "./lib";
 
-// 24/trang: thẻ đơn thấp, 12 đơn chưa đủ đẩy sentinel ra khỏi rootMargin → trang 1 bị tải dây chuyền ngay khi mở.
 const PAGE_SIZE = 24;
 
-/** Nội dung rỗng theo tab. */
 const EMPTY = {
   all: { title: "Chưa có đơn hàng nào", description: "Đơn hàng xuất hiện ở đây ngay khi bạn đặt vé, kể cả đơn chưa thanh toán." },
   paid: { title: "Chưa có đơn thành công", description: "Đơn đã thanh toán xong sẽ nằm ở đây, kèm vé điện tử." },
@@ -32,7 +28,6 @@ export default function MyOrdersPage() {
   const query = useMyOrders({ status: filter.status, size: PAGE_SIZE });
   const orders = flattenPages(query.data);
   const total = totalOf(query.data);
-  // Vị trí của từng đơn trong danh sách phẳng, để tính độ trễ animation (xem index của OrderCard bên dưới)
   const position = new Map(orders.map((o, i) => [o.id, i]));
 
   const changeFilter = (value) => {
@@ -55,14 +50,9 @@ export default function MyOrdersPage() {
         description={empty.description}
         action={
           filter.value === "all" ? (
-            <>
-              <Button asChild>
-                <Link to="/events">Khám phá sự kiện</Link>
-              </Button>
-              <Button asChild variant="secondary">
-                <Link to="/resale">Xem vé bán lại</Link>
-              </Button>
-            </>
+            <Button asChild>
+              <Link to="/events">Khám phá sự kiện</Link>
+            </Button>
           ) : (
             <Button asChild variant="secondary">
               <Link to="/me/orders">Xem tất cả đơn</Link>
@@ -76,7 +66,6 @@ export default function MyOrdersPage() {
       <div aria-label="Danh sách đơn hàng" role="region" className="space-y-6">
         {groupByMonth(orders).map((group) => (
           <section key={group.key} aria-labelledby={`orders-${group.key}`}>
-            {/* Nhãn tháng dính ngay dưới header (cao --header-h) khi cuộn qua nhóm. */}
             <h2
               id={`orders-${group.key}`}
               className="sticky top-(--header-h) z-10 -mx-1 mb-2 bg-page/95 px-1 py-2 text-sm font-bold text-foreground backdrop-blur-sm"
@@ -86,7 +75,6 @@ export default function MyOrdersPage() {
             </h2>
             <ul className="space-y-3">
               {group.orders.map((order) => (
-                // % PAGE_SIZE: đơn của trang vừa tải thêm trễ lại từ 0, không phải chờ theo vị trí 25, 26…
                 <OrderCard key={order.id} order={order} index={position.get(order.id) % PAGE_SIZE} />
               ))}
             </ul>

@@ -1,3 +1,5 @@
+// EVENT_INCOMPLETE → liệt kê mục còn thiếu + link tới đúng bước của trình chỉnh sửa.
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -6,10 +8,6 @@ import { usePublishOrganizerEvent } from "@/api";
 import { fieldLabel, stepOfField } from "../editor/schema";
 import { normalizeServerField } from "../editor/serverErrors";
 
-/**
- * Xác nhận xuất bản một bản nháp. EVENT_INCOMPLETE → liệt kê mục còn thiếu + link tới đúng bước của trình chỉnh sửa.
- * event: { id, name }. Điều khiển open/onOpenChange từ ngoài.
- */
 export function PublishEventDialog({ event, open, onOpenChange, onPublished }) {
   const navigate = useNavigate();
   const publish = usePublishOrganizerEvent();

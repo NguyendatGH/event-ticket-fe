@@ -1,6 +1,8 @@
+// Menu khu tài khoản: thẻ bên trái từ lg, hàng pill cuộn ngang khi hẹp hơn.
+
 import { useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { LayoutDashboard, LogOut, Receipt, Repeat2, Store, Ticket, UserRound } from "lucide-react";
+import { LayoutDashboard, LogOut, Receipt, Store, Ticket, UserRound } from "lucide-react";
 import { toast } from "sonner";
 import { UserAvatar } from "@/components/site";
 import { useAuth } from "@/hooks/useAuth";
@@ -8,12 +10,10 @@ import { cn } from "@/lib/utils";
 
 const ROLE_LABEL = { CUSTOMER: "Thành viên", ORGANIZER: "Nhà tổ chức", ADMIN: "Quản trị viên" };
 
-/** Mục menu tài khoản. active(pathname, scope) quyết định mục nào sáng (aria-current="page"). */
 function navItems(isOrganizer) {
   return [
-    { to: "/me/tickets", label: "Vé của tôi", short: "Vé của tôi", icon: Ticket, active: (p, scope) => p.startsWith("/me/tickets") && !(p === "/me/tickets" && scope === "listed") },
+    { to: "/me/tickets", label: "Vé của tôi", short: "Vé của tôi", icon: Ticket, active: (p) => p.startsWith("/me/tickets") },
     { to: "/me/orders", label: "Đơn hàng", short: "Đơn hàng", icon: Receipt, active: (p) => p.startsWith("/me/orders") },
-    { to: "/me/tickets?scope=listed", label: "Vé đang bán lại", short: "Đang bán lại", icon: Repeat2, active: (p, scope) => p === "/me/tickets" && scope === "listed" },
     { to: "/me/profile", label: "Thông tin tài khoản", short: "Tài khoản", icon: UserRound, active: (p) => p.startsWith("/me/profile") },
     isOrganizer
       ? { to: "/organizer", label: "Dashboard BTC", short: "Dashboard BTC", icon: LayoutDashboard, active: () => false }
@@ -21,19 +21,11 @@ function navItems(isOrganizer) {
   ];
 }
 
-/**
- * Menu khu tài khoản (AccountLayout):
- *   ≥ lg: thẻ bên trái, dính dưới header: avatar tròn + tên + email + vai trò, danh sách mục có icon, Đăng xuất.
- *         Mục đang mở: chữ xanh, nền sáng nhẹ, vạch xanh bên trái.
- *   < lg: thanh pill cuộn ngang trong một khung bo tròn (mục đang mở viền + chữ xanh, khác pill lọc nền xanh đặc của trang), tự cuộn vào giữa. Đăng xuất nằm ở menu header và trang Tài khoản.
- * useAuth ở đây (leaf) nên trang con không render lại khi store user đổi.
- */
 export function AccountNav() {
   const { user, isOrganizer, logout } = useAuth();
-  const { pathname, search } = useLocation();
+  const { pathname } = useLocation();
   const navigate = useNavigate();
-  const scope = new URLSearchParams(search).get("scope");
-  const items = navItems(isOrganizer).map((item) => ({ ...item, current: item.active(pathname, scope) }));
+  const items = navItems(isOrganizer).map((item) => ({ ...item, current: item.active(pathname) }));
   const activeKey = items.find((i) => i.current)?.to;
 
   const onLogout = async () => {
@@ -99,7 +91,6 @@ export function AccountNav() {
   );
 }
 
-/** Hàng pill < lg. Pill đang mở được cuộn vào giữa hàng (chỉ cuộn ngang, không kéo trang). */
 function MobilePills({ items, activeKey }) {
   const listRef = useRef(null);
   useEffect(() => {

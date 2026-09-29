@@ -1,3 +1,5 @@
+// Số vé hiện sẵn mỗi sự kiện; phần còn lại nằm sau "Xem thêm N vé".
+
 import { memo, useState } from "react";
 import { Link } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";
@@ -11,21 +13,9 @@ import { imageAt } from "@/lib/image";
 import { DUR, EASE_IN, EASE_OUT } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
-/** Số vé hiện sẵn mỗi sự kiện; phần còn lại nằm sau "Xem thêm N vé". */
 const PREVIEW = 3;
 const DAY_MS = 86_400_000;
 
-/**
- * Thẻ vé gom theo sự kiện (1 sự kiện mua 5 vé → 1 thẻ, không phải 5 thẻ giống hệt), kiểu cuống vé:
- *   ┌────────────────────────────────────────────────────────────┐
- *   │ [POSTER]  24.10.2026 · 19:00  (Còn 3 ngày)          5 vé    │
- *   │           THE LUMIÈRE TOUR                                  │
- *   │           ⌖ Mỹ Đình, Hà Nội                                 │
- *   ◖ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ◗
- *   │ GA 2  #…3524  [Đang rao]        800.000đ  [Xem vé →] Bán lại│
- *   └────────────────────────────────────────────────────────────┘
- * past: poster mờ, ngày không tô xanh. now: mốc thời gian chung của trang (tính "Còn N ngày").
- */
 export function TicketGroup({ event, tickets, past = false, now }) {
   const [open, setOpen] = useState(false);
   const hidden = tickets.length - PREVIEW;
@@ -108,13 +98,8 @@ export function TicketGroup({ event, tickets, past = false, now }) {
   );
 }
 
-/**
- * Một vé trong thẻ sự kiện: hạng vé + mã rút gọn + nhãn | giá | hành động.
- * past: sự kiện đã qua → nút Xem vé viền (không còn là hành động chính).
- * memo: tải thêm trang / mở "Xem thêm" không render lại các vé đã có (ticket giữ nguyên tham chiếu nhờ structural sharing).
- */
 const TicketLine = memo(function TicketLine({ ticket, past }) {
-  const { tier, listing } = ticket;
+  const { tier } = ticket;
   return (
     <div className="grid grid-cols-[1fr_auto] items-center gap-x-4 gap-y-3 py-3.5 sm:grid-cols-[1fr_auto_auto] sm:gap-x-6">
       <div className="flex min-w-0 flex-wrap items-center gap-x-2.5 gap-y-1.5">
@@ -123,17 +108,9 @@ const TicketLine = memo(function TicketLine({ ticket, past }) {
           #…{String(ticket.ticketCode || "").slice(-6)}
         </code>
         {ticket.status !== "ACTIVE" ? <StatusBadge kind="ticket" status={ticket.status} /> : null}
-        {listing ? <StatusBadge kind="listing" status={listing.status} /> : null}
       </div>
       <div className="text-right tabular-nums">
-        {listing ? (
-          <p className="text-ui font-bold text-primary">
-            <span className="mr-1.5 text-xs font-normal text-muted-foreground">Giá bán lại</span>
-            {formatVND(listing.price)}
-          </p>
-        ) : (
-          <p className="text-ui font-bold text-foreground">{ticket.price > 0 ? formatVND(ticket.price) : "Miễn phí"}</p>
-        )}
+        <p className="text-ui font-bold text-foreground">{ticket.price > 0 ? formatVND(ticket.price) : "Miễn phí"}</p>
       </div>
       <div className="col-span-2 flex items-center gap-2 sm:col-span-1 sm:justify-end">
         <Button asChild size="sm" variant={past ? "secondary" : "default"}>
@@ -141,21 +118,11 @@ const TicketLine = memo(function TicketLine({ ticket, past }) {
             Xem vé <ArrowRight aria-hidden="true" />
           </Link>
         </Button>
-        {listing ? (
-          <Button asChild size="sm" variant="secondary">
-            <Link to={`/resale/${listing.id}`}>Xem tin bán</Link>
-          </Button>
-        ) : ticket.resellable ? (
-          <Button asChild size="sm" variant="secondary">
-            <Link to={`/me/tickets/${ticket.id}/resell`}>Bán lại</Link>
-          </Button>
-        ) : null}
       </div>
     </div>
   );
 });
 
-/** Skeleton cùng khung với TicketGroup. */
 export function TicketGroupsSkeleton({ rows = 2 }) {
   return (
     <div role="status" aria-label="Đang tải vé" className="space-y-4">

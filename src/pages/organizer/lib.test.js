@@ -1,5 +1,7 @@
+// Test helper khu organizer.
+
 import { describe, expect, it } from "vitest";
-import { formatRangeLabel, isoToLocalInput, localInputToIso, resolveRange } from "./helpers";
+import { formatRangeLabel, isoToLocalInput, localInputToIso, resolveRange } from "./lib";
 
 describe("datetime-local theo giờ VN", () => {
   it("ISO → giá trị input và ngược lại", () => {

@@ -1,10 +1,6 @@
-/**
- * Trang danh sách sự kiện, route "/events".
- * Mọi bộ lọc (q, category, city, when, from/to, priceMin/priceMax, sort) nằm trên URL: F5, back/forward, chia sẻ link
- * đều giữ nguyên kết quả. Trang đọc URL bằng readFilters, ghi bằng applyPatch (./filters.js).
- * Dữ liệu: useInfiniteEvents (GET /events, tải thêm khi cuộn), useEventFacets (GET /events/facets: số lượng mỗi danh mục/thành phố).
- * Bộ lọc: cột trái trên desktop, ngăn trượt (FilterSheet) trên mobile, cùng một FilterPanel.
- */
+// Trang danh sách sự kiện, route "/events".
+// Dữ liệu: useEventFacets, useInfiniteEvents.
+
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { keepPreviousData } from "@tanstack/react-query";
@@ -50,8 +46,6 @@ import {
   readFilters,
 } from "./filters";
 
-// Mỗi thẻ hiện khi cuộn tới, trễ theo cột (lưới 3 cột: cột 1, 2, 3 trễ dần).
-// Tạo sẵn 3 object variants một lần ở đây: gọi gridItem(i) trong lúc render sẽ tạo object mới mỗi lần.
 const COL_ITEM = [0, 1, 2].map(gridItem);
 
 export default function EventsPage() {
@@ -59,8 +53,6 @@ export default function EventsPage() {
   const filters = readFilters(searchParams);
   const [sheetOpen, setSheetOpen] = useState(false);
 
-  // Router cập nhật URL trong transition: hai thao tác liền nhau (gõ ngày, bấm nhanh) có thể còn thấy
-  // searchParams cũ và ghi đè nhau. Giữ bản mới nhất mình vừa ghi, chỉ lấy lại khi URL thật sự đổi.
   const latest = useRef(searchParams);
   useEffect(() => {
     latest.current = searchParams;
@@ -74,8 +66,6 @@ export default function EventsPage() {
   const resetFilters = () => write(clearFilters(latest.current));
 
   const facets = useEventFacets();
-  // filters có đúng các tham số của GET /events. keepPreviousData: đổi bộ lọc thì vẫn hiện kết quả cũ
-  // (mờ đi) trong lúc chờ kết quả mới, không nháy về khung chờ.
   const query = useInfiniteEvents(filters, { placeholderData: keepPreviousData });
   const events = flattenPages(query.data);
   const total = totalOf(query.data);
@@ -124,7 +114,6 @@ export default function EventsPage() {
   } else {
     body = (
       <>
-        {/* Mobile 2 cột, chữ thẻ gọn (ẩn dòng địa điểm) để so sánh được nhiều lựa chọn hơn trên một màn hình */}
         <div
           className={cn(
             "grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-6 sm:gap-y-12 lg:grid-cols-3",
@@ -165,7 +154,6 @@ export default function EventsPage() {
           <div className="flex flex-wrap items-center gap-3 border-b border-border pb-4">
             <DebouncedSearch
               value={filters.q}
-              // replace: mỗi lần tìm không thêm một mục vào lịch sử (nút Back không phải lùi qua từng từ khóa)
               onCommit={(value) =>
                 updateFilters({ q: value || null }, { replace: true })
               }

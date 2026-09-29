@@ -1,8 +1,9 @@
+// Vòng tròn tự vẽ → dấu tick → một vòng lan tỏa duy nhất (không lặp, không confetti).
+
 import { motion, useReducedMotion } from "motion/react";
 import { EASE_OUT } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
-/** Dấu tick thanh toán xong: vòng tròn tự vẽ → dấu tick → một vòng lan tỏa duy nhất (không lặp, không confetti). */
 export function SuccessMark({ size = 56, className }) {
   const reduce = useReducedMotion();
   const draw = (delay) => ({

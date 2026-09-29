@@ -1,10 +1,8 @@
+// Ô tìm kiếm dạng Sheet cho màn hình nhỏ.
+
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/components/ui/sheet";
 import { HeaderSearch } from "./HeaderSearch";
 
-/**
- * Ô tìm kiếm trên màn hình nhỏ (< lg): nút kính lúp ở Header mở Sheet trượt từ trên, nền xanh header,
- * ô tìm trắng tự focus. Enter → onSearch(từ khóa) (Header đóng Sheet và chuyển tới /events?q=). Chỉ dùng trong Header.jsx.
- */
 export function MobileSearchSheet({ open, onOpenChange, onSearch }) {
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>

@@ -1,20 +1,10 @@
+// Truyền `images` (2-4 ảnh) thay cho `image` để làm ô ghép lưới 2×2 ("Vị trí khác").
+
 import { Link } from "react-router-dom";
 import { ImageWithFallback } from "@/components/site";
 import { imageAt } from "@/lib/image";
 import { cn } from "@/lib/utils";
 
-/**
- * Ô "Điểm đến" (design-spec v2): ảnh thành phố bo 12px, dải gradient xanh từ đáy, tên thành phố to đậm trắng.
- * Truyền `images` (2-4 ảnh) thay cho `image` để làm ô ghép lưới 2×2 ("Vị trí khác").
- *
- *   <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
- *     <CityTile name="Hà Nội" image={{ src: "https://images.unsplash.com/…", alt: "Văn Miếu, Hà Nội" }} href="/events?city=Hà Nội" count={12} />
- *     <CityTile name="Vị trí khác" images={[{ src, alt }, …]} href="/events" />
- *   </div>
- *
- * Props: name, href, image {src, alt} | images [{src, alt}], count (số sự kiện, tùy chọn), priority, className.
- * Ảnh ghép: alt rỗng (trang trí), tên ô đã nói đủ.
- */
 export function CityTile({ name, href, image, images, count, priority = false, className }) {
   const mosaic = images?.length > 1;
   return (
@@ -40,7 +30,6 @@ export function CityTile({ name, href, image, images, count, priority = false, c
           className="size-full group-hover:scale-105 motion-reduce:group-hover:scale-100"
         />
       )}
-      {/* Gradient xanh từ đáy (màu mẫu từ tham chiếu, cùng họ #2DC275) để chữ trắng đọc được trên mọi ảnh. */}
       <span
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 bg-linear-to-t from-[#1b7a38] via-[#2a9d4a]/55 via-45% to-transparent to-75%"

@@ -1,10 +1,11 @@
+// Khối "Ban tổ chức" trên trang chi tiết sự kiện.
+
 import { Link } from "react-router-dom";
 import { ArrowRight, BadgeCheck } from "lucide-react";
 import { UserAvatar } from "@/components/site";
 import { BRAND } from "@/lib/constants";
 import { formatNumber } from "@/lib/format";
 
-/** Nội dung khối "Ban tổ chức" trên trang chi tiết: logo, tên, dấu xác thực, số sự kiện, mô tả, link trang BTC. */
 export function EventOrganizer({ organizer }) {
   return (
     <>

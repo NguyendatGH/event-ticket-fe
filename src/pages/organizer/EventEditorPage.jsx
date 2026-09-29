@@ -1,8 +1,6 @@
-/**
- * Trang tạo / sửa sự kiện — route /organizer/events/new và /organizer/events/:id/edit (?step=1..4).
- * Sửa: tải sự kiện bằng useOrganizerEvent(id) rồi mới dựng form (form cần giá trị mặc định ngay từ đầu).
- * Toàn bộ trình sửa 4 bước ở ./editor/EditorForm.jsx.
- */
+// Trang tạo / sửa sự kiện — route /organizer/events/new và /organizer/events/:id/edit (?step=1..4).
+// Dữ liệu: useOrganizerEvent.
+
 import { useParams } from "react-router-dom";
 import { useOrganizerEvent } from "@/api";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -15,7 +13,6 @@ export default function EventEditorPage() {
   const query = useOrganizerEvent(id);
   useDocumentTitle(id ? "Chỉnh sửa sự kiện" : "Tạo sự kiện");
 
-  // key: đổi sự kiện (hoặc từ /new sang /:id/edit) → dựng lại form mới hoàn toàn, không lẫn giá trị cũ.
   if (!id) return <EditorForm key="new" />;
   if (query.isPending) return <EditorSkeleton />;
   if (query.isError) return <EventLoadError error={query.error} onRetry={query.refetch} />;

@@ -1,7 +1,6 @@
-/**
- * Đặt mật khẩu mới, route "/auth/reset-password?token=…" → useResetPassword (POST /auth/reset-password).
- * Thiếu token / token sai / hết hạn → màn hình báo lỗi riêng (TokenProblem) thay cho form.
- */
+// Đặt mật khẩu mới, route "/auth/reset-password?token=…" → useResetPassword (POST /auth/reset-password).
+// Dữ liệu: useResetPassword.
+
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,7 +17,6 @@ import { riseSm } from "@/lib/motion";
 import { resetSchema } from "./schemas";
 import { AUTH_STAGGER, AuthHeading } from "./components";
 
-// Nội dung màn lỗi theo mã: MISSING (URL không có ?token) do FE tự đặt, hai mã còn lại BE trả về
 const TOKEN_PROBLEMS = {
   MISSING: {
     title: "Thiếu liên kết đặt lại",

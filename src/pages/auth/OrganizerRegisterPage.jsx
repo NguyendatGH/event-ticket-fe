@@ -1,8 +1,6 @@
-/**
- * Đăng ký ban tổ chức, route "/auth/register-organizer" → useRegisterOrganizer (POST /auth/register-organizer):
- * tạo tài khoản + hồ sơ ban tổ chức trong một lần, xong vào thẳng /organizer.
- * Người đã có tài khoản khách thì nâng cấp ở /become-organizer (link ở chân trang).
- */
+// Đăng ký ban tổ chức, route "/auth/register-organizer" → useRegisterOrganizer (POST /auth/register-organizer):
+// Dữ liệu: useRegisterOrganizer.
+
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
@@ -32,7 +30,6 @@ const DEFAULTS = {
   agree: false,
 };
 
-// Link "Đăng nhập để nâng cấp": đăng nhập xong quay về /become-organizer (state.from, xem afterLoginPath)
 const BECOME_FROM = { from: "/become-organizer" };
 
 export default function OrganizerRegisterPage() {
@@ -42,7 +39,6 @@ export default function OrganizerRegisterPage() {
   const registerOrganizer = useRegisterOrganizer();
 
   const onSubmit = (values) => {
-    // confirmPassword và agree chỉ để kiểm tra ở FE, không gửi lên BE
     const { confirmPassword, agree, ...body } = values;
     registerOrganizer.mutate(toPayload(body), {
       onSuccess: () => {

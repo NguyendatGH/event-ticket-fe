@@ -1,10 +1,11 @@
+// Không dính (chỉ Header dính) để không ăn thêm chiều cao màn hình khi cuộn.
+
 import { useLayoutEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { CATEGORIES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { Container } from "./Container";
 
-/** Mục của thanh danh mục. `match(pathname, category)` quyết định mục đang chọn. */
 const ITEMS = [
   { key: "all", label: "Tất cả sự kiện", to: "/events", match: (path, cat) => path === "/events" && !cat },
   ...CATEGORIES.map((c) => ({
@@ -13,27 +14,19 @@ const ITEMS = [
     to: `/events?category=${c.slug}`,
     match: (path, cat) => path === "/events" && cat === c.slug,
   })),
-  { key: "resale", label: "Vé bán lại", to: "/resale", match: (path) => path === "/resale" || path.startsWith("/resale/") },
 ];
 
-/**
- * Thanh danh mục đen dưới header (design-spec v2): Tất cả sự kiện · 6 danh mục (/events?category=…) · Vé bán lại (/resale).
- * Mục đang chọn: chữ xanh + gạch 2px + aria-current="page". Mobile: cuộn ngang (mờ hai mép), tự cuộn tới mục đang chọn.
- * Không dính (chỉ Header dính) để không ăn thêm chiều cao màn hình khi cuộn.
- */
 export function CategoryNav({ className }) {
   const { pathname, search } = useLocation();
   const category = pathname === "/events" ? new URLSearchParams(search).get("category") : null;
   const activeKey = ITEMS.find((it) => it.match(pathname, category))?.key;
 
-  // Mục đang chọn nằm ngoài vùng nhìn thấy của thanh (mobile) → chỉnh scrollLeft của thanh.
-  // Không dùng scrollIntoView: nó có thể cuộn cả trang theo chiều dọc.
   const listRef = useRef(null);
   useLayoutEffect(() => {
     const list = listRef.current;
     const el = list?.querySelector('[aria-current="page"]');
     if (!list || !el) return;
-    const left = el.offsetLeft; // ul là "relative" nên offsetLeft tính từ mép thanh
+    const left = el.offsetLeft;
     if (left < list.scrollLeft || left + el.offsetWidth > list.scrollLeft + list.clientWidth) {
       list.scrollLeft = Math.max(0, left - 16);
     }

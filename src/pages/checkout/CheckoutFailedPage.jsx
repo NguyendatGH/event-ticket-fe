@@ -1,3 +1,6 @@
+// Trang thanh toán thất bại — route /checkout/failed?order=<id>&reason=<lý do>
+// Dữ liệu: useEvent, useOrder.
+
 import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { motion } from "motion/react";
 import { X } from "lucide-react";
@@ -8,17 +11,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { formatTime } from "@/lib/format";
 import { DUR, EASE_OUT, fadeUp, stagger } from "@/lib/motion";
-import { OrderLines } from "./components/OrderLines";
-import { EventAside, SPLIT_ASIDE, SPLIT_GRID } from "./components/OrderSummaryParts";
-import { FAILURE_COPY, failureReason, orderOutcome, orderToLines, retryHref } from "./lib";
+import { OrderLines } from "@/components/order";
+import { EventAside, SPLIT_ASIDE, SPLIT_GRID } from "@/components/order";
+import { FAILURE_COPY, failureReason, orderOutcome, orderToLines, retryHref } from "@/lib/checkout";
 
-/**
- * Trang thanh toán thất bại — route /checkout/failed?order=<id>&reason=<lý do>
- * Dữ liệu: useOrder(orderId) + useEvent(order.eventSlug).
- * lý do (declined | timeout | cancelled), tóm tắt đơn, mua lại đúng giỏ cũ.
- * Trạng thái đơn thắng ?reason=: đơn đã PAID (vd bấm Back sau khi thanh toán lại thành công, hoặc link cũ)
- * → sang trang thành công; đang đối soát / đã sang giai đoạn khác → trang đơn. Tránh mời mua trùng.
- */
 export default function CheckoutFailedPage() {
   useDocumentTitle("Thanh toán không thành công");
   const [params] = useSearchParams();
@@ -42,8 +38,6 @@ export default function CheckoutFailedPage() {
 
   const reason = failureReason(order, params.get("reason"));
   const copy = FAILURE_COPY[reason] || FAILURE_COPY[""];
-  const resale = order?.kind === "RESALE";
-  // Bị từ chối nhưng đơn còn giữ chỗ: trả lại trên cùng link (BE giữ vé/tin tới expiresAt), không tạo đơn mới.
   const payAgain = order?.status === "PENDING_PAYMENT" && order.payment?.checkoutUrl;
 
   return (
@@ -81,11 +75,11 @@ export default function CheckoutFailedPage() {
                   {payAgain ? (
                     <a href={order.payment.checkoutUrl}>Thanh toán lại</a>
                   ) : (
-                    <Link to={retryHref(order)}>{resale ? "Quay lại tin bán" : "Thử lại"}</Link>
+                    <Link to={retryHref(order)}>Thử lại</Link>
                   )}
                 </Button>
                 <Button asChild size="lg" variant="secondary">
-                  <Link to={resale ? "/resale" : `/events/${order.eventSlug}`}>{resale ? "Xem vé bán lại khác" : "Chọn lại vé"}</Link>
+                  <Link to={`/events/${order.eventSlug}`}>Chọn lại vé</Link>
                 </Button>
               </>
             ) : (

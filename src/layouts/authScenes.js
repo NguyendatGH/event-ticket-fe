@@ -1,7 +1,5 @@
-/**
- * Mỗi màn auth một ảnh sự kiện + chú thích (ảnh Unsplash, cùng bộ ảnh với seed BE).
- * Đổi `src` sang ảnh thật của sản phẩm khi có.
- */
+// Mỗi màn auth một ảnh sự kiện + chú thích (ảnh Unsplash, cùng bộ ảnh với seed BE).
+
 const unsplash = (id, w = 1600) => `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&q=80`;
 
 export const AUTH_SCENES = {
@@ -42,7 +40,6 @@ export const AUTH_SCENES = {
   },
 };
 
-/** pathname → scene + lời mời ở góc trên phải. */
 export const AUTH_ROUTES = {
   "/auth/login": { scene: "login", prompt: "Chưa có tài khoản?", action: ["Đăng ký", "/auth/register"] },
   "/auth/register": { scene: "register", prompt: "Đã có tài khoản?", action: ["Đăng nhập", "/auth/login"] },

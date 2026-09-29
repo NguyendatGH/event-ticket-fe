@@ -1,3 +1,5 @@
+// Từ md: lưới 6 cột (GRID, dùng chung với hàng tiêu đề của trang). Điện thoại: ảnh | nội dung | nút "…".
+
 import { memo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, MoreHorizontal, Pencil, Rocket, SquareArrowOutUpRight, Trash2 } from "lucide-react";
@@ -17,16 +19,8 @@ import { formatDate, formatNumber, formatTime, formatVND } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { SoldMeter } from "./OrgUi";
 
-/**
- * Một dòng sự kiện ở trang "Quản lý sự kiện" (/organizer/events) + skeleton cùng khung.
- * Từ md: lưới 6 cột (GRID, dùng chung với hàng tiêu đề của trang). Điện thoại: ảnh | nội dung | nút "…".
- */
-
-/** 6 cột: sự kiện | thời gian | trạng thái | đã bán | doanh thu | nút thao tác. */
 export const GRID = "md:grid md:grid-cols-[minmax(0,2.6fr)_minmax(0,1fr)_minmax(0,0.9fr)_minmax(0,1.2fr)_minmax(0,1.1fr)_40px] md:items-center md:gap-6";
 
-// memo: mở hộp thoại xuất bản/xóa (state ở trang) không render lại cả danh sách. Props đều ổn định
-// (event giữ tham chiếu nhờ structural sharing của TanStack, onPublish/onDelete là setState).
 export const EventRow = memo(function EventRow({ event: e, index, onPublish, onDelete }) {
   const navigate = useNavigate();
   const isDraft = e.status === "DRAFT";
@@ -36,7 +30,6 @@ export const EventRow = memo(function EventRow({ event: e, index, onPublish, onD
       <div className="contents md:flex md:min-w-0 md:items-center md:gap-4">
         <ImageWithFallback src={e.coverImageUrl} alt="" fallback={null} fallbackLabel={e.name} className="aspect-card w-22 shrink-0 md:w-18" />
         <div className="min-w-0">
-          {/* Link phủ cả dòng (after:inset-0); nút "…" nằm trên (relative z-10). */}
           <Link to={detail} className="line-clamp-2 font-medium text-foreground transition-colors group-hover/row:text-primary after:absolute after:inset-0 focus-ring md:line-clamp-1">
             {e.name}
           </Link>

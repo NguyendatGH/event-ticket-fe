@@ -1,22 +1,7 @@
-/**
- * Helper cho luồng mua vé (checkout → cổng thanh toán → return → success/failed).
- *
- *   /checkout/:slug?tiers=a:2,b:1 ── POST /orders ──▶ payment.checkoutUrl (cổng)
- *        │ rememberPendingOrder(order.id)  (@/lib/pendingOrder)    │
- *        ▼                                                        ▼
- *   /orders/:id (payment null)                 /checkout/return?orderId= ── poll GET /orders/{id}
- *                                                   ├─ PAID ─────────▶ /checkout/success?order=
- *                                                   ├─ hết hạn/hủy/lỗi ▶ /checkout/failed?order=&reason=
- *                                                   └─ MANUAL_REVIEW ─▶ giải thích tại chỗ
- */
+// Helper cho luồng mua vé (checkout → cổng thanh toán → return → success/failed).
 
-// Hằng số nghiệp vụ (SERVICE_FEE, tierLimit, ...) nằm ở @/lib/business;
-// nhớ/đọc đơn đang chờ thanh toán nằm ở @/lib/pendingOrder.
-
-/** Thời gian chờ tối đa ở trang return trước khi mời xem trang đơn. */
 export const RETURN_TIMEOUT_MS = 90_000;
 
-/** "a:2,b:1" → { a: 2, b: 1 }. Bỏ qua phần tử hỏng, số lượng âm/không phải số. */
 export function parseTiers(param) {
   const out = {};
   for (const part of String(param || "").split(",")) {
@@ -27,33 +12,26 @@ export function parseTiers(param) {
   return out;
 }
 
-/** { a: 2, b: 0 } → "a:2" (bỏ số lượng 0). */
 export const serializeTiers = (map) =>
   Object.entries(map)
     .filter(([, q]) => q > 0)
     .map(([id, q]) => `${id}:${q}`)
     .join(",");
 
-/** Sự kiện đang mở bán (BE chỉ nhận đơn khi PUBLISHED). */
 export const isOnSale = (event) => event?.status === "PUBLISHED";
 
 export const EVENT_CLOSED_MESSAGE = {
   UPCOMING: "Sự kiện chưa mở bán. Quay lại khi vé được mở.",
-  SOLD_OUT: "Sự kiện đã hết vé. Bạn có thể tìm vé bán lại.",
+  SOLD_OUT: "Sự kiện đã hết vé.",
   ENDED: "Sự kiện đã kết thúc.",
   CANCELLED: "Sự kiện đã bị hủy.",
   DRAFT: "Sự kiện chưa được công bố.",
 };
 
-/** Lỗi tạo đơn hiện cạnh tóm tắt đơn (người mua cần chỉnh giỏ vé). */
 export const CART_ERROR_CODES = ["TIER_SOLD_OUT", "QUANTITY_EXCEEDED", "EVENT_NOT_ON_SALE", "PAYMENT_LINK_FAILED"];
 
 const FAILED_STATUSES = ["EXPIRED", "CANCELLED"];
 
-/**
- * Kết quả của đơn sau khi rời cổng thanh toán:
- *   "success" | "failed" | "review" | "other" (đơn đã sang giai đoạn hoàn tiền) | "pending"
- */
 export function orderOutcome(order) {
   if (!order) return "pending";
   if (order.status === "PAID") return "success";
@@ -63,7 +41,6 @@ export function orderOutcome(order) {
   return "other";
 }
 
-/** Lý do thất bại cho /checkout/failed?reason= (URL có thì dùng, không thì suy từ đơn). */
 export function failureReason(order, param) {
   if (param) return param;
   if (order?.status === "CANCELLED") return "cancelled";
@@ -79,20 +56,15 @@ export const FAILURE_COPY = {
   "": { title: "Thanh toán chưa hoàn tất.", body: "Chưa có khoản nào bị trừ. Bạn có thể thử lại." },
 };
 
-/** Link mua lại: đơn thường → checkout với đúng giỏ cũ; đơn bán lại → tin bán lại. */
 export function retryHref(order) {
   if (!order) return "/events";
-  if (order.kind === "RESALE") return order.resaleListingId ? `/resale/${order.resaleListingId}` : "/resale";
   const tiers = serializeTiers(Object.fromEntries((order.items || []).map((i) => [i.tierId, i.quantity])));
   return order.eventSlug ? `/checkout/${order.eventSlug}${tiers ? `?tiers=${tiers}` : ""}` : "/events";
 }
 
-/** Chuyển sang cổng thanh toán (tách riêng để test mock được). */
 export const goToGateway = (url) => window.location.assign(url);
 
-/** Địa điểm một dòng: "Sân vận động Mỹ Đình, Hà Nội". */
 export const venueLine = (venue) => [venue?.name, venue?.city].filter(Boolean).join(", ");
 
-/** OrderResponse.items → lines cho OrderLines. */
 export const orderToLines = (order) =>
   (order?.items || []).map((i) => ({ key: i.tierId, label: i.tierName, quantity: i.quantity, amount: i.unitPrice * i.quantity }));

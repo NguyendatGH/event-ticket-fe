@@ -1,3 +1,5 @@
+// Bước 4 trình sửa sự kiện: checklist xuất bản + xem trước.
+
 import { useWatch } from "react-hook-form";
 import { Check, Circle } from "lucide-react";
 import { ImageWithFallback, KeyValueList, Price } from "@/components/site";
@@ -6,10 +8,9 @@ import { formatDateLong, formatTimeRange } from "@/lib/format";
 import { motion } from "motion/react";
 import { Meter } from "@/components/motion";
 import { cn } from "@/lib/utils";
-import { localInputToIso, textToParagraphs } from "../lib/helpers";
+import { localInputToIso, textToParagraphs } from "../lib";
 import { readInt } from "./schema";
 
-/** Checklist xuất bản: mỗi mục bấm được để nhảy tới đúng bước/field. */
 export function PublishChecklist({ items, onJump, className }) {
   const done = items.filter((i) => i.ok).length;
   return (
@@ -49,7 +50,6 @@ export function PublishChecklist({ items, onJump, className }) {
   );
 }
 
-/** Xem trước gần với trang sự kiện công khai (ảnh lớn, cột trái nội dung, cột phải hạng vé). */
 function EventPreview({ values }) {
   const start = localInputToIso(values.startsAt);
   const end = localInputToIso(values.endsAt);

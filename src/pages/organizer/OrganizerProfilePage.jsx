@@ -1,8 +1,6 @@
-/**
- * Trang hồ sơ ban tổ chức — route /organizer/profile
- * Form sửa tên, giới thiệu, logo/ảnh bìa, liên hệ; bên phải là bản xem trước trang công khai (ProfilePreview).
- * Dữ liệu: useMyOrganizerProfile (GET /organizer/profile), useUpdateOrganizerProfile (PUT /organizer/profile).
- */
+// Trang hồ sơ ban tổ chức — route /organizer/profile
+// Dữ liệu: useMyOrganizerProfile, useUpdateOrganizerProfile.
+
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
@@ -21,14 +19,13 @@ import { applyApiErrors, toPayload } from "@/lib/forms";
 import { OrgFormSection } from "./components/OrgFormSection";
 import { OrgField, OrgHeader } from "./components/OrgUi";
 import { ProfilePreview } from "./components/ProfilePreview";
-import { organizerProfileSchema, toProfileForm } from "./lib/profile";
+import { organizerProfileSchema, toProfileForm } from "./schemas";
 
 export default function OrganizerProfilePage() {
   useDocumentTitle("Hồ sơ ban tổ chức");
   const query = useMyOrganizerProfile();
   if (query.isPending) return <ProfileSkeleton />;
   if (query.isError) {
-    // 404 = tài khoản organizer chưa có hồ sơ: thử lại cũng vô ích nên ẩn nút.
     const noProfile = query.error?.status === 404;
     return (
       <ErrorState

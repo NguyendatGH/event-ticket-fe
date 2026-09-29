@@ -1,9 +1,9 @@
-/** Skeleton (khung xám nhấp nháy) dùng chung khi dữ liệu đang tải. */
+// Cùng kích thước với EventCard để không nhảy layout.
+
 import { NavProgress } from "@/components/motion/NavProgress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
-/** Khung xám của một EventCard lúc đang tải (cùng kích thước để không nhảy layout). */
 function EventCardSkeleton({ className }) {
   return (
     <div className={cn("space-y-3", className)} aria-hidden="true">
@@ -16,7 +16,6 @@ function EventCardSkeleton({ className }) {
   );
 }
 
-/** Lưới skeleton cùng số cột với EventGrid. */
 export function EventGridSkeleton({ count = 8, className }) {
   return (
     <div className={cn("grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-4", className)} role="status" aria-label="Đang tải">
@@ -27,10 +26,6 @@ export function EventGridSkeleton({ count = 8, className }) {
   );
 }
 
-/**
- * Fallback Suspense cho trang lazy: giữ chỗ (không nhảy footer) + vạch tiến trình mảnh trên cùng,
- * hiện sau 150ms nên tải nhanh không nháy spinner.
- */
 export function PageLoader({ className, label = "Đang tải" }) {
   return (
     <div className={cn("min-h-[50vh]", className)} role="status">

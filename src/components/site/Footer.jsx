@@ -1,3 +1,5 @@
+// Chữ trên nền footer: text-footer-foreground / text-footer-muted (≥ 7:1 / 5.6:1).
+
 import { Link } from "react-router-dom";
 import { ArrowRight, Clock, Mail } from "lucide-react";
 import { BRAND } from "@/lib/constants";
@@ -5,7 +7,6 @@ import { createEventHref, useAuth } from "@/hooks/useAuth";
 import { Container } from "./Container";
 import { Logo } from "./Logo";
 
-/** Một cột link: tiêu đề nhỏ đậm + danh sách link chữ xám sáng. */
 function LinkColumn({ title, links }) {
   return (
     <div>
@@ -23,13 +24,6 @@ function LinkColumn({ title, links }) {
   );
 }
 
-/**
- * Footer v2 (design-spec mục v2): nền xanh-xám (bg-footer), 3 cột.
- *   Liên hệ: giờ hỗ trợ, email hỗ trợ tô xanh nổi bật (không có hotline), link /contact
- *   Dành cho khách hàng: Vé của tôi, Đơn hàng, Vé bán lại, Câu hỏi thường gặp (/contact#faq)
- *   Về <BRAND.name> / Ban tổ chức: Tạo sự kiện, Trở thành ban tổ chức (hoặc Bảng điều khiển), Điều khoản (/contact)
- * Dưới cùng: logo + tagline + ©. Chữ trên nền footer: text-footer-foreground / text-footer-muted (≥ 7:1 / 5.6:1).
- */
 export function Footer() {
   const { isAuthenticated, isOrganizer } = useAuth();
   const organizerLinks = [
@@ -68,7 +62,6 @@ export function Footer() {
           links={[
             ["Vé của tôi", "/me/tickets"],
             ["Đơn hàng", "/me/orders"],
-            ["Vé bán lại", "/resale"],
             ["Câu hỏi thường gặp", "/contact#faq"],
           ]}
         />

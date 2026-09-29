@@ -1,9 +1,10 @@
+// Ô nhập nhỏ có nhãn chú thích phía trên.
+
 import { useId } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
-/** Ô nhập nhỏ có nhãn chú thích phía trên (khoảng giá, khoảng ngày). */
 export function MiniField({ label, className, ...props }) {
   const id = useId();
   return (

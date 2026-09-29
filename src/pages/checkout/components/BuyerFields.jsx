@@ -1,32 +1,11 @@
-/**
- * Khối "Thông tin người nhận" của trang thanh toán:
- *   GuestNote      dòng mời đăng nhập (giữ nguyên giỏ vé khi quay lại)
- *   BuyerFields    3 ô tên / email / số điện thoại
- */
+// Khối "Thông tin người nhận" của trang thanh toán (memo + useFormState riêng).
+
 import { memo } from "react";
-import { Link, useLocation } from "react-router-dom";
 import { useFormState } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
-/** Link đăng nhập giữ nguyên giỏ vé (đọc URL tại đây để form không render lại khi đổi số lượng). */
-export function GuestNote() {
-  const { pathname, search } = useLocation();
-  return (
-    <p className="mb-6 text-sm text-muted-foreground">
-      Bạn đang mua với tư cách khách.{" "}
-      <Link to="/auth/login" state={{ from: `${pathname}${search}` }} className="link-accent">
-        Đăng nhập để lưu vé vào tài khoản
-      </Link>
-    </p>
-  );
-}
-
-/**
- * Ô người nhận. Vì sao memo + useFormState riêng: mỗi lần đổi số lượng vé, CheckoutForm render lại
- * (giỏ vé nằm trên URL). memo cắt phần này ra: nó chỉ render lại khi lỗi của chính "customer" đổi.
- */
 export const BuyerFields = memo(function BuyerFields({ form }) {
   const { errors } = useFormState({ control: form.control, name: "customer" });
   const e = errors.customer || {};
@@ -59,10 +38,6 @@ export const BuyerFields = memo(function BuyerFields({ form }) {
   );
 });
 
-/**
- * Một ô nhập của checkout. Khác `Field` dùng chung (@/components/form): dùng `form.register` (input
- * không điều khiển, gõ phím không render lại React) và giao diện gọn riêng cho trang thanh toán.
- */
 function CheckoutField({ id, label, type = "text", optional, hint, error, className, inputProps }) {
   const describedBy = [hint && `${id}-hint`, error && `${id}-error`].filter(Boolean).join(" ") || undefined;
   return (

@@ -1,3 +1,5 @@
+// Màn auth chia đôi: ảnh sự kiện (7/12) + form (5/12). Trang auth chỉ render form (max-w 420px đã có sẵn).
+
 import { Suspense } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";
@@ -7,15 +9,6 @@ import { EASE_INOUT, heroLine, heroStagger } from "@/lib/motion";
 import { BRAND } from "@/lib/constants";
 import { AUTH_ROUTES, AUTH_SCENES } from "./authScenes";
 
-/**
- * Màn auth chia đôi kiểu editorial:
- *  ┌──────────────────────────────┬──────────────────────┐
- *  │ ảnh sự kiện (7/12)           │ LOGO      Đăng ký →  │
- *  │                              │   <Outlet /> (form)  │
- *  │ NHÃN / Tên sự kiện / meta    │ © 2026               │
- *  └──────────────────────────────┴──────────────────────┘
- * Trang auth chỉ render form (max-w 420px đã có sẵn).
- */
 export default function AuthLayout() {
   const { pathname, state } = useLocation();
   const route = AUTH_ROUTES[pathname.replace(/\/$/, "")] || AUTH_ROUTES["/auth/login"];
@@ -24,7 +17,6 @@ export default function AuthLayout() {
   return (
     <div className="grid min-h-dvh lg:grid-cols-12">
       <aside className="relative hidden overflow-hidden bg-surface lg:col-span-7 lg:block" aria-label="Sự kiện nổi bật">
-        {/* Đổi màn login ↔ register: ảnh crossfade 0.9s + Ken Burns; chú thích lên lần lượt. */}
         <AnimatePresence initial={false}>
           <motion.div
             key={route.scene}

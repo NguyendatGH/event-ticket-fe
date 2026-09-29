@@ -1,11 +1,11 @@
+// Tab chữ + gạch chân xanh 2px trượt theo tab đang chọn (design-spec: không nền bo tròn cho mục đang chọn).
+
 import * as React from "react"
 import { LayoutGroup, motion } from "motion/react"
 import { cn } from "@/lib/utils"
 import { Tabs as TabsPrimitive } from "radix-ui"
 import { TabIndicator } from "@/components/motion/TabIndicator"
 
-// Tab chữ + gạch chân xanh 2px trượt theo tab đang chọn (design-spec: không nền bo tròn cho mục đang chọn).
-// Radix không cho Trigger biết giá trị đang chọn → Tabs giữ value (controlled hoặc không) trong context.
 const TabsCtx = React.createContext(null)
 
 function Tabs({
@@ -57,7 +57,6 @@ function TabsList({
       )}
       {...props}
     >
-      {/* layoutScroll: danh sách cuộn ngang không làm lệch phép đo của gạch chân. */}
       <motion.div layoutScroll>{children}</motion.div>
     </TabsPrimitive.List>
   )

@@ -1,3 +1,5 @@
+// Đọc/ghi field qua useFormContext (form nằm ở EditorForm). disabled = sự kiện đã hủy, chỉ xem.
+
 import { Controller, useFormContext, useWatch } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -5,19 +7,14 @@ import { ImageUpload } from "@/components/site";
 import { CATEGORIES } from "@/lib/constants";
 import { OrgField, NativeSelect } from "../components/OrgUi";
 import { OrgFormSection } from "../components/OrgFormSection";
-import { textToParagraphs } from "../lib/helpers";
+import { textToParagraphs } from "../lib";
 
-/**
- * Bước 1 của trình sửa sự kiện: tên, danh mục, mô tả (nhiều đoạn), ảnh bìa.
- * Đọc/ghi field qua useFormContext (form nằm ở EditorForm). disabled = sự kiện đã hủy, chỉ xem.
- */
 export function StepInfo({ disabled }) {
   const {
     register,
     control,
     formState: { errors },
   } = useFormContext();
-  // useWatch (không phải watch()): chỉ bước này render lại, không kéo theo cả wizard.
   const paragraphs = useWatch({ name: "description", compute: (d) => textToParagraphs(d).length });
   const category = useWatch({ name: "category" });
 

@@ -1,9 +1,8 @@
+// Nền sáng để máy quét đọc được trên giao diện tối.
+
 import { QRCodeSVG } from "qrcode.react";
 import { cn } from "@/lib/utils";
 
-/**
- * QR soát vé từ ticketCode. Nền sáng để máy quét đọc được trên giao diện tối.
- */
 export function TicketQR({ value, size = 184, showCode = true, className }) {
   if (!value) return null;
   return (

@@ -1,10 +1,6 @@
-/**
- * Trang chi tiết đơn hàng — route /orders/:id (cả khách vãng lai mở được qua link trong email).
- * Còn chờ thanh toán → nút "Thanh toán" tới payment.checkoutUrl, đếm ngược thời gian giữ chỗ, hủy đơn.
- * Đã thanh toán → danh sách vé kèm QR.
- * Dữ liệu: useOrder(id) tự làm mới 5 giây/lần, useEvent(order.eventSlug), useCancelOrder.
- * Dùng lại khối tóm tắt đơn của checkout (OrderLines, OrderSummaryParts) vì trang này là phần tiếp của luồng mua vé.
- */
+// Dưới header có vạch chia → khoảng trên gọn hơn trang thành công/thất bại.
+// Dữ liệu: useCancelOrder, useEvent, useOrder.
+
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { motion } from "motion/react";
@@ -20,12 +16,11 @@ import { formatDateTime, formatTime } from "@/lib/format";
 import { fadeUp, stagger } from "@/lib/motion";
 import { rememberPendingOrder } from "@/lib/pendingOrder";
 import { cn } from "@/lib/utils";
-import { OrderLines } from "@/pages/checkout/components/OrderLines";
-import { EventAside, IssuedTickets, PaymentDetails, SPLIT_ASIDE, SPLIT_GRID } from "@/pages/checkout/components/OrderSummaryParts";
-import { orderToLines, retryHref } from "@/pages/checkout/lib";
+import { OrderLines } from "@/components/order";
+import { EventAside, IssuedTickets, PaymentDetails, SPLIT_ASIDE, SPLIT_GRID } from "@/components/order";
+import { orderToLines, retryHref } from "@/lib/checkout";
 
 const POLL_MS = 5000;
-// Dưới header có vạch chia → khoảng trên gọn hơn trang thành công/thất bại.
 const GRID = cn(SPLIT_GRID, "pt-10 md:pt-12");
 
 export default function OrderPage() {
@@ -71,7 +66,6 @@ export default function OrderPage() {
         {order ? (
           <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
             <StatusBadge kind="order" status={order.status} />
-            {order.kind === "RESALE" ? <StatusBadge kind="orderKind" status="RESALE" /> : null}
             <Link to={`/events/${order.eventSlug}`} className="link-quiet">
               {order.eventName}
             </Link>
@@ -202,7 +196,6 @@ function OrderBody({ order }) {
 
 const pad = (n) => String(n).padStart(2, "0");
 
-/** "Vé được giữ tới 19:45 (còn 12:08)." tự đếm mỗi giây (component riêng để chỉ dòng này render lại mỗi giây). */
 function HoldCountdown({ expiresAt }) {
   const [now, setNow] = useState(() => Date.now());
   useEffect(() => {

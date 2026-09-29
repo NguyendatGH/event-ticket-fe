@@ -1,21 +1,13 @@
+// Khung chờ của từng section trang chủ, cùng hình dạng với thẻ thật để dữ liệu về không làm nhảy layout.
+
 import { Carousel } from "@/components/marketplace";
 import { Container } from "@/components/site";
 import { Skeleton } from "@/components/ui/skeleton";
-import { TILE_ROW } from "./layout";
+import { TILE_ROW } from "../lib";
 
-/**
- * Khung chờ của từng section trang chủ, cùng hình dạng với thẻ thật để dữ liệu về không làm nhảy layout.
- * Dùng chính <Carousel> (không nút, không chấm) nên độ rộng mỗi ô khớp đúng preset perView của hàng thật.
- *
- *   <RowSkeleton kind="poster" />   "poster" | "tile" | "ranked" | "featured"
- *   <HeroSkeleton />
- */
-
-// Số ô giả mỗi hàng: đủ lấp một khung nhìn desktop (và lộ một phần ô kế tiếp như hàng thật).
 const COUNT = { poster: 5, tile: 5, ranked: 5, featured: 8 };
 const PER_VIEW = { poster: "poster", tile: TILE_ROW, ranked: "ranked", featured: "featured" };
 
-/** Hai dòng chú thích dưới ảnh (tên + ngày/giá), như EventCaption. */
 function CaptionLines({ className }) {
   return (
     <div className={className}>
@@ -53,7 +45,6 @@ function Cell({ kind }) {
   );
 }
 
-/** Khung chờ một hàng carousel. aria-hidden: section cha đã có aria-busy. */
 export function RowSkeleton({ kind = "poster" }) {
   return (
     <div aria-hidden="true">
@@ -66,7 +57,6 @@ export function RowSkeleton({ kind = "poster" }) {
   );
 }
 
-/** Khung chờ hero: 2 banner 16:9 (mobile 1 banner + mép banner sau) và hàng chấm. */
 export function HeroSkeleton() {
   return (
     <Container aria-busy="true" aria-label="Đang tải sự kiện nổi bật">

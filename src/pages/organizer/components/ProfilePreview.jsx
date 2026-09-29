@@ -1,13 +1,10 @@
+// Gần giống đầu trang /organizers/:slug, cập nhật theo từng phím gõ.
+
 import { useWatch } from "react-hook-form";
 import { BadgeCheck } from "lucide-react";
 import { ImageWithFallback, UserAvatar } from "@/components/site";
 import { formatNumber } from "@/lib/format";
 
-/**
- * Gần giống đầu trang /organizers/:slug: ảnh bìa, logo, tên, thành phố, giới thiệu, liên hệ.
- * Dùng ở trang /organizer/profile, cập nhật theo từng phím gõ.
- * Vì sao tự useWatch ở đây: gõ phím chỉ render lại khung xem trước, không kéo theo cả form hồ sơ.
- */
 export function ProfilePreview({ control, profile }) {
   const values = useWatch({ control });
   const site = values.website?.replace(/^https?:\/\//i, "").replace(/\/$/, "");

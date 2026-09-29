@@ -1,12 +1,10 @@
+// Chân danh sách infinite: tự tải trang kế khi cuộn tới, kèm nút dự phòng.
+
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useInfiniteSentinel } from "@/hooks/useInfiniteSentinel";
 import { cn } from "@/lib/utils";
 
-/**
- * Đặt cuối danh sách infinite: tự tải trang tiếp khi cuộn tới, kèm nút "Tải thêm" dự phòng.
- *   const q = useInfiniteEvents(params);  …  <InfiniteSentinel query={q} />
- */
 export function InfiniteSentinel({ query, endLabel = "Đã hiển thị tất cả", className }) {
   const ref = useInfiniteSentinel(query);
   const { hasNextPage, isFetchingNextPage, fetchNextPage, isFetchNextPageError, data } = query;

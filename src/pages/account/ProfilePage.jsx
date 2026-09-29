@@ -1,9 +1,6 @@
-/**
- * Thông tin tài khoản, route "/me/profile" (cần đăng nhập, nằm trong AccountLayout).
- * Dữ liệu: useMe (GET /auth/me, dùng chung cache với RootLayout nên không tốn request thêm).
- * Các thẻ: tóm tắt hồ sơ, thông tin cá nhân (ProfileForm → PUT /users/me), đổi mật khẩu (PasswordForm → PUT /users/me/password),
- * ban tổ chức (link dashboard hoặc mời nâng cấp), đăng xuất (chỉ < lg; ≥ lg nằm trong menu trái).
- */
+// Thông tin tài khoản, route "/me/profile" (cần đăng nhập, nằm trong AccountLayout).
+// Dữ liệu: useMe.
+
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "motion/react";
 import { ArrowRight, KeyRound, LogOut, Store, UserRound, UserRoundPen } from "lucide-react";
@@ -23,7 +20,6 @@ import { ProfileSkeleton } from "./components/ProfileSkeleton";
 
 const ROLE_LABEL = { CUSTOMER: "Thành viên", ORGANIZER: "Nhà tổ chức", ADMIN: "Quản trị viên" };
 
-/** Thẻ tóm tắt đầu trang: avatar tròn, tên, email, vai trò, ngày tham gia (nền có ánh xanh nhẹ góc trái). */
 function ProfileSummary({ user }) {
   return (
     <section aria-labelledby="profile-name" className="relative overflow-hidden rounded-card bg-card p-5 ring-1 ring-white/5 md:p-7">
@@ -96,7 +92,6 @@ function OrganizerBlock({ user }) {
   );
 }
 
-/** Leaf đăng xuất (< lg): useAuth (theo dõi store) nằm ở đây để trang không render lại khi RootLayout đồng bộ user vào store. */
 function LogoutButton() {
   const { logout } = useAuth();
   const navigate = useNavigate();
@@ -113,12 +108,10 @@ function LogoutButton() {
   );
 }
 
-// Cache /auth/me chưa có → hiện tạm user trong store (đọc một lần, không đăng ký store).
 const storeUser = () => useAuthStore.getState().user ?? undefined;
 
 export default function ProfilePage() {
   useDocumentTitle("Thông tin tài khoản");
-  // Cùng cache /auth/me với RootLayout: không gọi thêm request.
   const profile = useMe({ placeholderData: storeUser });
   const user = profile.data;
 

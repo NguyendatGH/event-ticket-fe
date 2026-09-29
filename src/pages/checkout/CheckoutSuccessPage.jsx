@@ -1,3 +1,6 @@
+// Trang thanh toán thành công — route /checkout/success?order=<orderId>
+// Dữ liệu: useEvent, useOrder.
+
 import { Link, useSearchParams } from "react-router-dom";
 import { motion } from "motion/react";
 import { useEvent, useOrder } from "@/api";
@@ -8,14 +11,9 @@ import { useAuth } from "@/hooks/useAuth";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { formatVND } from "@/lib/format";
 import { fadeUp, heroLine, stagger, staggerOf } from "@/lib/motion";
-import { EventAside, IssuedTickets, PaymentDetails, SPLIT_ASIDE, SPLIT_GRID } from "./components/OrderSummaryParts";
+import { EventAside, IssuedTickets, PaymentDetails, SPLIT_ASIDE, SPLIT_GRID } from "@/components/order";
 import { SuccessMark } from "./components/SuccessMark";
 
-/**
- * Trang thanh toán thành công — route /checkout/success?order=<orderId>
- * CheckoutReturnPage chuyển tới đây khi đơn PAID. Hiện vé kèm QR, xử lý cả đơn thường (PRIMARY) và vé mua lại (RESALE).
- * Dữ liệu: useOrder(orderId) + useEvent(order.eventSlug) cho cột ảnh sự kiện.
- */
 export default function CheckoutSuccessPage() {
   useDocumentTitle("Thanh toán thành công");
   const [params] = useSearchParams();
@@ -36,18 +34,13 @@ export default function CheckoutSuccessPage() {
   }
 
   const paid = order.status === "PAID";
-  const resale = order.kind === "RESALE";
   const tickets = order.tickets || [];
 
-  // Tiêu đề + mô tả theo 3 trường hợp: chưa thanh toán / vé mua lại / đơn thường.
   let title;
   let description;
   if (!paid) {
     title = "Đơn hàng chưa hoàn tất";
     description = "Đơn này chưa được thanh toán thành công. Xem trang đơn hàng để biết trạng thái mới nhất.";
-  } else if (resale) {
-    title = "Vé đã thuộc về bạn";
-    description = "Vé được chuyển nhượng kèm mã QR mới. Mã cũ của người bán không còn hiệu lực.";
   } else {
     title = "Vé của bạn đã sẵn sàng";
     description = (
@@ -60,7 +53,6 @@ export default function CheckoutSuccessPage() {
   return (
     <Container className="pb-24">
       <motion.div variants={stagger} initial="hidden" animate="show" className={SPLIT_GRID}>
-        {/* Dấu tick vẽ xong (~0.85s) rồi tiêu đề, mô tả, vé lần lượt hiện. */}
         <motion.div variants={staggerOf(0.08, paid ? 0.5 : 0)} className="lg:col-span-7">
           {paid ? (
             <div className="flex items-center gap-4">
@@ -79,16 +71,16 @@ export default function CheckoutSuccessPage() {
 
           {paid ? (
             <motion.p variants={fadeUp} className="mt-6 text-sm text-muted-foreground tabular-nums">
-              {resale ? `Mã đơn ${order.orderCode} · ` : ""}Đã thanh toán <span className="text-foreground">{formatVND(order.totalAmount)}</span>
+              Đã thanh toán <span className="text-foreground">{formatVND(order.totalAmount)}</span>
             </motion.p>
           ) : null}
 
           {paid && tickets.length ? (
             <motion.section variants={fadeUp} aria-labelledby="success-tickets" className="mt-12">
               <h2 id="success-tickets" className="eyebrow mb-4">
-                {resale ? "Vé chuyển nhượng" : `Vé của bạn (${tickets.length})`}
+                Vé của bạn ({tickets.length})
               </h2>
-              <IssuedTickets tickets={tickets} eventName={order.eventName} linkToTicket={isAuthenticated} qrSize={resale ? 160 : 112} delayRows={14} />
+              <IssuedTickets tickets={tickets} eventName={order.eventName} linkToTicket={isAuthenticated} delayRows={14} />
             </motion.section>
           ) : null}
 

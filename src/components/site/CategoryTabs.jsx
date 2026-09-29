@@ -1,14 +1,11 @@
+// Bộ lọc danh mục dạng chữ, gạch chân xanh trượt theo mục đang chọn.
+
 import { useId } from "react";
 import { LayoutGroup, motion } from "motion/react";
 import { TabIndicator } from "@/components/motion/TabIndicator";
 import { CATEGORIES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
-/**
- * Bộ lọc danh mục dạng chữ, mục đang chọn có gạch chân xanh 2px trượt theo (layoutId).
- *   TẤT CẢ   ÂM NHẠC   SÂN KHẤU   THỂ THAO …
- * value "" = tất cả. counts: { music: 12 } (từ /events/facets) hiển thị số nhỏ bên cạnh.
- */
 export function CategoryTabs({ value = "", onChange, categories = CATEGORIES, includeAll = true, counts, className, label = "Danh mục" }) {
   const items = includeAll ? [{ slug: "", label: "Tất cả" }, ...categories] : categories;
   const groupId = useId();

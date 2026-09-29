@@ -1,3 +1,5 @@
+// Giờ bắt đầu/kết thúc theo giờ Việt Nam. Đọc/ghi field qua useFormContext. disabled = sự kiện đã hủy, chỉ xem.
+
 import { useFieldArray, useFormContext, useWatch } from "react-hook-form";
 import { Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -6,18 +8,13 @@ import { CITIES } from "@/lib/constants";
 import { formatDateLong, formatTime } from "@/lib/format";
 import { OrgField } from "../components/OrgUi";
 import { OrgFormSection } from "../components/OrgFormSection";
-import { localInputToIso } from "../lib/helpers";
+import { localInputToIso } from "../lib";
 
-/** Giờ đang nhập → dòng gợi ý dễ đọc dưới ô ("Thứ bảy, 24.10.2026, 19:30"); chưa nhập/sai → không gợi ý. */
 const readable = (local) => {
   const iso = localInputToIso(local);
   return iso ? `${formatDateLong(iso)}, ${formatTime(iso)}` : null;
 };
 
-/**
- * Bước 2 của trình sửa sự kiện: giờ bắt đầu/kết thúc (theo giờ Việt Nam), địa điểm, lịch trình trong ngày.
- * Đọc/ghi field qua useFormContext (form nằm ở EditorForm). disabled = sự kiện đã hủy, chỉ xem.
- */
 export function StepTimeVenue({ disabled }) {
   const {
     register,

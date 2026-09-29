@@ -1,10 +1,11 @@
+// Test khối chọn hạng vé và tổng tiền.
+
 import { render, screen } from "@testing-library/react";
 import { vi } from "vitest";
 
-// Phí dịch vụ lấy từ BE qua useAppConfig (GET /api/v1/config); test cố định 12.000đ, không cần QueryClient.
 vi.mock("@/api", async (orig) => ({
   ...(await orig()),
-  useAppConfig: () => ({ checkoutFee: 12000, resaleMinPrice: 10000, resaleMaxMarkupPercent: 20, resaleCutoffHours: 2 }),
+  useAppConfig: () => ({ checkoutFee: 12000 }),
 }));
 import userEvent from "@testing-library/user-event";
 import { createMemoryRouter, RouterProvider } from "react-router-dom";
@@ -49,7 +50,7 @@ function setup(ev = event) {
     [
       {
         path: "/events/:slug",
-        element: <TicketSelector event={ev} resaleCount={3} />,
+        element: <TicketSelector event={ev} />,
       },
       { path: "/checkout/:slug", element: <p>checkout</p> },
     ],
@@ -66,7 +67,7 @@ describe("TicketSelector", () => {
     const plusVip = screen.getByRole("button", { name: "Thêm một vé VIP" });
     await user.click(plusVip);
     await user.click(plusVip);
-    expect(plusVip).toBeDisabled(); // còn 2 vé dù maxPerOrder = 4
+    expect(plusVip).toBeDisabled();
     expect(
       screen.queryByRole("button", { name: "Thêm một vé Early" }),
     ).not.toBeInTheDocument();
@@ -90,14 +91,11 @@ describe("TicketSelector", () => {
     expect(router.state.location.search).toBe("?tiers=vip:1,ga:2");
   });
 
-  it("sự kiện sắp mở bán: không có bộ chọn, nút bị khóa; có link vé bán lại", () => {
+  it("sự kiện sắp mở bán: không có bộ chọn, nút bị khóa", () => {
     setup({ ...event, status: "UPCOMING" });
     expect(
       screen.queryByRole("button", { name: /Thêm một vé/ }),
     ).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Sắp mở bán" })).toBeDisabled();
-    expect(
-      screen.getByRole("link", { name: /vé bán lại cho sự kiện này/ }),
-    ).toHaveAttribute("href", "/resale?eventId=e1");
   });
 });

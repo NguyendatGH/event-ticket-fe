@@ -1,12 +1,7 @@
+// Danh sách nhãn/giá trị ngăn bằng divider.
+
 import { cn } from "@/lib/utils";
 
-/**
- * Danh sách nhãn/giá trị với divider (thay cho card):
- *   NGÀY        24.10.2026
- *   ─────────────────────────
- *   ĐỊA ĐIỂM    Mỹ Đình, Hà Nội
- * items: [{ label, value }] (value rỗng bị bỏ qua).
- */
 export function KeyValueList({ items = [], className, labelWidth = "sm:grid-cols-[180px_1fr]" }) {
   const rows = items.filter((i) => i && i.value != null && i.value !== "" && i.value !== false);
   return (

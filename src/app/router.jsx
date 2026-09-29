@@ -1,3 +1,5 @@
+// Toàn bộ route (contract §6.2); trang tải lazy, Suspense nằm trong từng layout.
+
 import { lazy } from "react";
 import { createBrowserRouter, Navigate, useSearchParams } from "react-router-dom";
 import RootLayout from "@/layouts/RootLayout";
@@ -8,16 +10,11 @@ import OrganizerLayout from "@/layouts/OrganizerLayout";
 import RouteError from "@/layouts/RouteError";
 import { RequireAuth, RequireOrganizer } from "@/layouts/guards";
 
-/**
- * Mọi route của contract §6.2. Trang tải lazy; Suspense nằm trong từng layout
- * (header/sidebar giữ nguyên khi chuyển trang). errorElement đặt trong layout để lỗi hiện giữa khung.
- */
 const page = (load) => {
   const Page = lazy(load);
   return <Page />;
 };
 
-/** Khách bấm hủy trên cổng thanh toán: đơn vẫn PENDING tới khi hết hạn, xem/hủy ở trang đơn. */
 function CheckoutCancelRedirect() {
   const [params] = useSearchParams();
   const orderId = params.get("orderId");
@@ -35,30 +32,27 @@ export const routes = [
           {
             errorElement: <RouteError />,
             children: [
-              // discovery
               { index: true, element: page(() => import("@/pages/home/HomePage")) },
               { path: "events", element: page(() => import("@/pages/events/EventsPage")) },
               { path: "events/:slug", element: page(() => import("@/pages/events/EventDetailPage")) },
               { path: "organizers/:slug", element: page(() => import("@/pages/organizers/OrganizerPublicPage")) },
               { path: "contact", element: page(() => import("@/pages/contact/ContactPage")) },
 
-              // tickets (checkout cho cả khách vãng lai)
-              { path: "checkout/return", element: page(() => import("@/pages/checkout/CheckoutReturnPage")) },
-              { path: "checkout/success", element: page(() => import("@/pages/checkout/CheckoutSuccessPage")) },
-              { path: "checkout/failed", element: page(() => import("@/pages/checkout/CheckoutFailedPage")) },
-              { path: "checkout/cancel", element: <CheckoutCancelRedirect /> },
-              { path: "checkout/:slug", element: page(() => import("@/pages/checkout/CheckoutPage")) },
-              { path: "orders/:id", element: page(() => import("@/pages/orders/OrderPage")) },
-
-              // resale public
-              { path: "resale", element: page(() => import("@/pages/resale/MarketplacePage")) },
-              { path: "resale/:id", element: page(() => import("@/pages/resale/ResaleDetailPage")) },
-
-              // cần đăng nhập
               {
                 element: <RequireAuth />,
                 children: [
-                  // khu tài khoản: menu trái (≥ lg) / pill (mobile) + nội dung
+                  { path: "checkout/return", element: page(() => import("@/pages/checkout/CheckoutReturnPage")) },
+                  { path: "checkout/success", element: page(() => import("@/pages/checkout/CheckoutSuccessPage")) },
+                  { path: "checkout/failed", element: page(() => import("@/pages/checkout/CheckoutFailedPage")) },
+                  { path: "checkout/cancel", element: <CheckoutCancelRedirect /> },
+                  { path: "checkout/:slug", element: page(() => import("@/pages/checkout/CheckoutPage")) },
+                  { path: "orders/:id", element: page(() => import("@/pages/orders/OrderPage")) },
+                ],
+              },
+
+              {
+                element: <RequireAuth />,
+                children: [
                   {
                     element: <AccountLayout />,
                     children: [
@@ -69,8 +63,6 @@ export const routes = [
                       { path: "me/tickets/:id", element: page(() => import("@/pages/tickets/TicketDetailPage")) },
                     ],
                   },
-                  // luồng đăng bán (form một bước) đứng riêng, không kèm menu tài khoản
-                  { path: "me/tickets/:id/resell", element: page(() => import("@/pages/resale/ResellTicketPage")) },
                 ],
               },
 
@@ -80,7 +72,6 @@ export const routes = [
         ],
       },
 
-      // account: màn auth chia đôi, không header site
       {
         path: "auth",
         element: <AuthLayout />,
@@ -99,7 +90,6 @@ export const routes = [
         ],
       },
 
-      // organizer: sidebar riêng, chỉ ORGANIZER/ADMIN
       {
         path: "organizer",
         element: (
@@ -121,9 +111,6 @@ export const routes = [
           },
         ],
       },
-
-      // Cổng thanh toán giả lập: trang đứng riêng như một bên thứ ba (không header site).
-      { path: "mock-gateway/checkout/:orderId", element: page(() => import("@/pages/checkout/MockCheckoutPage")) },
     ],
   },
 ];

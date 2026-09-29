@@ -1,10 +1,7 @@
+// Trả về ref để gắn vào phần tử cuối danh sách: chạm viewport → fetchNextPage.
+
 import { useEffect, useRef } from "react";
 
-/**
- * Infinite scroll: gắn ref vào phần tử cuối danh sách, chạm viewport → fetchNextPage.
- *   const ref = useInfiniteSentinel(query);   // query = kết quả useInfiniteQuery
- *   <div ref={ref} />
- */
 export function useInfiniteSentinel({ hasNextPage, isFetchingNextPage, fetchNextPage }, { rootMargin = "400px 0px" } = {}) {
   const ref = useRef(null);
   const latest = useRef(fetchNextPage);

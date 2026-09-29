@@ -1,11 +1,12 @@
+// Các dòng đếm sự kiện: `key` là field trong summary.events, `status` để lọc danh sách khi bấm vào.
+
 import { Link } from "react-router-dom";
 import { AnimatedNumber } from "@/components/motion";
 import { formatNumber } from "@/lib/format";
 import { cn } from "@/lib/utils";
-import { percentOf } from "../lib/helpers";
+import { percentOf } from "../lib";
 import { BlockTitle, SoldMeter } from "./OrgUi";
 
-/** Các dòng đếm sự kiện: `key` là field trong summary.events, `status` để lọc danh sách khi bấm vào. */
 const EVENT_STATUS_ROWS = [
   { key: "published", status: "PUBLISHED", label: "Đang bán" },
   { key: "upcoming", status: "UPCOMING", label: "Sắp mở bán" },
@@ -14,10 +15,6 @@ const EVENT_STATUS_ROWS = [
   { key: "cancelled", status: "CANCELLED", label: "Đã hủy" },
 ];
 
-/**
- * Cột phải của trang tổng quan: số sự kiện theo trạng thái (mỗi dòng mở danh sách đã lọc)
- * + tổng vé phát hành / đã bán. `summary` = dữ liệu useDashboardSummary.
- */
 export function EventStatusSummary({ summary: s }) {
   return (
     <section aria-label="Sự kiện và vé">

@@ -1,6 +1,7 @@
+// Khung chờ trang thông tin tài khoản.
+
 import { Skeleton } from "@/components/ui/skeleton";
 
-/** Khung chờ cùng bố cục với trang thông tin tài khoản (thẻ tóm tắt + hai thẻ form). */
 export function ProfileSkeleton() {
   return (
     <div role="status" aria-label="Đang tải hồ sơ" className="space-y-4">

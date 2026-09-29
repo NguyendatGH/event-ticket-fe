@@ -1,3 +1,5 @@
+// "Tạo sự kiện" chỉ còn ở nút topbar (bỏ trùng CTA trong sidebar).
+
 import { Suspense, useRef, useState } from "react";
 import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useMotionValueEvent, useScroll } from "motion/react";
@@ -9,14 +11,12 @@ import { PageTransition, SlidingIndicator } from "@/components/motion";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
 
-// "Tạo sự kiện" chỉ còn ở nút topbar (bỏ trùng CTA trong sidebar).
 const NAV = [
   { to: "/organizer", label: "Tổng quan", icon: LayoutDashboard, match: (p) => p === "/organizer" || p === "/organizer/" },
   { to: "/organizer/events", label: "Sự kiện", icon: CalendarDays, match: (p) => p.startsWith("/organizer/events") },
   { to: "/organizer/profile", label: "Hồ sơ ban tổ chức", icon: Building2, match: (p) => p.startsWith("/organizer/profile") },
 ];
 
-/** Mục sidebar: icon + chữ thường, mục đang chọn có vạch xanh 2px bên trái trượt theo (SlidingIndicator). */
 function SideNav({ onNavigate }) {
   const { pathname } = useLocation();
   const navRef = useRef(null);
@@ -76,16 +76,11 @@ function SidebarBody({ user, onNavigate, onLogout }) {
   );
 }
 
-/**
- * Khu vực organizer: sidebar trái cố định (≥ lg) + topbar mảnh; < lg sidebar nằm trong Sheet.
- * Mật độ cao hơn trang public: lề 20-40px.
- */
 export default function OrganizerLayout() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const org = user?.organizer;
-  // Cuộn quá 8px: hiện viền dưới topbar. Gắn thẳng data-condensed lên DOM nên cuộn không render lại layout.
   const headerRef = useRef(null);
   const { scrollY } = useScroll();
   useMotionValueEvent(scrollY, "change", (y) => headerRef.current?.toggleAttribute("data-condensed", y > 8));

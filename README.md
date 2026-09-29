@@ -3,7 +3,7 @@
 FE bán vé sự kiện: **Vite + React 19 (JS/JSX)**, Tailwind v4 + shadcn/ui, TanStack Query v5, zustand, axios, react-hook-form + zod, motion, recharts.
 Hợp đồng API/route dùng chung với BE: `../backend/spec-plan/ui-api-contract.md`. Ngôn ngữ hình ảnh: `design-spec.md` (bắt buộc đọc trước khi làm UI).
 
-Mới vào dự án: đọc `../README.md` (chạy cả FE + BE) rồi `docs/HUONG_DAN_FE.md` (dữ liệu đi thế nào, refresh token, cách thêm một trang, form, motion, test). File này là phần tra cứu nhanh.
+Mới vào dự án: đọc `../README.md` (chạy cả FE + BE) rồi `../docs/HUONG_DAN_FE.md` (dữ liệu đi thế nào, refresh token, cách thêm một trang, form, motion, test). File này là phần tra cứu nhanh.
 
 ## Chạy
 
@@ -32,16 +32,16 @@ Biến môi trường (`.env.example`):
 ### Chạy cùng backend
 
 ```bash
-cd ../backend/be-view
+cd ../backend/be
 ./mvnw spring-boot:run          # :8080, profile dev (có mock gateway, /dev/seed)
-# seed dữ liệu: xem README của be-view (psql -f db/seed-dev.sql)
+# seed dữ liệu: xem README của be (psql -f db/seed-dev.sql)
 ```
 
 Tài khoản seed, mật khẩu chung `password123`:
 
 | Email | Vai trò |
 |---|---|
-| `a@example.com`, `b@example.com` | CUSTOMER (có vé, có tin bán lại) |
+| `a@example.com`, `b@example.com` | CUSTOMER (có vé) |
 | `organizer@example.com` | ORGANIZER, BTC **Sunrise Live** |
 | `organizer2@example.com` | ORGANIZER, BTC **Saigon Jazz Club** |
 | `admin@example.com` | ADMIN |
@@ -66,7 +66,7 @@ src/
   stores/auth.js             zustand, lưu phiên đăng nhập vào localStorage "nhip.auth"
   hooks/                     useAuth, useDebounce, useInfiniteSentinel, useDocumentTitle
   lib/
-    business.js              hằng số nghiệp vụ khớp cấu hình BE: SERVICE_FEE, RESALE_MIN_PRICE, tierLimit…
+    business.js              hằng số nghiệp vụ khớp cấu hình BE: SERVICE_FEE, tierLimit…
     pendingOrder.js          nhớ id đơn đang chờ thanh toán (sessionStorage) khi sang cổng thanh toán
     format.js                tiền VND, ngày giờ theo giờ Việt Nam, số
     image.js                 imageAt(url, width): ảnh Unsplash đúng cỡ cho thẻ
@@ -83,7 +83,7 @@ src/
   components/motion/*        component animation: Reveal, AnimatedNumber, AnimatedList, PageTransition…
   layouts/                   RootLayout, SiteLayout, AuthLayout (+ authScenes.js: ảnh nền màn auth), OrganizerLayout,
                              guards (RequireAuth…), RouteError
-  pages/<khu vực>/           một thư mục cho mỗi khu: home, events, checkout, orders, tickets, resale, organizer…
+  pages/<khu vực>/           một thư mục cho mỗi khu: home, events, checkout, orders, tickets, organizer…
 ```
 
 ## Quy ước code (đọc trước khi sửa)
@@ -104,7 +104,7 @@ Mỗi việc chỉ có **một** cách làm. Muốn làm X thì dùng Y:
 | Hằng số nghiệp vụ (phí, giá tối thiểu…) | `@/lib/business` (không tự viết lại số) |
 | Bộ lọc / tìm kiếm | để trên URL (`useSearchParams`); ô tìm kiếm gõ-xong-mới-tìm: `<DebouncedSearch>` |
 | Khung trang | `<Container>` + `<PageHeader>`; section: `<SectionHeader>` |
-| Animation | thông số `DUR`, `EASE_OUT` và variants (`fadeUp`, `stagger`, `inView`…) trong `@/lib/motion`; component dựng sẵn (`Reveal`, `AnimatedNumber`, `TabIndicator`…) trong `@/components/motion`. Chọn cái nào: `docs/HUONG_DAN_FE.md` mục 7 |
+| Animation | thông số `DUR`, `EASE_OUT` và variants (`fadeUp`, `stagger`, `inView`…) trong `@/lib/motion`; component dựng sẵn (`Reveal`, `AnimatedNumber`, `TabIndicator`…) trong `@/components/motion`. Chọn cái nào: `../docs/HUONG_DAN_FE.md` mục 7 |
 | Biết người dùng là ai | `const { user, isAuthenticated, isOrganizer, logout } = useAuth()` |
 | Tiêu đề tab trình duyệt | `useDocumentTitle("Tên trang")` |
 
@@ -121,9 +121,9 @@ Mỗi việc chỉ có **một** cách làm. Muốn làm X thì dùng Y:
 
 - Field dữ liệu dùng đúng tên DTO trong contract §3 (không đổi tên).
 - Đổi bộ lọc: `setSearchParams(next, { preventScrollReset: true })` để trang không cuộn lên đầu.
-- Tạo đơn / mua vé bán lại: mỗi lần bấm tạo một `newIdempotencyKey()` mới và nút bị khóa trong lúc gửi. Request bị gửi lại (vd client gửi lại sau khi refresh token) giữ nguyên key, nên BE trả đúng đơn cũ thay vì tạo đơn thứ hai (`pages/checkout/components/CheckoutForm.jsx`, `pages/resale/components/BuyPanel.jsx`).
+- Tạo đơn: mỗi lần bấm tạo một `newIdempotencyKey()` mới và nút bị khóa trong lúc gửi. Request bị gửi lại (vd client gửi lại sau khi refresh token) giữ nguyên key, nên BE trả đúng đơn cũ thay vì tạo đơn thứ hai (`pages/checkout/components/CheckoutForm.jsx`).
 - `RequireAuth` chuyển về `/auth/login` với `state.from`; đăng nhập xong quay lại đúng trang. Phiên hết hạn → store bị xóa, có toast, guard tự chuyển về login.
-- Hiệu năng: vài component được tách nhỏ / bọc `memo` / dùng `useWatch` để gõ phím không render lại cả trang. Chỗ nào làm vậy đều có comment "vì sao"; giữ nguyên khi sửa.
+- Hiệu năng: vài component được tách nhỏ / bọc `memo` / dùng `useWatch` để gõ phím không render lại cả trang (`BuyerFields`, `TierQuantityRow`, `EventCard`, `OrderCard`, `DebouncedSearch`, `HeaderSearch`, `LiveTitle`, `ProfilePreview`, `PasswordStrength`). Giữ nguyên cách viết đó khi sửa.
 
 **Giao diện** (tóm tắt `design-spec.md`). Khung trang, trang chủ và khu tài khoản đã chuyển sang **v2 "marketplace shell"** (header xanh, thanh danh mục đen, nền than chì, thẻ bo 12px, khối trong `@/components/marketplace`): xem mục v2 ở cuối `design-spec.md`. Các gạch đầu dòng dưới đây là v1, còn áp dụng cho trang chưa làm lại:
 

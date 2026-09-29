@@ -1,10 +1,5 @@
-/**
- * Lỗi chuẩn hóa cho toàn FE. Mọi lỗi axios (mạng, timeout, 4xx, 5xx) → ApiError,
- * component chỉ cần bắt một kiểu lỗi.
- *
- * BE trả application/problem+json:
- *   { type, title, status, detail, instance, code, traceId, errors: [{ field, message }] }
- */
+// Chuẩn hóa mọi lỗi axios (mạng, timeout, 4xx, 5xx) thành ApiError.
+
 export class ApiError extends Error {
   constructor({ status = 0, code = "UNKNOWN", message = "Có lỗi xảy ra.", traceId = null, errors = [], cause } = {}) {
     super(message);
@@ -28,7 +23,6 @@ export class ApiError extends Error {
     return this.status === 404;
   }
 
-  /** { "tiers[0].price": "…" } ; field lặp lại giữ message đầu tiên. */
   fieldErrors() {
     const out = {};
     for (const e of this.errors) if (e?.field && !(e.field in out)) out[e.field] = e.message;
@@ -64,7 +58,6 @@ const CODE_BY_STATUS = {
   429: "RATE_LIMITED",
 };
 
-/** Đổi lỗi bất kỳ (axios / Error / ApiError) thành ApiError. */
 export function normalizeError(error) {
   if (error instanceof ApiError) return error;
 
@@ -93,7 +86,6 @@ export function normalizeError(error) {
   return new ApiError({
     status,
     code: body.code || CODE_BY_STATUS[status] || (status >= 500 ? "SERVER_ERROR" : "HTTP_ERROR"),
-    // Chỉ dùng `detail` (BE luôn viết tiếng Việt); `title` là câu tiếng Anh chung chung của HTTP.
     message: body.detail || body.message || fallback,
     traceId: body.traceId || response.headers?.["x-request-id"] || null,
     errors: body.errors,

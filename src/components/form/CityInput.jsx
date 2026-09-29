@@ -1,8 +1,9 @@
+// Ô thành phố: gõ tự do, có gợi ý sẵn.
+
 import { useId } from "react";
 import { Input } from "@/components/ui/input";
 import { CITIES } from "@/lib/constants";
 
-/** Ô thành phố: gõ tự do, gợi ý các thành phố có sẵn. */
 export function CityInput(props) {
   const listId = useId();
   return (

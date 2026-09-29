@@ -1,3 +1,5 @@
+// Test khu tài khoản: hồ sơ, đổi mật khẩu, danh sách đơn.
+
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -19,7 +21,7 @@ vi.mock("@/api/services/auth", async (orig) => ({ ...(await orig()), me: vi.fn()
 vi.mock("@/api/services/users", async (orig) => ({ ...(await orig()), changePassword: vi.fn(), updateMe: vi.fn() }));
 
 const customer = { id: "u1", fullName: "Lê Thu Hà", email: "a@example.com", role: "CUSTOMER", phone: null, bio: null, avatarUrl: null, createdAt: "2026-03-14T08:21:00Z", organizer: null };
-const order = { id: "o1", orderCode: 1727430912, status: "PAID", kind: "PRIMARY", eventName: "The Lumière Tour", items: [{ quantity: 2 }, { quantity: 1 }], totalAmount: 2412000, createdAt: "2026-09-20T12:00:00Z" };
+const order = { id: "o1", orderCode: 1727430912, status: "PAID", eventName: "The Lumière Tour", items: [{ quantity: 2 }, { quantity: 1 }], totalAmount: 2412000, createdAt: "2026-09-20T12:00:00Z" };
 
 function renderPage(element, path) {
   const router = createMemoryRouter(
@@ -112,13 +114,11 @@ describe("ProfilePage", () => {
     usersApi.updateMe.mockImplementation(async (body) => ({ ...customer, ...body }));
     renderPage(<ProfilePage />, "/me/profile");
     const name = await screen.findByLabelText("Họ và tên");
-    // Thanh lưu chỉ hiện khi form có thay đổi.
     expect(screen.queryByRole("button", { name: "Lưu thay đổi" })).not.toBeInTheDocument();
     await userEvent.clear(name);
     await userEvent.type(name, "Lê Thu Hà Nguyễn");
     await userEvent.type(screen.getByLabelText(/Số điện thoại/), "0912847193");
     await userEvent.click(screen.getByRole("button", { name: "Lưu thay đổi" }));
-    // Thẻ tóm tắt đọc cache /auth/me (RootLayout đồng bộ cache này sang store).
     expect(await screen.findByRole("heading", { level: 2, name: "Lê Thu Hà Nguyễn" })).toBeInTheDocument();
     expect(authApi.me).toHaveBeenCalledTimes(1);
     expect(usersApi.updateMe).toHaveBeenCalledWith({ fullName: "Lê Thu Hà Nguyễn", phone: "0912847193", bio: null, avatarUrl: null }, expect.anything());
@@ -155,13 +155,13 @@ describe("AccountLayout", () => {
     return router;
   };
 
-  it("menu: mục đang mở có aria-current, 'Vé đang bán lại' sáng theo ?scope=listed, khách thấy Trở thành ban tổ chức", async () => {
+  it("menu: mục đang mở có aria-current (Vé của tôi sáng cả khi có ?scope=), khách thấy Trở thành ban tổ chức", async () => {
     login(customer);
-    renderLayout("/me/tickets?scope=listed");
+    renderLayout("/me/tickets?scope=past");
     expect(await screen.findByText("trang vé")).toBeInTheDocument();
     const [desktop] = screen.getAllByRole("navigation", { name: "Menu tài khoản" }).filter((n) => n.closest("aside"));
-    expect(within(desktop).getByRole("link", { name: "Vé đang bán lại" })).toHaveAttribute("aria-current", "page");
-    expect(within(desktop).getByRole("link", { name: "Vé của tôi" })).not.toHaveAttribute("aria-current");
+    expect(within(desktop).getByRole("link", { name: "Vé của tôi" })).toHaveAttribute("aria-current", "page");
+    expect(within(desktop).getByRole("link", { name: "Đơn hàng" })).not.toHaveAttribute("aria-current");
     expect(within(desktop).getByRole("link", { name: "Trở thành ban tổ chức" })).toHaveAttribute("href", "/become-organizer");
     expect(within(desktop).queryByRole("link", { name: "Dashboard BTC" })).toBeNull();
     expect(screen.getByText("a@example.com")).toBeInTheDocument();

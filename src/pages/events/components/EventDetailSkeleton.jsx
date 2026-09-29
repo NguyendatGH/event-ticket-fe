@@ -1,7 +1,8 @@
+// Khung chờ trang chi tiết sự kiện.
+
 import { Container } from "@/components/site";
 import { Skeleton } from "@/components/ui/skeleton";
 
-/** Khung chờ cùng bố cục với trang chi tiết sự kiện: ảnh bìa, cột thông tin, khối chọn vé. */
 export function EventDetailSkeleton() {
   return (
     <div role="status" aria-label="Đang tải sự kiện">

@@ -1,7 +1,6 @@
-/**
- * Tạo tài khoản khách, route "/auth/register" → useRegister (POST /auth/register, đăng nhập luôn).
- * Email đã dùng (EMAIL_ALREADY_USED) → lỗi gắn vào ô email kèm gợi ý đăng nhập / đặt lại mật khẩu.
- */
+// Tạo tài khoản khách, route "/auth/register" → useRegister (POST /auth/register, đăng nhập luôn).
+// Dữ liệu: useRegister.
+
 import { useForm, useFormState } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -15,9 +14,8 @@ import { BRAND } from "@/lib/constants";
 import { applyApiErrors } from "@/lib/forms";
 import { riseSm } from "@/lib/motion";
 import { registerSchema } from "./schemas";
-import { AUTH_STAGGER, AuthFooter, AuthHeading } from "./components";
+import { AUTH_STAGGER, AuthFooter, AuthHeading, GoogleAuthButton } from "./components";
 
-/** Email đã dùng (lỗi server) → gợi ý đăng nhập / đặt lại. Leaf tự đăng ký formState của ô email. */
 function EmailTakenHint({ control }) {
   const { errors } = useFormState({ control, name: "email" });
   if (errors.email?.type !== "server") return null;
@@ -60,7 +58,7 @@ export default function RegisterPage() {
 
   return (
     <motion.div variants={AUTH_STAGGER} initial="hidden" animate="show" className="space-y-10">
-      <AuthHeading title="Tạo tài khoản" description="Một tài khoản để mua vé, lưu vé điện tử và bán lại khi không đi được." />
+      <AuthHeading title="Tạo tài khoản" description="Một tài khoản để mua vé và lưu vé điện tử." />
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} noValidate className="space-y-6">
@@ -84,6 +82,14 @@ export default function RegisterPage() {
           </motion.div>
         </form>
       </Form>
+
+      <GoogleAuthButton
+        text="signup_with"
+        onSuccess={(auth) => {
+          toast.success(`Chào mừng ${auth.user?.fullName ?? ""} đến với ${BRAND.name}`.trim());
+          navigate(location.state?.from || "/", { replace: true });
+        }}
+      />
 
       <AuthFooter prompt="Bạn muốn bán vé cho sự kiện của mình?" to="/auth/register-organizer">
         Đăng ký ban tổ chức

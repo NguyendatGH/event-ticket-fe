@@ -1,11 +1,9 @@
-/**
- * Trang "Vé của tôi" — route /me/tickets?scope=upcoming|past|listed (cần đăng nhập, nằm trong AccountLayout).
- * Tab pill lọc vé, vé gom theo sự kiện thành thẻ kiểu cuống vé, cuộn vô hạn (InfiniteSentinel tải trang kế khi cuộn tới cuối).
- * Dữ liệu: useMyTickets({ scope, size }) (GET /me/tickets). Tab đang chọn nằm trên URL để F5/Back giữ đúng tab.
- */
+// Trang "Vé của tôi" — route /me/tickets?scope=upcoming|past (cần đăng nhập, nằm trong AccountLayout).
+// Dữ liệu: useMyTickets.
+
 import { useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { Repeat2, Ticket, TicketCheck } from "lucide-react";
+import { Ticket, TicketCheck } from "lucide-react";
 import { flattenPages, totalOf, useMyTickets } from "@/api";
 import { AccountEmpty, AccountPageHeader, PillTabs } from "@/components/account";
 import { AnimatedItem, AnimatedList } from "@/components/motion";
@@ -14,14 +12,11 @@ import { Button } from "@/components/ui/button";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { TicketGroup, TicketGroupsSkeleton } from "./components/TicketGroup";
 
-/** Các tab lọc vé (giá trị gửi lên API là `scope`). "upcoming" là mặc định nên không ghi lên URL. */
 const SCOPES = [
   { value: "upcoming", label: "Sắp diễn ra" },
   { value: "past", label: "Đã qua" },
-  { value: "listed", label: "Đang bán lại" },
 ];
 const SCOPE_VALUES = SCOPES.map((s) => s.value);
-// Thẻ vé thấp: trang 12 vé chưa lấp màn hình → sentinel tải liền 3 trang. 24 vé = 1 request.
 const PAGE_SIZE = 24;
 
 const EMPTY = {
@@ -37,12 +32,6 @@ const EMPTY = {
     description: "Vé của những sự kiện bạn đã tham dự sẽ được lưu lại ở đây.",
     action: { to: "/events", label: "Khám phá sự kiện" },
   },
-  listed: {
-    icon: Repeat2,
-    title: "Bạn chưa đăng bán lại vé nào",
-    description: "Không đi được nữa? Mở một vé sắp diễn ra và chọn Bán lại để đăng lên chợ vé.",
-    action: { to: "/me/tickets", label: "Xem vé sắp diễn ra" },
-  },
 };
 
 export default function MyTicketsPage() {
@@ -53,7 +42,6 @@ export default function MyTicketsPage() {
   const q = useMyTickets({ scope, size: PAGE_SIZE });
   const total = totalOf(q.data);
   const groups = useMemo(() => groupByEvent(flattenPages(q.data)), [q.data]);
-  // Chốt "bây giờ" một lần khi mở trang: mọi thẻ vé so với cùng một mốc, không đổi giữa các lần render.
   const [now] = useState(() => Date.now());
 
   const changeScope = (value) => {
@@ -113,7 +101,6 @@ export default function MyTicketsPage() {
   );
 }
 
-/** Gom vé theo sự kiện, giữ thứ tự API (vé đã sắp theo ngày diễn ra). */
 function groupByEvent(tickets) {
   const groups = new Map();
   for (const t of tickets) {

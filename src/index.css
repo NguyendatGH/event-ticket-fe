@@ -1,30 +1,12 @@
+/* Design tokens + utility theo design-spec (giao diện tối). Khung v2 bật bằng data-shell="marketplace". */
 @import "tailwindcss";
 @import "tw-animate-css";
-
-/*
- * Design tokens theo fe/design-spec.md (chỉ giao diện tối).
- * Tên màu Tailwind: bg-background, bg-background-2, bg-section, bg-surface, bg-elevated, bg-input-bg,
- * border-border, border-border-hover, text-foreground, text-secondary-foreground, text-muted-foreground,
- * text-disabled-foreground, text-primary, bg-primary-hover, text-primary-bright, bg-primary-deep,
- * text-destructive, text-warning, text-info, text-success.
- * Biến shadcn (popover, muted, accent, input, ring…) trỏ về cùng bảng màu.
- * Chữ: text-display/h1/h2/h3/body-lg/caption/price + text-2xs/meta/ui/title (11/13/15/17px), tracking-caps/label, aspect-card.
- * Utility riêng: eyebrow, heading-caps, link-quiet, link-accent, arrow-nudge, focus-ring, section-y(-sm), no-scrollbar.
- *
- * v2 "marketplace shell" (design-spec.md mục v2): header xanh, thanh danh mục đen, nền trang than chì, footer xanh-xám.
- * Bật bằng data-shell="marketplace" trên khung trang (SiteLayout). Khi bật, bảng màu nền/viền/chữ phụ ở :root được
- * thay bằng tông than chì trung tính (khối :root:has(...) bên dưới), nên cả trang con lẫn Sheet/Dialog/Dropdown
- * (portal) đều theo. Token mới: bg-header, bg-catbar, bg-page, bg-card, bg-footer, text-footer-foreground,
- * text-footer-muted, border-card-glow; rounded-card (12px), rounded-poster (10px); aspect-poster/banner/tile/wide;
- * utility glow-card, glow-ring, shell-scrim, mask-fade-x; biến --header-h (chiều cao header sticky: top-(--header-h)).
- */
 
 @custom-variant dark (&:is(.dark *));
 
 :root {
   color-scheme: dark;
 
-  /* Bảng màu design-spec */
   --green: #2dc275;
   --green-hover: #26ad68;
   --green-bright: #39d98a;
@@ -45,7 +27,6 @@
   --warning: #f5b942;
   --info: #58a6ff;
 
-  /* Biến shadcn */
   --radius: 4px;
   --background: var(--bg);
   --foreground: var(--text);
@@ -63,8 +44,6 @@
   --input: var(--line);
   --ring: var(--green);
 
-  /* v2 marketplace (lấy mẫu màu từ ảnh tham chiếu). Chỉ tô khung trang; không đổi bảng màu v1 ở trên. */
-  /* Header: xanh thương hiệu đậm hơn #2DC275 một bậc để chữ trắng đạt AA (4.6:1). #2DC275 + chữ trắng chỉ 2.3:1. */
   --header-bg: #18864f;
   --header-bg-hover: #147344;
   --catbar-bg: #0a0a0b;
@@ -75,7 +54,6 @@
   --footer-text: #e4e7ee;
   --footer-muted: #bcc2cf;
   --card-glow: rgba(45, 194, 117, 0.72);
-  /* Chiều cao header sticky: 56px mobile, 70px từ lg. Phần tử dính dưới header: top-(--header-h). */
   --header-h: 3.5rem;
 }
 @media (width >= 64rem) {
@@ -84,12 +62,6 @@
   }
 }
 
-/*
- * Khi khung v2 đang hiện: nền/viền/chữ phụ đổi sang tông than chì trung tính của tham chiếu (#27272A).
- * Đặt ở :root (không phải trên wrapper) để portal của Radix (Sheet, Dropdown, Dialog, Select) cũng đổi theo.
- * Phải khai báo lại cả biến shadcn (--background, --popover, --muted…) vì chúng đã được tính sẵn ở :root.
- * Chữ muted sáng hơn v1 (#A1A1AA, 5.8:1 trên nền trang) vì nền v2 sáng hơn.
- */
 :root:has([data-shell="marketplace"]) {
   --bg: var(--page-bg);
   --bg-2: #2c2c30;
@@ -109,7 +81,6 @@
   --accent: var(--elevated);
   --border: var(--line);
   --input: var(--line);
-  /* Chữ trên nút xanh giữ tông gần đen của v1 (8.5:1), không theo nền than chì. */
   --primary-foreground: #0b0d0c;
 }
 
@@ -145,16 +116,13 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  /* Radius: rounded-sm 2px, rounded-md 4px (mặc định), rounded-xl 6px (modal). rounded-lg của shadcn chặn ở 4px. */
   --radius-sm: 2px;
   --radius-md: 4px;
   --radius-lg: 4px;
   --radius-xl: 6px;
-  /* v2: rounded-card 12px (banner, thẻ BTC, ô thành phố), rounded-poster 10px (poster dọc). Pill: rounded-full. */
   --radius-card: 12px;
   --radius-poster: 10px;
 
-  /* v2 marketplace */
   --color-header: var(--header-bg);
   --color-header-hover: var(--header-bg-hover);
   --color-catbar: var(--catbar-bg);
@@ -167,10 +135,8 @@
 }
 
 @theme {
-  /* max-w-site = khung nội dung 1320px */
   --container-site: 82.5rem;
 
-  /* Thang chữ design-spec: text-display, text-h1, text-h2, text-h3, text-body-lg, text-caption, text-price */
   --text-display: clamp(2.5rem, 1.6rem + 3.2vw, 4rem);
   --text-display--line-height: 1.05;
   --text-display--letter-spacing: -0.02em;
@@ -194,28 +160,22 @@
   --text-price: clamp(1.125rem, 1rem + 0.4vw, 1.5rem);
   --text-price--line-height: 1.2;
   --text-price--font-weight: 600;
-  /* Cỡ chữ trung gian (chỉ font-size; line-height kế thừa như text-[Npx] cũ): 11/13/15/17px */
   --text-2xs: 0.6875rem;
   --text-meta: 0.8125rem;
   --text-ui: 0.9375rem;
   --text-title: 1.0625rem;
-  /* Chữ hoa nhỏ: tracking-caps (eyebrow, badge), tracking-label (tiêu đề nhóm 13px) */
   --tracking-caps: 0.06em;
   --tracking-label: 0.08em;
-  /* Ảnh card/tóm tắt đơn */
   --aspect-card: 4 / 3;
-  /* v2: poster dọc 3:4, banner hero 16:9, ô thành phố gần vuông, thẻ ngang 16:9 */
   --aspect-poster: 3 / 4;
   --aspect-banner: 16 / 9;
   --aspect-tile: 25 / 24;
   --aspect-wide: 16 / 9;
 
-  /* Motion (cùng giá trị với src/lib/motion.js): ease-out-expo, ease-out-quint, ease-in-quick, animate-shimmer */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-in-quick: cubic-bezier(0.4, 0, 1, 1);
   --animate-shimmer: shimmer 1.6s linear infinite;
-  /* v2 GlowWaves: hai lớp sóng trôi chậm ngược chiều (chỉ transform). */
   --animate-wave-a: wave-a 18s ease-in-out infinite alternate;
   --animate-wave-b: wave-b 23s ease-in-out infinite alternate;
   @keyframes wave-a {
@@ -244,7 +204,6 @@
   }
 }
 
-/* Nhãn chữ hoa nhỏ: SỰ KIỆN NỔI BẬT, ĐỊA ĐIỂM, THỜI GIAN… (12px / 500 / +0.06em). Dùng tiết chế. */
 @utility eyebrow {
   font-size: 0.75rem;
   line-height: 1.4;
@@ -254,7 +213,6 @@
   color: var(--text-muted);
 }
 
-/* Link chữ: đổi màu nhẹ khi hover, không gạch chân mặc định. */
 @utility link-quiet {
   color: var(--text-2);
   transition: color 150ms var(--ease-out-quint);
@@ -263,7 +221,6 @@
   }
 }
 
-/* Tiêu đề nhóm chữ hoa 13px/600 (SectionHeader, BlockTitle, FilterPanel, TicketSelector…). */
 @utility heading-caps {
   font-size: 0.8125rem;
   line-height: 1.25rem;
@@ -273,10 +230,6 @@
   color: var(--text);
 }
 
-/*
- * Mũi tên trong link/CTA nhích theo hover (ArrowRight → phải 4px, ArrowLeft → trái 4px, ArrowUpRight → chéo 2px).
- * Gắn lên phần tử có hover: <Link className="arrow-nudge">Xem tất cả <ArrowRight/></Link>
- */
 @utility arrow-nudge {
   & svg.lucide-arrow-right,
   & svg.lucide-arrow-left,
@@ -296,7 +249,6 @@
   }
 }
 
-/* Viền focus chuẩn cho control tự làm: 2px xanh, cách 2px (1px cũ khó thấy trên ảnh). */
 @utility focus-ring {
   outline: none;
   &:focus-visible {
@@ -305,7 +257,6 @@
   }
 }
 
-/* Nhịp section (ux-audit §1.2): showcase rộng, list gọn. */
 @utility section-y {
   padding-block: 5rem;
   @media (width >= 48rem) {
@@ -327,10 +278,6 @@
   }
 }
 
-/*
- * v2: viền xanh phát sáng cho thẻ nổi bật (FeaturedOrganizerCard). Viền 1px + quầng mờ ngoài + ánh trong.
- * Hover mạnh hơn một chút. Chỉ dùng cho thẻ "nổi bật", không rải khắp trang.
- */
 @utility glow-card {
   border: 1px solid var(--card-glow);
   background-color: color-mix(in oklab, var(--green) 7%, var(--page-bg));
@@ -349,24 +296,20 @@
   }
 }
 
-/* v2: vòng sáng xanh quanh avatar tròn. */
 @utility glow-ring {
   box-shadow:
     0 0 0 2px var(--green),
     0 0 16px 1px rgba(45, 194, 117, 0.55);
 }
 
-/* v2: lớp phủ tối từ đáy ảnh để chữ trắng đè lên đọc được (banner, poster). */
 @utility shell-scrim {
   background-image: linear-gradient(to top, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0.35) 38%, transparent 65%);
 }
 
-/* v2: mờ dần hai mép ngang (thanh danh mục cuộn ngang trên mobile). */
 @utility mask-fade-x {
   mask-image: linear-gradient(to right, transparent 0, #000 16px, #000 calc(100% - 24px), transparent 100%);
 }
 
-/* Ẩn thanh cuộn ngang (tab, carousel, stepper) mà vẫn cuộn được. */
 @utility no-scrollbar {
   scrollbar-width: none;
 }
@@ -388,11 +331,9 @@
     background: color-mix(in oklab, var(--green) 35%, transparent);
     color: var(--text);
   }
-  /* Icon lucide: nét 1.5px theo design-spec */
   svg.lucide {
     stroke-width: 1.5;
   }
-  /* Mã đơn/mã vé: không dùng mono mặc định của trình duyệt (lệch brand). */
   code,
   kbd,
   samp {

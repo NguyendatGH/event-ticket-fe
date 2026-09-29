@@ -1,6 +1,7 @@
+// Trả giá trị trễ `delay` ms.
+
 import { useEffect, useState } from "react";
 
-/** Giá trị trễ `delay` ms (ô tìm kiếm → query). */
 export function useDebounce(value, delay = 300) {
   const [debounced, setDebounced] = useState(value);
   useEffect(() => {

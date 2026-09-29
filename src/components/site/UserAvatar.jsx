@@ -1,11 +1,11 @@
+// Avatar vuông; không có ảnh thì hiện chữ viết tắt.
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import { initials } from "@/lib/format";
 
-
 const SIZES = { sm: "size-7 text-2xs", md: "size-9 text-xs", lg: "size-14 text-base", xl: "size-24 text-2xl" };
 
-/** Avatar vuông (radius 2px) kiểu editorial; không ảnh → chữ viết tắt. */
 export function UserAvatar({ user, name, src, size = "md", className, fallbackClassName }) {
   const label = name ?? user?.fullName ?? user?.displayName ?? user?.name ?? "";
   const image = src ?? user?.avatarUrl ?? user?.logoUrl;

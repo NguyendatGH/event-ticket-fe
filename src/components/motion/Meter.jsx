@@ -1,15 +1,10 @@
+// Thanh tỉ lệ (đã bán / tổng, doanh thu tương đối) vẽ bằng scaleX thay vì width.
+
 import { useRef } from "react";
 import { motion, useInView } from "motion/react";
 import { DUR, EASE_OUT, HAS_IO, VIEWPORT } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
-/**
- * Thanh tỉ lệ (đã bán / tổng, doanh thu tương đối) vẽ bằng scaleX thay vì width.
- * value 0..1. Lấp đầy khi cuộn tới (once), đổi giá trị thì trượt tiếp. min: tối thiểu để 1% vẫn thấy được.
- *   <Meter value={sold / total} className="h-1.5" />
- * Quan sát khung (track), không quan sát phần lấp: phần lấp đang scaleX(0) rộng 0px, nằm trong vùng overflow
- * (bảng overflow-x-auto) thì IntersectionObserver không bao giờ báo giao nhau → thanh đứng yên ở 0.
- */
 export function Meter({ value = 0, min = 0.02, delay = 0, label, className, fillClassName }) {
   const v = Math.max(0, Math.min(1, Number(value) || 0));
   const shown = v > 0 ? Math.max(v, min) : 0;

@@ -1,14 +1,7 @@
+// Thẻ bo 12px cho một khối nội dung trong khu tài khoản.
+
 import { cn } from "@/lib/utils";
 
-/**
- * Thẻ bo 12px nền bg-card cho một khối nội dung trong khu tài khoản (hồ sơ, đổi mật khẩu, tin bán lại…).
- *
- *   <AccountSection id="password" title="Đổi mật khẩu" description="Dùng mật khẩu dài.">…</AccountSection>
- *
- * Props: id (gắn cho tiêu đề, section tự aria-labelledby), title, description, icon (lucide, tùy chọn),
- * actions (bên phải tiêu đề), as ("section"; "fieldset" cho nhóm field trong form), className, children.
- * as="fieldset": tên nhóm nằm trong <legend> ẩn (trình đọc màn hình đọc khi vào field), tiêu đề nhìn thấy là aria-hidden.
- */
 export function AccountSection({ id, title, description, icon: Icon, actions, as: Tag = "section", className, children }) {
   const fieldset = Tag === "fieldset";
   return (

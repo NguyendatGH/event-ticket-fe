@@ -1,12 +1,9 @@
+// Khối thu gọn/mở rộng cho chi tiết kỹ thuật của đơn.
+
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-/**
- * Khối thu gọn / mở rộng, mặc định tiêu đề "Thông tin giao dịch" (design-spec: chi tiết kỹ thuật
- * như mã giao dịch, cổng thanh toán được giấu dưới nhãn này để trang gọn).
- *   <Disclosure><PaymentDetails order={order} /></Disclosure>
- */
 export function Disclosure({ title = "Thông tin giao dịch", defaultOpen = false, children, className }) {
   const [open, setOpen] = useState(defaultOpen);
   return (

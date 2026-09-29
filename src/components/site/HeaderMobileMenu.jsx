@@ -1,3 +1,5 @@
+// Danh mục nằm ở CategoryNav, không lặp trong menu này.
+
 import { Link, NavLink } from "react-router-dom";
 import { motion } from "motion/react";
 import { Menu } from "lucide-react";
@@ -10,11 +12,6 @@ import { UserAvatar } from "./UserAvatar";
 
 const menuStagger = staggerOf(0.035, 0.08);
 
-/**
- * Menu của Header trên màn hình nhỏ (< lg): nút ☰ (trắng trên nền xanh) mở Sheet trượt từ phải,
- * gồm ô tìm kiếm, các link chính (hiện lần lượt) và khối tài khoản ở đáy. Danh mục nằm ở CategoryNav, không lặp ở đây.
- * Chỉ dùng trong Header.jsx. `links` = [{ to, label, end? }]; `loginState` = state gửi kèm link Đăng nhập (quay lại trang cũ).
- */
 export function HeaderMobileMenu({ open, onOpenChange, links, user, isAuthenticated, isOrganizer, loginState, onSearch, onLogout }) {
   const close = () => onOpenChange(false);
   const accountLinks = [

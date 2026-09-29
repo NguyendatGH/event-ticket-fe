@@ -1,9 +1,10 @@
+// Test hook tự cuộn carousel và các điều kiện tạm dừng.
+
 import { useRef } from "react";
 import { fireEvent, render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { useCarouselAutoplay } from "./useCarouselAutoplay";
 
-/** Dựng khung giống <Carousel>: vùng carousel > track cuộn ngang. */
 function Harness({ enabled = true }) {
   const ref = useRef(null);
   useCarouselAutoplay(ref, { enabled, interval: 1000 });
@@ -16,7 +17,6 @@ function Harness({ enabled = true }) {
   );
 }
 
-/** jsdom không có layout: tự đặt kích thước track và giả scrollBy/scrollTo. */
 function setupTrack(getByTestId, { scrollLeft = 0 } = {}) {
   const track = getByTestId("track");
   Object.defineProperties(track, {
@@ -38,7 +38,7 @@ describe("useCarouselAutoplay", () => {
     const track = setupTrack(getByTestId);
     vi.advanceTimersByTime(1000);
     expect(track.scrollBy).toHaveBeenCalledWith({ left: 900, behavior: "smooth" });
-    track.scrollLeft = 2000; // đã ở trang cuối
+    track.scrollLeft = 2000;
     vi.advanceTimersByTime(1000);
     expect(track.scrollTo).toHaveBeenCalledWith({ left: 0, behavior: "smooth" });
   });

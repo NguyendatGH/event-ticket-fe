@@ -1,6 +1,7 @@
+// Thông báo trong trang: vạch màu bên trái, không khung, không nền.
+
 import { cn } from "@/lib/utils";
 
-/** Màu vạch + chữ theo mức độ thông báo. */
 const TONE = {
   danger: "border-destructive text-destructive",
   warning: "border-warning text-warning",
@@ -9,11 +10,6 @@ const TONE = {
   neutral: "border-border-hover text-foreground",
 };
 
-/**
- * Thông báo trong trang: vạch màu 2px bên trái + chữ, không khung, không nền.
- *   <Notice tone="warning" title="Đơn đang chờ thanh toán">Mô tả thêm…</Notice>
- * tone "danger" tự có role="alert" để trình đọc màn hình đọc ngay; các tone khác là "status".
- */
 export function Notice({ tone = "neutral", title, children, className, role }) {
   return (
     <div role={role ?? (tone === "danger" ? "alert" : "status")} className={cn("border-l-2 py-1 pl-4", TONE[tone], className)}>

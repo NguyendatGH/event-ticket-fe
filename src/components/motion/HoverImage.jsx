@@ -1,11 +1,8 @@
+// Đặt trong phần tử có class `group`. Không nhấc thẻ, không shadow (design-spec).
+
 import { ImageWithFallback } from "@/components/site/ImageWithFallback";
 import { cn } from "@/lib/utils";
 
-/**
- * Ảnh thẻ: phóng 1.03 chậm (800ms) + lớp phủ tối nhạt tan khi hover. Không nhấc thẻ, không shadow.
- * Đặt trong phần tử có class `group`. ratio: "4/3" | "3/2" | "16/9" | "1/1". dim: sự kiện đã đóng.
- * size="sm": thumbnail nhỏ (không lớp phủ).
- */
 export function HoverImage({ src, alt, priority, ratio = "4/3", dim = false, size = "md", fallbackLabel, className, imgClassName }) {
   return (
     <div className={cn("relative overflow-hidden bg-surface", className)} style={ratio ? { aspectRatio: ratio } : undefined}>

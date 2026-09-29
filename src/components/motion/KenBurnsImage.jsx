@@ -1,13 +1,10 @@
+// Chỉ MỘT chỗ mỗi trang (hero home, scene auth). Đặt trong khung `relative overflow-hidden`.
+
 import { motion, useReducedMotion } from "motion/react";
 import { ImageWithFallback } from "@/components/site/ImageWithFallback";
 import { DUR } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
-/**
- * Ảnh hero trôi chậm 1 → 1.06 (Ken Burns). Chỉ MỘT chỗ mỗi trang (hero home, scene auth).
- * duration: giây, nên = thời gian mỗi slide + 1 để không dừng giữa chừng. Tắt khi reduced-motion.
- * Đặt trong khung `relative overflow-hidden`.
- */
 export function KenBurnsImage({ src, alt, priority, active = true, duration = DUR.drift, className, imgClassName }) {
   const reduce = useReducedMotion();
   return (

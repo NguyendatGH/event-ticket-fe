@@ -1,7 +1,7 @@
-/* Schema zod cho các form của khu tài khoản. Tên field khớp DTO BE (contract §4.2). */
+// Schema zod cho các form của khu tài khoản. Tên field khớp DTO BE (contract §4.2).
+
 import { z, v, passwordsMatch } from "@/lib/forms";
 
-/** PUT /users/me: hồ sơ người dùng (khác organizerProfileSchema của trang hồ sơ ban tổ chức). */
 export const userProfileSchema = z.object({
   fullName: v.required("Họ và tên"),
   phone: v.phone(),
@@ -10,7 +10,6 @@ export const userProfileSchema = z.object({
 });
 
 const match = passwordsMatch("confirmPassword", "newPassword");
-/** PUT /users/me/password */
 export const passwordSchema = z
   .object({
     currentPassword: z.string().min(1, { error: "Nhập mật khẩu hiện tại" }),
@@ -23,7 +22,6 @@ export const passwordSchema = z
     path: ["newPassword"],
   });
 
-/** POST /me/organizer: nâng tài khoản khách thành ban tổ chức. */
 export const becomeOrganizerSchema = z.object({
   name: v.required("Tên ban tổ chức"),
   description: v.text(5000, "Mô tả"),
@@ -34,7 +32,6 @@ export const becomeOrganizerSchema = z.object({
   logoUrl: z.string().max(1000).optional().nullable(),
 });
 
-/** UserResponse → giá trị form hồ sơ (null → ""). */
 export const profileDefaults = (user) => ({
   fullName: user?.fullName ?? "",
   phone: user?.phone ?? "",

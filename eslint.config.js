@@ -1,3 +1,5 @@
+// Cấu hình ESLint (flat config) cho toàn FE.
+
 import js from "@eslint/js";
 import globals from "globals";
 import reactHooks from "eslint-plugin-react-hooks";
@@ -22,7 +24,6 @@ export default [
     },
   },
   {
-    // shadcn/ui xuất kèm variants (buttonVariants…) cạnh component; router.jsx là file cấu hình route: chấp nhận.
     files: ["src/components/ui/**", "src/app/router.jsx", "src/test/**", "**/*.test.{js,jsx}"],
     rules: { "react-refresh/only-export-components": "off" },
   },

@@ -1,3 +1,5 @@
+// Thanh mua vé cố định đáy màn hình (chỉ dưới lg), hiện khi khối chọn vé (#chon-ve) đã cuộn lên khỏi màn hình.
+
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Price } from "@/components/site";
@@ -5,25 +7,17 @@ import { Button } from "@/components/ui/button";
 import { DUR, EASE_IN, EASE_OUT } from "@/lib/motion";
 import { purchaseState } from "../lib";
 
-// Thanh trồi từ đáy lên, rời đi nhanh hơn lúc vào
 const buyBar = {
   initial: { y: "100%" },
   animate: { y: 0, transition: { duration: DUR.moderate, ease: EASE_OUT } },
   exit: { y: "100%", transition: { duration: DUR.base, ease: EASE_IN } },
 };
 
-/**
- * Thanh mua vé cố định đáy màn hình (chỉ dưới lg), hiện khi khối chọn vé (#chon-ve) đã cuộn lên khỏi màn hình.
- * Dùng IntersectionObserver thay vì nghe sự kiện scroll: trình duyệt tự báo khi khối ra/vào màn hình,
- * không phải chạy code ở mỗi pixel cuộn.
- */
 export function MobileBuyBar({ event }) {
   const [show, setShow] = useState(false);
   useEffect(() => {
     const el = document.getElementById("chon-ve");
     if (!el || typeof IntersectionObserver === "undefined") return undefined;
-    // Hiện khi khối chọn vé không còn trên màn hình VÀ nằm phía trên (đã cuộn qua),
-    // không hiện khi khối còn ở bên dưới (người dùng chưa cuộn tới).
     const io = new IntersectionObserver(([e]) =>
       setShow(!e.isIntersecting && e.boundingClientRect.top < 0),
     );

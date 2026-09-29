@@ -1,9 +1,7 @@
+// Đầu trang: nhãn nhỏ, H1, mô tả, hành động, divider.
+
 import { cn } from "@/lib/utils";
 
-/**
- * Đầu trang: nhãn nhỏ (tùy chọn), tiêu đề H1, mô tả, hành động bên phải; kết thúc bằng divider.
- *   <PageHeader eyebrow="Tài khoản" title="Vé của tôi" actions={<Button>…</Button>} />
- */
 export function PageHeader({ eyebrow, title, description, actions, children, className, divider = true }) {
   return (
     <header className={cn("pt-10 pb-8 md:pt-14 md:pb-10", divider && "border-b border-border", className)}>

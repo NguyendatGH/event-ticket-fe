@@ -1,3 +1,5 @@
+// Thẻ sự kiện kiểu editorial (v1), bọc memo cho lưới dài.
+
 import { memo } from "react";
 import { Link } from "react-router-dom";
 import { formatDate } from "@/lib/format";
@@ -9,12 +11,6 @@ import { StatusBadge } from "./StatusBadge";
 
 const CLOSED = new Set(["SOLD_OUT", "ENDED", "CANCELLED"]);
 
-/**
- * Thẻ sự kiện kiểu editorial (không khung): ảnh 4:3, ngày, tên (hover xanh), địa điểm, giá "Từ".
- * event = EventResponse (summary). `priority` cho ảnh trên màn hình đầu.
- * memo: `event` giữ nguyên tham chiếu nhờ structural sharing của TanStack, nên lưới 12–24 thẻ
- * không render lại khi trang cha đổi state không liên quan (lọc, mở Sheet/Select, isFetching).
- */
 export const EventCard = memo(function EventCard({ event, priority = false, showCategory = false, className }) {
   if (!event) return null;
   const { slug, name, startsAt, venue, coverImageUrl, coverImageAlt, priceFrom, status, category } = event;
@@ -29,7 +25,6 @@ export const EventCard = memo(function EventCard({ event, priority = false, show
             {showCategory && category ? <span className="ml-3 text-muted-foreground">{categoryLabel(category)}</span> : null}
           </p>
           <h3 className="line-clamp-2 text-title leading-snug font-semibold text-foreground transition-colors group-hover:text-primary">
-            {/* Gạch chân 1px quét từ trái khi hover (background-size, ngoại lệ đã duyệt trong motion-spec). */}
             <span className="bg-[linear-gradient(currentColor,currentColor)] bg-[length:0%_1px] bg-left-bottom bg-no-repeat transition-[background-size] duration-500 ease-out-expo group-hover:bg-[length:100%_1px] motion-reduce:transition-none">
               {name}
             </span>

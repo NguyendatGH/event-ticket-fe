@@ -1,10 +1,6 @@
-/**
- * Trang "Quản lý sự kiện" của ban tổ chức — route /organizer/events?status=&q=
- * Tab trạng thái (kèm số đếm), tìm theo tên, danh sách sự kiện tải thêm theo trang.
- * Bản nháp: xuất bản (PublishEventDialog) hoặc xóa (có hộp xác nhận).
- * Dữ liệu: useInfiniteOrganizerEvents (GET /organizer/events), useDashboardSummary({}) chỉ để lấy số đếm cho tab,
- * useDeleteOrganizerEvent.
- */
+// Trang "Quản lý sự kiện" của ban tổ chức — route /organizer/events?status=&q=
+// Dữ liệu: useDashboardSummary, useDeleteOrganizerEvent, useInfiniteOrganizerEvents.
+
 import { useId, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { motion } from "motion/react";
@@ -22,7 +18,6 @@ import { PublishEventDialog } from "./components/PublishEventDialog";
 
 const PAGE_SIZE = 12;
 
-/** Tab trạng thái: `value` gửi lên API (?status=), `countKey` là field số đếm trong summary.events. */
 const EVENT_TABS = [
   { value: "", label: "Tất cả", countKey: "total" },
   { value: "DRAFT", label: "Bản nháp", countKey: "draft" },
@@ -39,7 +34,6 @@ export default function EventsManagePage() {
   const summary = useDashboardSummary({});
   const counts = summary.data?.events;
 
-  /** Ghi một tham số lên URL (rỗng → xóa). Gõ tìm kiếm dùng replace để không đầy lịch sử Back. */
   const setParam = (key, value) =>
     setParams(
       (p) => {
@@ -78,7 +72,6 @@ export default function EventsManagePage() {
           <span className="text-right">Doanh thu</span>
           <span />
         </div>
-        {/* Đổi tab / từ khóa: danh sách cũ mờ đi (isPlaceholderData) trong lúc chờ kết quả mới. */}
         <AnimatedList aria-label="Danh sách sự kiện" className={cn("transition-opacity", eventsQ.isPlaceholderData && "opacity-60")}>
           {rows.map((e, i) => (
             <EventRow key={e.id} index={i % PAGE_SIZE} event={e} onPublish={setPublishing} onDelete={setDeleting} />
@@ -100,7 +93,6 @@ export default function EventsManagePage() {
       />
 
       <div className="flex flex-col gap-4 border-b border-border md:flex-row md:items-end md:justify-between">
-        {/* layoutScroll: hàng tab cuộn ngang trên điện thoại, vạch chọn vẫn tính đúng vị trí khi đã cuộn. */}
         <LayoutGroup id={tabGroup}>
           <motion.div layoutScroll role="tablist" aria-label="Trạng thái" className="-mb-px flex gap-6 overflow-x-auto no-scrollbar">
             {EVENT_TABS.map((t) => {
@@ -157,7 +149,6 @@ export default function EventsManagePage() {
   );
 }
 
-/** Danh sách rỗng: 3 lời nhắn khác nhau khi đang tìm / đang lọc tab / chưa có sự kiện nào. */
 function EmptyList({ status, q, onClear }) {
   if (q)
     return (

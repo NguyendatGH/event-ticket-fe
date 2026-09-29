@@ -1,9 +1,10 @@
+// Số trồi theo hướng bấm. `d` là giá trị prop custom của motion: +1 (thêm) / -1 (bớt)
+
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Minus, Plus } from "lucide-react";
 import { EASE_OUT } from "@/lib/motion";
 
-// Số trồi theo hướng bấm. `d` là giá trị prop custom của motion: +1 (thêm) / -1 (bớt)
 const roll = {
   enter: (d) => ({ y: d * 8, opacity: 0 }),
   center: { y: 0, opacity: 1 },
@@ -12,9 +13,7 @@ const roll = {
 const STEP_BTN =
   "grid size-9 cursor-pointer place-items-center rounded-sm border border-border text-foreground transition hover:border-border-hover hover:bg-surface active:scale-95 focus-ring disabled:cursor-not-allowed disabled:border-border/50 disabled:opacity-40 disabled:hover:bg-transparent";
 
-/** Nút −/+ và con số ở giữa. Con số cuộn lên/xuống theo hướng bấm. max = số vé tối đa được chọn cho hạng này. */
 export function QuantityStepper({ tier, value, max, disabled, onChange }) {
-  // Hướng cuộn số: + thì số mới trồi từ dưới lên, - thì rơi từ trên xuống
   const [dir, setDir] = useState(1);
   const step = (d) => {
     setDir(d);
