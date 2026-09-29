@@ -17,7 +17,7 @@ import { fadeUp, stagger } from "@/lib/motion";
 import { rememberPendingOrder } from "@/lib/pendingOrder";
 import { cn } from "@/lib/utils";
 import { OrderLines } from "@/components/order";
-import { EventAside, IssuedTickets, PaymentDetails, SPLIT_ASIDE, SPLIT_GRID } from "@/components/order";
+import { EventAside, IssuedTickets, PaymentDetails, RefundSection, SPLIT_ASIDE, SPLIT_GRID } from "@/components/order";
 import { orderToLines, retryHref } from "@/lib/checkout";
 
 const POLL_MS = 5000;
@@ -147,7 +147,9 @@ function OrderBody({ order }) {
           </section>
         ) : null}
 
-        <OrderLines title="Chi tiết thanh toán" lines={orderToLines(order)} fee={order.feeAmount} total={order.totalAmount} className="max-w-xl" />
+        {isAuthenticated ? <RefundSection order={order} /> : null}
+
+        <OrderLines title="Chi tiết thanh toán" lines={orderToLines(order)} fee={order.feeAmount} total={order.totalAmount} className="max-w" />
 
         <section aria-labelledby="order-buyer">
           <h2 id="order-buyer" className="eyebrow mb-4">

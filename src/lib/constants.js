@@ -77,6 +77,23 @@ export const STATUS = {
     REFUND_PENDING: ["Chờ hoàn tiền", "warning"],
     REFUNDED: ["Đã hoàn tiền", "muted"],
   },
+  refund: {
+    REQUESTED: ["Đã tiếp nhận", "warning"],
+    AWAITING_FUNDS: ["Đang chờ nguồn tiền", "warning"],
+    PROCESSING: ["Đang chuyển tiền", "info"],
+    SUCCEEDED: ["Đã hoàn tiền", "default"],
+    FAILED: ["Hoàn tiền thất bại", "destructive"],
+    MANUAL_REVIEW: ["Chờ duyệt thủ công", "warning"],
+  },
+};
+
+/** Lý do refund không tự chạy mà chờ người xử lý, viết lại cho khách hiểu. */
+export const REFUND_FAILURE_LABEL = {
+  PAYOUT_DISABLED: "Kênh chuyển tiền đang tạm dừng, ban tổ chức sẽ chuyển khoản thủ công.",
+  PAYOUT_UNAVAILABLE: "Chưa kết nối được cổng chuyển tiền, ban tổ chức sẽ chuyển khoản thủ công.",
+  INSUFFICIENT_PAYOUT_BALANCE: "Đang chờ đủ nguồn tiền để chuyển, yêu cầu của bạn vẫn giữ nguyên thứ tự.",
+  PROCESSING_TIMEOUT: "Ngân hàng chưa phản hồi, ban tổ chức đang kiểm tra.",
+  ADMIN_REJECTED: "Yêu cầu bị từ chối sau khi kiểm tra.",
 };
 
 export const statusLabel = (kind, status) => STATUS[kind]?.[status]?.[0] || status || "";

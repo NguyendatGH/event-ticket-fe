@@ -42,6 +42,11 @@ export const qk = {
   orders: {
     all: ["orders"],
     detail: (id) => ["orders", "detail", id],
+    refunds: (id) => ["orders", "refunds", id],
+  },
+  refunds: {
+    all: ["refunds"],
+    detail: (id) => ["refunds", "detail", id],
   },
   me: {
     all: ["me"],
@@ -54,4 +59,4 @@ export const qk = {
   },
 };
 
-export const USER_SCOPED_KEYS = [qk.auth.all, qk.me.all, qk.organizer.all, qk.orders.all];
+export const USER_SCOPED_KEYS = [qk.auth.all, qk.me.all, qk.organizer.all, qk.orders.all, qk.refunds.all];

@@ -7,12 +7,13 @@ import * as events from "./services/events";
 import * as organizerEvents from "./services/organizerEvents";
 import * as dashboard from "./services/dashboard";
 import * as orders from "./services/orders";
+import * as refunds from "./services/refunds";
 import * as tickets from "./services/tickets";
 import * as uploads from "./services/uploads";
 import * as contact from "./services/contact";
 import * as config from "./services/config";
 
-export const api = { auth, users, organizers, events, organizerEvents, dashboard, orders, tickets, uploads, contact, config };
+export const api = { auth, users, organizers, events, organizerEvents, dashboard, orders, refunds, tickets, uploads, contact, config };
 
 export { onSessionExpired, newIdempotencyKey } from "./client";
 export { ApiError, normalizeError } from "./errors";
@@ -25,6 +26,7 @@ export * from "./queries/events";
 export * from "./queries/organizerEvents";
 export * from "./queries/dashboard";
 export * from "./queries/orders";
+export * from "./queries/refunds";
 export * from "./queries/tickets";
 export * from "./queries/uploads";
 export * from "./queries/contact";
