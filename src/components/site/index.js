@@ -13,7 +13,7 @@ export { EventCard } from "./EventCard";
 export { EventGrid } from "./EventGrid";
 export { CategoryTabs } from "./CategoryTabs";
 export { Price } from "./Price";
-export { StatusBadge } from "./StatusBadge";
+export { RefundStatusBadge, StatusBadge } from "./StatusBadge";
 export { TicketQR } from "./TicketQR";
 export { QRReveal } from "./QRReveal";
 export { UserAvatar } from "./UserAvatar";

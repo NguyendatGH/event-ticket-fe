@@ -17,6 +17,7 @@ import { RevenueChart, TicketsChart } from "./components/Charts";
 import { EventStatusSummary } from "./components/EventStatusSummary";
 import { BlockTitle, OrgHeader, StatStrip, StatStripSkeleton } from "./components/OrgUi";
 import { RangeControls } from "./components/RangeControls";
+import { RefundsInboxLink } from "./components/RefundsInboxLink";
 import { TopEvents } from "./components/TopEvents";
 import { formatRangeLabel, resolveRange } from "./lib";
 
@@ -131,6 +132,7 @@ export default function DashboardPage() {
         eyebrow="Ban tổ chức"
         title="Tổng quan"
         meta={<span className="tabular-nums">{formatRangeLabel(s?.from || from, s?.to || to)}</span>}
+        actions={<RefundsInboxLink />}
       >
         {!isNew ? <RangeControls key={`${range}-${from}-${to}`} range={range} from={from} to={to} interval={interval} invalid={invalid} onChange={update} /> : null}
       </OrgHeader>

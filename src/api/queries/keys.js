@@ -31,6 +31,11 @@ export const qk = {
       detail: (id) => ["organizer", "events", "detail", id],
       orders: (id, params) => ["organizer", "events", "orders", id, params],
     },
+    refunds: {
+      all: ["organizer", "refunds"],
+      list: (status) => ["organizer", "refunds", "list", status || null],
+      instruction: (id) => ["organizer", "refunds", "instruction", id],
+    },
     dashboard: {
       all: ["organizer", "dashboard"],
       summary: (params) => ["organizer", "dashboard", "summary", params],

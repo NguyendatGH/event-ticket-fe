@@ -58,7 +58,10 @@ export const STATUS = {
     REFUND_PROCESSING: ["Đang hoàn tiền", "info"],
     REFUNDED: ["Đã hoàn tiền", "muted"],
     PARTIALLY_REFUNDED: ["Hoàn tiền một phần", "info"],
-    REFUND_FAILED: ["Hoàn tiền lỗi", "destructive"],
+    // Một trạng thái BE, hai câu chuyện: hoàn tiền chạy không xong THẬT, và BTC chủ động hủy yêu cầu.
+    // Nên nhãn phải trung tính cho cả hai, và tone warning (không phải destructive) vì vé đã về ACTIVE,
+    // khách vẫn dùng vé được hoặc gửi lại yêu cầu hoàn được — không có gì hỏng để khách phải lo.
+    REFUND_FAILED: ["Chưa hoàn được tiền", "warning"],
     EXPIRED: ["Hết hạn", "muted"],
     CANCELLED: ["Đã hủy", "muted"],
     MANUAL_REVIEW: ["Đang đối soát", "warning"],
@@ -94,9 +97,61 @@ export const REFUND_FAILURE_LABEL = {
   INSUFFICIENT_PAYOUT_BALANCE: "Đang chờ đủ nguồn tiền để chuyển, yêu cầu của bạn vẫn giữ nguyên thứ tự.",
   PROCESSING_TIMEOUT: "Ngân hàng chưa phản hồi, ban tổ chức đang kiểm tra.",
   ADMIN_REJECTED: "Yêu cầu bị từ chối sau khi kiểm tra.",
+  CANCELLED_BY_ORGANIZER:
+    "Ban tổ chức đã hủy yêu cầu hoàn tiền này. Vé của bạn vẫn dùng được bình thường; nếu vẫn muốn hoàn, hãy liên hệ ban tổ chức rồi gửi yêu cầu mới.",
+};
+
+/**
+ * Cùng mã lý do, nhưng viết cho BAN TỔ CHỨC đọc (trang /organizer/refunds): họ là người phải làm gì đó,
+ * nên câu chữ nói rõ việc cần làm. REFUND_FAILURE_LABEL ở trên là bản viết cho khách.
+ * Mã lấy từ BE: RefundService (INSUFFICIENT_PAYOUT_BALANCE, AWAITING_FUNDS_TIMEOUT, PROCESSING_TIMEOUT...)
+ * và Refund.holdForDestinationReview (DESTINATION_REVIEW).
+ */
+export const REFUND_FAILURE_ORG_LABEL = {
+  INSUFFICIENT_PAYOUT_BALANCE: "Ví chi không đủ tiền. Nạp thêm vào ví chi là hệ thống tự gửi lại.",
+  AWAITING_FUNDS_TIMEOUT: "Chờ ví đủ tiền quá lâu nên hệ thống dừng tự động. Cần chuyển khoản tay.",
+  PAYOUT_DISABLED: "Kênh chi tự động đang tắt trong cấu hình. Mọi yêu cầu phải chuyển khoản tay.",
+  PAYOUT_UNAVAILABLE: "Không gọi được cổng chi trả. Tiền CHƯA bị trừ, chuyển khoản tay rồi chốt.",
+  PROCESSING_TIMEOUT: "Cổng chưa trả kết quả. Lệnh có thể VẪN đang chạy — kiểm tra dashboard PayOS trước khi chốt.",
+  LIMIT_EXCEEDED: "Vượt hạn mức chi của cổng. Chờ qua hạn mức hoặc chuyển khoản tay.",
+  INVALID_DESTINATION: "Ngân hàng / số tài khoản nhận không hợp lệ. Liên hệ khách lấy lại thông tin.",
+  DESTINATION_REVIEW: "Khách xin hoàn về tài khoản khác tài khoản đã thanh toán, cần bạn duyệt.",
+  ADMIN_REJECTED: "Đã bị từ chối sau khi kiểm tra.",
+  CANCELLED_BY_ORGANIZER: "Bạn đã hủy yêu cầu này. Vé đã được trả lại trạng thái hợp lệ cho khách.",
 };
 
 export const statusLabel = (kind, status) => STATUS[kind]?.[status]?.[0] || status || "";
+
+/**
+ * Mã BE ghi vào failureCode khi BTC HỦY một yêu cầu hoàn tiền.
+ * BE cố ý KHÔNG thêm RefundStatus mới (bảng refunds có check constraint), nên refund bị hủy vẫn
+ * mang status = "FAILED". Vì vậy FE phải tự nhận ra ca này: "Hoàn tiền thất bại" đọc lên là sự cố
+ * kỹ thuật, còn đây là quyết định chủ động của BTC — sai nghĩa hẳn với cả BTC lẫn khách.
+ */
+export const REFUND_CANCELLED_CODE = "CANCELLED_BY_ORGANIZER";
+
+export const isRefundCancelled = (refund) =>
+  refund?.status === "FAILED" && refund?.failureCode === REFUND_CANCELLED_CODE;
+
+/**
+ * [nhãn, tone] để vẽ badge cho MỘT refund — khác statusLabel("refund", status) ở chỗ nó nhìn cả
+ * failureCode. Gom điều kiện "đã hủy" vào đúng một chỗ, để không phải rải `if` ở từng component.
+ * Tone muted (nhạt) chứ không destructive: hủy là việc BTC chủ động làm, không phải lỗi hệ thống.
+ */
+export const refundStatusBadge = (refund) =>
+  isRefundCancelled(refund) ? ["Đã hủy", "muted"] : STATUS.refund[refund?.status] || [refund?.status || "", "outline"];
+
+/**
+ * Lý do một refund đang chờ người xử lý (hoặc đã bị hủy), ưu tiên câu dành cho BTC rồi mới tới câu BE trả về.
+ * Ngoại lệ: refund bị BTC hủy thì failureReason CHÍNH LÀ ghi chú BTC đã nhập — BE lưu nguyên văn,
+ * không thêm tiền tố nào — nên hiện thẳng nó, hữu ích hơn một câu mô tả chung.
+ */
+export const refundReasonForOrganizer = (refund) =>
+  (isRefundCancelled(refund) ? refund.failureReason : null) ||
+  REFUND_FAILURE_ORG_LABEL[refund?.failureCode] ||
+  refund?.failureReason ||
+  refund?.failureCode ||
+  "";
 
 export const TICKET_HISTORY_LABEL = {
   ISSUED: "Phát hành",

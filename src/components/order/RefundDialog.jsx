@@ -1,5 +1,6 @@
-// Chọn vé và xác nhận tài khoản nhận tiền.
+// Chọn vé, xác nhận tài khoản nhận tiền và email nhận thông báo.
 // Điền sẵn tài khoản đã thanh toán; giữ nguyên thì hoàn tự động, đổi sang tài khoản khác thì BTC phải duyệt.
+// Email là bắt buộc (BE @NotBlank @Email): BTC hủy yêu cầu thì hệ thống phải có chỗ để báo cho khách.
 
 import { useMemo, useState } from "react";
 import { Loader2 } from "lucide-react";
@@ -21,10 +22,26 @@ import { Textarea } from "@/components/ui/textarea";
 import { Notice, Price } from "@/components/site";
 import { useAppConfig } from "@/api";
 import { formatVND } from "@/lib/format";
+import { v } from "@/lib/forms";
 
 const REASON_MAX = 500;
+const EMAIL_MAX = 200;   // BE: @Size(max = 200) trên contactEmail
 
-export function RefundDialog({ open, onOpenChange, tickets = [], payment, unitPrice, loading = false, error, onSubmit }) {
+// Dùng lại validator email của repo (lib/forms) để câu lỗi giống hệt các form khác.
+// .safeParse() trả về data đã trim -> gửi lên BE là bản đã trim, khỏi tự xử lý.
+const emailRule = v.email("Email nhận thông báo");
+
+export function RefundDialog({
+  open,
+  onOpenChange,
+  tickets = [],
+  payment,
+  customerEmail = "",
+  unitPrice,
+  loading = false,
+  error,
+  onSubmit,
+}) {
   const { banks = [] } = useAppConfig();
   const payerAccount = payment?.payerAccountNumber ?? "";
   const payerBin = payment?.payerBankBin ?? "";
@@ -34,6 +51,9 @@ export function RefundDialog({ open, onOpenChange, tickets = [], payment, unitPr
   const [reason, setReason] = useState("");
   const [bin, setBin] = useState(payerBin);
   const [account, setAccount] = useState(payerAccount);
+  // Điền sẵn email của đơn, nhưng cho sửa: có người trả tiền bằng email khác, hoặc muốn nhận thông báo ở email khác.
+  const [email, setEmail] = useState(customerEmail);
+  const [emailError, setEmailError] = useState(null);
 
   const toggle = (id) => setSelected((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
   const estimate = unitPrice != null ? selected.length * unitPrice : null;
@@ -41,7 +61,23 @@ export function RefundDialog({ open, onOpenChange, tickets = [], payment, unitPr
   // Cùng số tài khoản = tiền về chỗ cũ, BE chạy tự động. Khác số = BTC phải duyệt trước khi chi.
   const samePayer = account.trim() !== "" && account.trim() === payerAccount;
   const needsBankChoice = !payerBin;
+  // Cố ý KHÔNG nhét email vào đây: nút bị disable thì bấm cũng không hiện được lý do.
+  // Email sai để nút vẫn bấm được, bấm xong báo lỗi ngay dưới ô cho khách biết phải sửa gì.
   const ready = selected.length > 0 && bin && account.trim();
+
+  const submit = () => {
+    const checked = emailRule.safeParse(email);
+    if (!checked.success) {
+      setEmailError(checked.error.issues[0].message);
+      return;   // chặn tại FE, không gọi API
+    }
+    onSubmit({
+      ticketIds: selected,
+      reason: reason.trim() || undefined,
+      destination: { bin, accountNumber: account.trim() },
+      contactEmail: checked.data,
+    });
+  };
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
@@ -125,6 +161,35 @@ export function RefundDialog({ open, onOpenChange, tickets = [], payment, unitPr
           </div>
 
           <div className="space-y-2">
+            <Label htmlFor="refund-email">Email nhận thông báo</Label>
+            <Input
+              id="refund-email"
+              type="email"
+              inputMode="email"
+              autoComplete="email"
+              maxLength={EMAIL_MAX}
+              value={email}
+              placeholder="ban@example.com"
+              aria-invalid={Boolean(emailError)}
+              aria-describedby={emailError ? "refund-email-error" : "refund-email-hint"}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setEmailError(null);   // khách đang sửa thì bỏ lỗi cũ, đừng để chữ đỏ đứng đó gây khó chịu
+              }}
+            />
+            {emailError ? (
+              <p id="refund-email-error" className="text-sm text-destructive">
+                {emailError}
+              </p>
+            ) : (
+              <p id="refund-email-hint" className="text-sm text-muted-foreground">
+                Chúng tôi gửi thông báo về yêu cầu hoàn vé này tới email này — kể cả khi ban tổ chức hủy yêu cầu. Điền
+                sẵn email của đơn, bạn đổi được nếu muốn nhận ở email khác.
+              </p>
+            )}
+          </div>
+
+          <div className="space-y-2">
             <Label htmlFor="refund-reason">Lý do (không bắt buộc)</Label>
             <Textarea
               id="refund-reason"
@@ -148,16 +213,7 @@ export function RefundDialog({ open, onOpenChange, tickets = [], payment, unitPr
 
         <AlertDialogFooter>
           <AlertDialogCancel disabled={loading}>Đóng</AlertDialogCancel>
-          <Button
-            disabled={loading || !ready}
-            onClick={() =>
-              onSubmit({
-                ticketIds: selected,
-                reason: reason.trim() || undefined,
-                destination: { bin, accountNumber: account.trim() },
-              })
-            }
-          >
+          <Button disabled={loading || !ready} onClick={submit}>
             {loading ? <Loader2 className="animate-spin" aria-hidden="true" /> : null}
             {samePayer ? "Hoàn tiền" : "Gửi cho ban tổ chức duyệt"}
           </Button>

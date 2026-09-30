@@ -1,7 +1,7 @@
 // Test helper khu organizer.
 
 import { describe, expect, it } from "vitest";
-import { formatRangeLabel, isoToLocalInput, localInputToIso, resolveRange } from "./lib";
+import { REFUND_NEEDS_ACTION, countRefunds, countRefundsNeedingAction, formatRangeLabel, isoToLocalInput, localInputToIso, refundCancelBlocker, resolveRange } from "./lib";
 
 describe("datetime-local theo giờ VN", () => {
   it("ISO → giá trị input và ngược lại", () => {
@@ -29,5 +29,41 @@ describe("resolveRange", () => {
   });
   it("nhãn khoảng ngày", () => {
     expect(formatRangeLabel("2026-09-01", "2026-09-30")).toBe("01.09 - 30.09.2026");
+  });
+});
+
+describe("đếm refund cần ban tổ chức xử lý", () => {
+  const list = [
+    { status: "MANUAL_REVIEW" },
+    { status: "AWAITING_FUNDS" },
+    { status: "AWAITING_FUNDS" },
+    { status: "SUCCEEDED" },
+    { status: "PROCESSING" },
+  ];
+  it("chỉ tính MANUAL_REVIEW và AWAITING_FUNDS", () => {
+    expect(REFUND_NEEDS_ACTION).toEqual(["MANUAL_REVIEW", "AWAITING_FUNDS"]);
+    expect(countRefundsNeedingAction(list)).toBe(3);
+    expect(countRefunds(list, ["SUCCEEDED"])).toBe(1);
+  });
+  it("chưa có dữ liệu (undefined) thì trả 0 chứ không nổ", () => {
+    expect(countRefundsNeedingAction(undefined)).toBe(0);
+    expect(countRefundsNeedingAction([])).toBe(0);
+  });
+});
+
+describe("refundCancelBlocker", () => {
+  it("hủy được khi đang chờ người/ví và cổng chưa nhận lệnh", () => {
+    expect(refundCancelBlocker({ status: "AWAITING_FUNDS" })).toBeNull();
+    expect(refundCancelBlocker({ status: "MANUAL_REVIEW", providerRefundId: null })).toBeNull();
+  });
+
+  it("trạng thái khác thì không hủy được", () => {
+    for (const status of ["REQUESTED", "PROCESSING", "SUCCEEDED", "FAILED"]) {
+      expect(refundCancelBlocker({ status })).toBe("status");
+    }
+  });
+
+  it("cổng đã nhận lệnh chi thì không hủy được, kể cả trạng thái hợp lệ", () => {
+    expect(refundCancelBlocker({ status: "MANUAL_REVIEW", providerRefundId: "payos-1" })).toBe("provider");
   });
 });

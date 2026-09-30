@@ -21,17 +21,27 @@ vi.mock("@/api", async (orig) => {
 });
 
 const { RefundSection } = await import("./RefundSection");
+const { StatusBadge } = await import("@/components/site/StatusBadge");
 
 const ticket = (id, status = "ACTIVE") => ({ id, ticketCode: `code-${id}`, tierName: "Standard", status });
 const PAYER_ACCOUNT = "0123456789012";
+const CUSTOMER_EMAIL = "an@example.com";
 const order = (over) => ({
   id: "o1",
   status: "PAID",
   tickets: [ticket("t1"), ticket("t2")],
   items: [{ unitPrice: 200000 }],
   payment: { payerAccountNumber: PAYER_ACCOUNT, payerBankBin: "970422", payerBankName: "MB Bank" },
+  customer: { name: "An", email: CUSTOMER_EMAIL, phone: "0900000000" },
   ...over,
 });
+
+// Mở dialog hoàn vé rồi trả về chính dialog đó, vì gần như test nào cũng phải làm hai bước này.
+async function openDialog(user, over) {
+  render(<RefundSection order={order(over)} />);
+  await user.click(screen.getByRole("button", { name: /Yêu cầu hoàn vé/ }));
+  return screen.getByRole("alertdialog");
+}
 
 beforeEach(() => {
   created.length = 0;
@@ -68,7 +78,12 @@ describe("RefundSection", () => {
     await user.click(within(dialog).getByRole("button", { name: "Hoàn tiền" }));
 
     expect(created).toEqual([
-      { ticketIds: ["t1"], reason: undefined, destination: { bin: "970422", accountNumber: PAYER_ACCOUNT } },
+      {
+        ticketIds: ["t1"],
+        reason: undefined,
+        destination: { bin: "970422", accountNumber: PAYER_ACCOUNT },
+        contactEmail: CUSTOMER_EMAIL,
+      },
     ]);
   });
 
@@ -119,10 +134,106 @@ describe("RefundSection", () => {
     expect(within(dialog).getByRole("button", { name: "Hoàn tiền" })).toBeDisabled();
   });
 
+  it("ban tổ chức hủy yêu cầu thì khách thấy “Đã hủy”, không phải “Hoàn tiền thất bại”", () => {
+    // BE không có RefundStatus riêng cho việc hủy: refund bị hủy vẫn là FAILED, nhận ra qua failureCode.
+    refunds = [
+      {
+        id: "r1",
+        status: "FAILED",
+        amount: 200000,
+        items: [{}],
+        createdAt: "2026-09-29T10:00:00Z",
+        failureCode: "CANCELLED_BY_ORGANIZER",
+        failureReason: "Ngoài thời hạn hoàn vé",
+      },
+    ];
+    render(<RefundSection order={order()} />);
+
+    expect(screen.getByText("Đã hủy")).toBeInTheDocument();
+    expect(screen.queryByText("Hoàn tiền thất bại")).not.toBeInTheDocument();
+    expect(screen.getByText(/Vé của bạn vẫn dùng được bình thường/)).toBeInTheDocument();
+    // Ghi chú nội bộ của BTC không được hiện nguyên văn cho khách.
+    expect(screen.queryByText("Ngoài thời hạn hoàn vé")).not.toBeInTheDocument();
+  });
+
   it("refund MANUAL_REVIEW thì báo cho khách biết đang chờ người xử lý", () => {
     refunds = [{ id: "r1", status: "MANUAL_REVIEW", amount: 200000, items: [{}], createdAt: "2026-09-29T10:00:00Z", failureCode: "PAYOUT_UNAVAILABLE" }];
     render(<RefundSection order={order()} />);
     expect(screen.getByText(/ban tổ chức sẽ chuyển khoản thủ công/i)).toBeInTheDocument();
     expect(screen.getByText("Chờ duyệt thủ công")).toBeInTheDocument();
+  });
+});
+
+// contactEmail là field BẮT BUỘC của POST /orders/{id}/refunds. Chặn ở FE để khách không phải ăn 400 từ BE.
+describe("RefundSection — email nhận thông báo", () => {
+  it("điền sẵn email của đơn và nói rõ email dùng để làm gì", async () => {
+    const user = userEvent.setup();
+    const dialog = await openDialog(user);
+
+    expect(within(dialog).getByLabelText("Email nhận thông báo")).toHaveValue(CUSTOMER_EMAIL);
+    expect(within(dialog).getByText(/gửi thông báo về yêu cầu hoàn vé này/i)).toBeInTheDocument();
+  });
+
+  it("khách sửa được sang email khác, body gửi đi theo email mới (đã trim)", async () => {
+    const user = userEvent.setup();
+    const dialog = await openDialog(user);
+
+    const input = within(dialog).getByLabelText("Email nhận thông báo");
+    await user.clear(input);
+    await user.type(input, "  binh@example.com  ");
+    await user.click(within(dialog).getByRole("button", { name: "Hoàn tiền" }));
+
+    expect(created).toHaveLength(1);
+    expect(created[0].contactEmail).toBe("binh@example.com");
+  });
+
+  it("bỏ trống email thì không gọi API, hiện lỗi ngay dưới ô", async () => {
+    const user = userEvent.setup();
+    const dialog = await openDialog(user);
+
+    const input = within(dialog).getByLabelText("Email nhận thông báo");
+    await user.clear(input);
+    await user.click(within(dialog).getByRole("button", { name: "Hoàn tiền" }));
+
+    expect(created).toEqual([]);
+    expect(within(dialog).getByText("Email nhận thông báo là bắt buộc")).toBeInTheDocument();
+    expect(input).toHaveAttribute("aria-invalid", "true");
+    // Lỗi phải được nối vào input để screen reader đọc được, không chỉ là chữ đỏ trôi nổi.
+    expect(input).toHaveAttribute("aria-describedby", "refund-email-error");
+  });
+
+  it("email sai format thì cũng chặn, sửa lại thì lỗi biến mất", async () => {
+    const user = userEvent.setup();
+    const dialog = await openDialog(user);
+
+    const input = within(dialog).getByLabelText("Email nhận thông báo");
+    await user.clear(input);
+    await user.type(input, "an@@example");
+    await user.click(within(dialog).getByRole("button", { name: "Hoàn tiền" }));
+
+    expect(created).toEqual([]);
+    expect(within(dialog).getByText("Email nhận thông báo không hợp lệ")).toBeInTheDocument();
+
+    await user.type(input, ".com");   // khách bắt đầu sửa -> bỏ chữ đỏ ngay
+    expect(within(dialog).queryByText(/Email nhận thông báo không hợp lệ/)).not.toBeInTheDocument();
+  });
+
+  it("đơn không có email khách thì ô để trống chứ không vỡ", async () => {
+    const user = userEvent.setup();
+    const dialog = await openDialog(user, { customer: undefined });
+
+    expect(within(dialog).getByLabelText("Email nhận thông báo")).toHaveValue("");
+  });
+});
+
+// BE đưa đơn về REFUND_FAILED cho CẢ hai ca: hoàn tiền chạy lỗi thật, và BTC chủ động hủy yêu cầu.
+// Nhãn vì vậy không được đọc như sự cố hệ thống, nếu không khách thấy badge refund "Đã hủy" (xám)
+// cạnh nhãn đơn màu đỏ "Hoàn tiền lỗi" -> mâu thuẫn, lo vô cớ.
+describe("nhãn trạng thái đơn REFUND_FAILED", () => {
+  it("dùng câu trung tính, không phải chữ báo lỗi", () => {
+    render(<StatusBadge kind="order" status="REFUND_FAILED" />);
+
+    expect(screen.getByText("Chưa hoàn được tiền")).toBeInTheDocument();
+    expect(screen.queryByText(/lỗi|thất bại/i)).not.toBeInTheDocument();
   });
 });

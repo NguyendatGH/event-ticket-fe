@@ -6,7 +6,7 @@ import { RotateCcw } from "lucide-react";
 import { toast } from "sonner";
 import { useCreateRefund, useOrderRefunds } from "@/api";
 import { normalizeError } from "@/api";
-import { Notice, Price, StatusBadge } from "@/components/site";
+import { Notice, Price, RefundStatusBadge } from "@/components/site";
 import { Button } from "@/components/ui/button";
 import { formatDateTime } from "@/lib/format";
 import { REFUND_FAILURE_LABEL } from "@/lib/constants";
@@ -81,7 +81,7 @@ export function RefundSection({ order }) {
                   </p>
                 ) : null}
               </div>
-              <StatusBadge kind="refund" status={r.status} />
+              <RefundStatusBadge refund={r} />
             </li>
           ))}
         </ul>
@@ -102,9 +102,11 @@ export function RefundSection({ order }) {
         }}
         tickets={order.tickets ?? []}
         payment={order.payment}
+        customerEmail={order.customer?.email ?? ""}
         unitPrice={unitPrice}
         loading={create.isPending}
         error={error}
+        // body dialog trả về: { ticketIds, reason, destination, contactEmail } — đúng body BE mong đợi.
         onSubmit={(body) => create.mutate({ body })}
       />
     </section>

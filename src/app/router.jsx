@@ -106,6 +106,7 @@ export const routes = [
               { path: "events/new", element: page(() => import("@/pages/organizer/EventEditorPage")) },
               { path: "events/:id", element: page(() => import("@/pages/organizer/OrganizerEventDetailPage")) },
               { path: "events/:id/edit", element: page(() => import("@/pages/organizer/EventEditorPage")) },
+              { path: "refunds", element: page(() => import("@/pages/organizer/RefundsPage")) },
               { path: "profile", element: page(() => import("@/pages/organizer/OrganizerProfilePage")) },
             ],
           },

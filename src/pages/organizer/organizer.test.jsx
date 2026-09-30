@@ -18,7 +18,7 @@ const api = vi.hoisted(() => ({
   useUpdateOrganizerEvent: vi.fn(),
 }));
 vi.mock("@/api", async (orig) => ({ ...(await orig()), ...api }));
-vi.mock("sonner", () => ({ toast: { success: vi.fn(), error: vi.fn() } }));
+vi.mock("sonner", () => ({ toast: { success: vi.fn(), error: vi.fn(), info: vi.fn() } }));
 
 const mutation = (over = {}) => ({ mutate: vi.fn(), mutateAsync: vi.fn(), reset: vi.fn(), isPending: false, ...over });
 const page = (content) => ({ content, number: 0, size: 12, totalElements: content.length, totalPages: 1 });
