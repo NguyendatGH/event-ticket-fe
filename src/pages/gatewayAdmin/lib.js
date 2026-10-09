@@ -29,3 +29,45 @@ export function methodPaths({ methods, policy, routes, bank, acquirers, connecti
     return { method, enabled, chain, noRoute: chain.length === 0, visible };
   });
 }
+
+export const METHOD_LABEL = { CARD: "Thẻ", QR: "QR", PAYNOW: "PayNow", GOOGLE_PAY: "Google Pay", APPLE_PAY: "Apple Pay" };
+
+
+export function acquirerUsage(profiles) {
+  const usage = {};
+  for (const p of profiles) {
+    for (const [method, rules] of Object.entries(p.routes ?? {})) {
+      for (const rule of rules) {
+        const list = (usage[rule.acquirerCode] ??= []);
+        let entry = list.find((e) => e.profile === p.code);
+        if (!entry) { entry = { profile: p.code, methods: [] }; list.push(entry); }
+        entry.methods.push(method);
+      }
+    }
+  }
+  return usage;
+}
+
+/**
+ * Chuỗi failover của MỘT method trong profile, theo thứ tự ưu tiên, kèm vấn đề của từng acquirer:
+ * "missing" (không còn trong danh sách), "inactive" (đang tắt), "unsupported" (không nhận method này) hoặc null (dùng được).
+ * `nextPriority` = số ưu tiên kế tiếp để thêm rule mà khỏi gõ tay (không trùng). Chưa tải xong acquirer thì chưa báo vấn đề.
+ */
+export function routeChain({ routes, method, acquirers }) {
+  const list = Array.isArray(acquirers) ? acquirers : null;
+  const rules = [...(routes?.[method] ?? [])].sort((a, b) => a.priority - b.priority);
+  const chain = rules.map((rule) => {
+    const acquirer = list?.find((a) => a.code === rule.acquirerCode);
+    const problem = !list ? null
+      : !acquirer ? "missing"
+      : acquirer.status !== "ACTIVE" ? "inactive"
+      : !(acquirer.paymentMethods ?? []).includes(method) ? "unsupported"
+      : null;
+    return { priority: rule.priority, code: rule.acquirerCode, problem };
+  });
+  return {
+    chain,
+    nextPriority: rules.reduce((max, r) => Math.max(max, r.priority), 0) + 1,
+    usable: chain.some((c) => c.problem === null),
+  };
+}

@@ -1,8 +1,13 @@
+// §15 — Routing profile là tầng trung gian giữa terminal và acquirer:
+//   Terminal → RoutingProfile → RoutingRule(method, priority) → Acquirer
+// Terminal không bao giờ trỏ thẳng vào acquirer, nên đổi bank = đổi rule, không phải sửa terminal.
+// Mỗi profile hiện đủ 5 phương thức, mỗi dòng là chuỗi failover (1 → 2 → …), để thấy ngay method nào đã có đường đi,
+// method nào còn trống và acquirer nào trong chuỗi đang hỏng.
 import { useState } from "react";
 import { toast } from "sonner";
 import {
   useAddRoutingRule, useCreateRoutingProfile, useGatewayAcquirers,
-  useGatewayRoutingProfile, useGatewayRoutingProfiles,
+  useGatewayRoutingProfile, useGatewayRoutingProfileDetails, useGatewayRoutingProfiles,
 } from "@/api";
 import { Container, PageHeader } from "@/components/site";
 import { Button } from "@/components/ui/button";
@@ -11,8 +16,13 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { AsyncSection } from "./components/AdminStates";
+import { METHOD_LABEL, PAYMENT_METHODS, routeChain } from "./lib";
 
-const METHODS = ["CARD", "QR", "PAYNOW", "GOOGLE_PAY", "APPLE_PAY"];
+const PROBLEM_TEXT = {
+  missing: "không còn tồn tại",
+  inactive: "đang tắt",
+  unsupported: "không nhận phương thức này",
+};
 
 export default function RoutingProfilesPage() {
   const query = useGatewayRoutingProfiles();
@@ -30,8 +40,9 @@ export default function RoutingProfilesPage() {
         description="Quyết định giao dịch của phương thức nào đi qua acquirer nào, theo thứ tự ưu tiên." />
 
       <p className="mt-4 rounded-lg border border-border px-4 py-3 text-sm text-muted-foreground">
-        Terminal chỉ trỏ vào <strong>profile</strong>, không trỏ thẳng vào acquirer. Muốn terminal nhận QR thì
-        profile của nó phải có rule cho QR — thiếu là <code>409 ROUTING_NOT_CONFIGURED</code>.
+        Terminal chỉ trỏ vào <strong>profile</strong>, không trỏ thẳng vào acquirer. Muốn terminal nhận Google Pay thì
+        profile của nó phải có rule cho Google Pay — thiếu là <code>409 ROUTING_NOT_CONFIGURED</code>. Trong mỗi phương
+        thức, acquirer ở <strong>vị trí 1 được thử trước</strong>; lỗi thì chuyển sang vị trí 2 (failover).
       </p>
 
       <form
@@ -54,112 +65,113 @@ export default function RoutingProfilesPage() {
 
       <div className="mt-6">
         <AsyncSection query={query} empty="Chưa có routing profile nào." rows={3}>
-          {(list) => (
-            <Accordion type="multiple" className="space-y-2">
-              {list.map((p) => (
-                <AccordionItem key={p.code} value={p.code} className="rounded-lg border border-border px-4 last:border-b">
-                  <AccordionTrigger className="hover:no-underline">
-                    <div className="flex flex-1 flex-wrap items-center gap-3 pr-3 text-left">
-                      <span className="font-mono text-sm">{p.code}</span>
-                      <span className="text-sm">{p.name}</span>
-                      <Badge variant={p.status === "ACTIVE" ? "default" : "secondary"}>{p.status}</Badge>
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="pt-2 pb-5">
-                    <ProfileRules code={p.code} />
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-          )}
+          {(list) => <ProfileList list={list} />}
         </AsyncSection>
       </div>
     </Container>
   );
 }
 
+function ProfileList({ list }) {
+  // Tóm tắt phương thức đã có đường đi ngay trên tiêu đề, khỏi phải mở từng profile.
+  const details = useGatewayRoutingProfileDetails(list.map((p) => p.code));
+  return (
+    <Accordion type="multiple" className="space-y-2">
+      {list.map((p, i) => {
+        const routes = details[i]?.data?.routes;
+        const covered = routes ? PAYMENT_METHODS.filter((m) => routes[m]?.length) : null;
+        return (
+          <AccordionItem key={p.code} value={p.code} className="rounded-lg border border-border px-4 last:border-b">
+            <AccordionTrigger className="hover:no-underline">
+              <div className="flex flex-1 flex-wrap items-center gap-x-3 gap-y-1 pr-3 text-left">
+                <span className="font-mono text-sm">{p.code}</span>
+                <span className="text-sm">{p.name}</span>
+                <Badge variant={p.status === "ACTIVE" ? "default" : "secondary"}>{p.status}</Badge>
+                {covered && (covered.length > 0
+                  ? <span className="text-xs text-muted-foreground">route: {covered.map((m) => METHOD_LABEL[m]).join(" · ")}</span>
+                  : <Badge variant="destructive">chưa có rule</Badge>)}
+              </div>
+            </AccordionTrigger>
+            <AccordionContent className="pt-2 pb-5">
+              <ProfileRules code={p.code} />
+            </AccordionContent>
+          </AccordionItem>
+        );
+      })}
+    </Accordion>
+  );
+}
+
 function ProfileRules({ code }) {
   const detail = useGatewayRoutingProfile(code);
   const acquirers = useGatewayAcquirers();
-  const list = Array.isArray(acquirers.data) ? acquirers.data : [];
-  const [method, setMethod] = useState("CARD");
-  const [acquirer, setAcquirer] = useState("");
-  const [priority, setPriority] = useState("1");
+  const routes = detail.data?.routes ?? {};
 
+  if (detail.isPending) return <p className="text-sm text-muted-foreground">Đang tải rule…</p>;
+  return (
+    <div className="space-y-2">
+      <div className="rounded-lg border border-border">
+        <div className="hidden grid-cols-[8rem_1fr_16rem] gap-3 border-b border-border px-3 py-2 text-xs font-semibold uppercase text-muted-foreground sm:grid">
+          <span>Phương thức</span>
+          <span>Thứ tự thử (failover)</span>
+          <span>Thêm acquirer</span>
+        </div>
+        {PAYMENT_METHODS.map((m) => (
+          <MethodRuleRow key={m} code={code} method={m} routes={routes} acquirers={acquirers.data} />
+        ))}
+      </div>
+      <p className="text-xs text-muted-foreground">
+        Chỉ chọn được acquirer đang bật và có nhận phương thức đó (khai ở trang Acquirers). Thứ tự ưu tiên tự gán theo
+        thứ tự thêm. Chưa có thao tác xoá hay đổi thứ tự rule.
+      </p>
+    </div>
+  );
+}
+
+function MethodRuleRow({ code, method, routes, acquirers }) {
+  const { chain, nextPriority } = routeChain({ routes, method, acquirers });
+  const [pick, setPick] = useState("");
   const add = useAddRoutingRule({
-    onSuccess: () => { setAcquirer(""); toast.success("Đã thêm rule"); detail.refetch(); },
+    onSuccess: () => { setPick(""); toast.success(`Đã thêm rule ${METHOD_LABEL[method]}`); },
     onError: (e) => toast.error(e?.message ?? "Thêm rule thất bại"),
   });
-
-  const routes = detail.data?.routes ?? {};
-  const hasRoutes = Object.keys(routes).length > 0;
+  const eligible = (Array.isArray(acquirers) ? acquirers : []).filter((a) =>
+    a.status === "ACTIVE" && (a.paymentMethods ?? []).includes(method) && !chain.some((c) => c.code === a.code));
 
   return (
-    <div className="space-y-4">
-      {detail.isPending ? (
-        <p className="text-sm text-muted-foreground">Đang tải rule…</p>
-      ) : !hasRoutes ? (
-        <p className="rounded-lg border border-dashed border-border px-4 py-5 text-center text-sm text-muted-foreground">
-          Profile này chưa có rule nào — terminal dùng nó sẽ không thanh toán được.
-        </p>
-      ) : (
-        <div className="grid gap-3 sm:grid-cols-2">
-          {Object.entries(routes).map(([m, rs]) => (
-            <div key={m} className="rounded-lg border border-border p-3 text-sm">
-              <strong>{m}</strong>
-              <ol className="ml-5 list-decimal text-muted-foreground">
-                {rs.map((r) => <li key={r.priority}>{r.acquirerCode}</li>)}
-              </ol>
-            </div>
-          ))}
-        </div>
-      )}
+    <div className="grid items-start gap-2 border-b border-border px-3 py-3 text-sm last:border-b-0 sm:grid-cols-[8rem_1fr_16rem] sm:gap-3">
+      <span className="font-medium">{METHOD_LABEL[method]}</span>
 
-      <form
-        className="grid gap-3 rounded-lg border border-dashed border-border p-4 sm:grid-cols-[1fr_1fr_auto_auto]"
-        onSubmit={(e) => {
-          e.preventDefault();
-          if (!acquirer) return;
-          add.mutate({ code, paymentMethod: method, acquirerCode: acquirer, priority: Number(priority) || 1 });
-        }}
-      >
-        <div>
-          <label className="mb-1 block text-xs font-medium" htmlFor={`m-${code}`}>Phương thức</label>
-          <Select value={method} onValueChange={(v) => { setMethod(v); setAcquirer(""); }}>
-            <SelectTrigger id={`m-${code}`}><SelectValue /></SelectTrigger>
-            <SelectContent>{METHODS.map((m) => <SelectItem key={m} value={m}>{m}</SelectItem>)}</SelectContent>
-          </Select>
-        </div>
-        <div>
-          <label className="mb-1 block text-xs font-medium" htmlFor={`a-${code}`}>Acquirer</label>
-          <Select value={acquirer} onValueChange={setAcquirer}>
-            <SelectTrigger id={`a-${code}`}><SelectValue placeholder="Chọn acquirer" /></SelectTrigger>
-            <SelectContent>
-              {list.map((a) => {
-                const accepted = a.paymentMethods ?? [];
-                const runs = a.status === "ACTIVE" && accepted.includes(method);
-                const why = a.status !== "ACTIVE" ? "đang tắt" : `chỉ nhận ${accepted.join(", ") || "—"}`;
-                return (
-                  <SelectItem key={a.code} value={a.code} disabled={!runs}>
-                    {a.code} — {accepted.join(", ")}{runs ? "" : ` (${why})`}
-                  </SelectItem>
-                );
-              })}
-            </SelectContent>
-          </Select>
-        </div>
-        <div>
-          <label className="mb-1 block text-xs font-medium" htmlFor={`p-${code}`}>Ưu tiên</label>
-          <Input id={`p-${code}`} type="number" min={1} className="w-24" value={priority}
-            onChange={(e) => setPriority(e.target.value)} />
-        </div>
-        <div className="flex items-end">
-          <Button type="submit" disabled={add.isPending || !acquirer}>+ Thêm rule</Button>
-        </div>
-        <p className="col-span-full text-xs text-muted-foreground">
-          Chỉ chọn được acquirer có nhận phương thức đó (khai ở trang Acquirers).
-          Ưu tiên nhỏ hơn được thử trước; trùng ưu tiên trong cùng phương thức sẽ bị từ chối.
-        </p>
+      <div>
+        {chain.length === 0 ? (
+          <p className="text-muted-foreground">Chưa có rule — terminal dùng profile này không nhận được {METHOD_LABEL[method]}.</p>
+        ) : (
+          <ol className="flex flex-wrap items-center gap-x-2 gap-y-1">
+            {chain.map((c, i) => (
+              <li key={c.code} className="flex items-center gap-2">
+                {i > 0 && <span aria-hidden="true" className="text-muted-foreground">→</span>}
+                <span className="text-xs text-muted-foreground">{i + 1}.</span>
+                <span className="font-mono">{c.code}</span>
+                {c.problem && <span className="text-xs text-destructive">({PROBLEM_TEXT[c.problem]})</span>}
+              </li>
+            ))}
+          </ol>
+        )}
+      </div>
+
+      <form className="flex gap-2" onSubmit={(e) => {
+        e.preventDefault();
+        if (pick) add.mutate({ code, paymentMethod: method, acquirerCode: pick, priority: nextPriority });
+      }}>
+        <Select value={pick} onValueChange={setPick} disabled={eligible.length === 0}>
+          <SelectTrigger aria-label={`Thêm acquirer cho ${METHOD_LABEL[method]} của ${code}`} className="min-w-0 flex-1">
+            <SelectValue placeholder={eligible.length ? "Chọn acquirer" : "Không còn acquirer phù hợp"} />
+          </SelectTrigger>
+          <SelectContent>
+            {eligible.map((a) => <SelectItem key={a.code} value={a.code}>{a.code} — {a.name}</SelectItem>)}
+          </SelectContent>
+        </Select>
+        <Button type="submit" size="sm" disabled={add.isPending || !pick}>Thêm</Button>
       </form>
     </div>
   );
