@@ -81,13 +81,6 @@ export const REFUND_NEEDS_ACTION = ["MANUAL_REVIEW", "AWAITING_FUNDS"];
 
 export const REFUND_CANCELLABLE = ["AWAITING_FUNDS", "MANUAL_REVIEW"];
 
-/**
- * Vì sao KHÔNG hủy được yêu cầu này — trả null nghĩa là hủy được.
- * - "status": trạng thái không cho hủy → không hiện gì, đừng cho bấm rồi để BE trả 409.
- * - "provider": cổng thanh toán đã nhận lệnh chi (providerRefundId != null) nên tiền CÓ THỂ đã đi.
- *   Hủy lúc này là mất dấu tiền, BE chặn bằng 409 REFUND_ALREADY_AT_PROVIDER — giống y hệt lý do
- *   nút "Gửi lại qua cổng" bị ẩn. FE chặn trước để BTC không phải ăn lỗi server mới biết.
- */
 export function refundCancelBlocker(refund) {
   if (!REFUND_CANCELLABLE.includes(refund?.status)) return "status";
   if (refund?.providerRefundId) return "provider";

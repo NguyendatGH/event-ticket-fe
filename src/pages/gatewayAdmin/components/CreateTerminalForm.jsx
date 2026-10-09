@@ -11,7 +11,7 @@ const CHANNELS = ["WEB", "MOBILE_APP", "API", "POS"];
 const METHODS = ["CARD", "QR", "PAYNOW", "GOOGLE_PAY", "APPLE_PAY"];
 const POLICIES = ["REQUIRED", "OPTIONAL", "DISABLED"];
 
-export function CreateTerminalForm({ merNo, activeTerminalId }) {
+export function CreateTerminalForm({ merNo, defaultTerminalId }) {
   const profiles = useGatewayRoutingProfiles();
   const list = Array.isArray(profiles.data) ? profiles.data : [];
   const [name, setName] = useState("");
@@ -27,16 +27,16 @@ export function CreateTerminalForm({ merNo, activeTerminalId }) {
   const hasCard = methods.includes("CARD");
   const acquirers = useGatewayAcquirers();
   const no3ds = cardRoutesWithout3ds({ methods, policy, routes, acquirers: acquirers.data });
-  const linked = Boolean(activeTerminalId);
+  const linked = Boolean(defaultTerminalId);
 
   const create = useCreateGatewayTerminal({
     onSuccess: (t) => {
       setName("");
       const id = t?.terminalId ?? "terminal";
-      toast.success(t?.usedByEncore
-        ? `Đã tạo ${id}. Encore thu tiền qua terminal này từ giờ.`
-        : activeTerminalId
-          ? `Đã tạo ${id}. Encore vẫn thu tiền qua ${activeTerminalId} — bấm "Chuyển sang dùng terminal này" để khách dùng terminal mới.`
+      toast.success(t?.purpose === "DEFAULT"
+        ? `Đã tạo ${id} và đặt làm terminal mặc định.`
+        : defaultTerminalId
+          ? `Đã tạo ${id}. Terminal mặc định vẫn là ${defaultTerminalId} — bấm "Đặt làm terminal mặc định" nếu muốn đổi.`
           : `Đã tạo ${id}.`);
     },
     onError: (e) => toast.error(e?.message ?? "Tạo terminal thất bại"),
@@ -116,7 +116,7 @@ export function CreateTerminalForm({ merNo, activeTerminalId }) {
       {linked && (
         <label htmlFor="t-activate" className="flex items-center gap-2 text-sm">
           <Checkbox id="t-activate" checked={activate} onCheckedChange={(on) => setActivate(on === true)} />
-          Encore dùng terminal này ngay để thu tiền (thay cho {activeTerminalId})
+          Đặt làm terminal mặc định ngay (thay cho {defaultTerminalId})
         </label>
       )}
 
@@ -124,8 +124,8 @@ export function CreateTerminalForm({ merNo, activeTerminalId }) {
         <Button type="submit" disabled={create.isPending || !valid}>+ Create Terminal</Button>
       </div>
       <p className="text-xs text-muted-foreground">
-        Merchant phải có Acquirer Connection tới acquirer của từng rule. Không tick "dùng ngay" thì terminal mới chỉ được
-        Encore dùng sau khi bấm "Chuyển sang dùng terminal này".
+        Merchant phải có Acquirer Connection tới acquirer của từng rule. Terminal mặc định chỉ nhận đơn khi ban tổ chức
+        chưa mở kênh nào; khi đã có kênh, gateway tự chọn terminal của kênh theo phương thức khách chọn.
       </p>
     </form>
   );

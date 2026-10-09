@@ -23,8 +23,6 @@ export const useGatewayAcquirerConfigs = (merNo, options) =>
 export const useGatewayRoutingProfiles = (options) =>
   useQuery({ queryKey: qk.gatewayAdmin.routingProfiles, queryFn: api.routingProfiles, ...options });
 
-// Chi tiết (rule) của NHIỀU profile một lúc, cùng key với useGatewayRoutingProfile nên dùng chung cache và tự làm mới
-// khi thêm rule. Dùng để vẽ toàn cảnh "acquirer nào đang được route ở profile nào".
 export const useGatewayRoutingProfileDetails = (codes = []) =>
   useQueries({ queries: codes.map((code) => ({ queryKey: qk.gatewayAdmin.routingProfile(code), queryFn: () => api.routingProfile(code) })) });
 
@@ -61,9 +59,9 @@ export function useSetTerminalStatus(options = {}) {
   return invalidating((v) => [qk.gatewayAdmin.terminals(v.merNo), qk.gatewayAdmin.terminal(v.terminalId)])({
     mutationFn: api.setTerminalStatus, ...options });
 }
-export function useSetActiveTerminal(options = {}) {
-  return invalidating((v) => [qk.gatewayAdmin.merchant(v.merNo), qk.gatewayAdmin.organizers])({
-    mutationFn: api.setActiveTerminal, ...options });
+export function useSetDefaultTerminal(options = {}) {
+  return invalidating((v) => [qk.gatewayAdmin.merchant(v.merNo), qk.gatewayAdmin.terminals(v.merNo)])({
+    mutationFn: api.setDefaultTerminal, ...options });
 }
 export function useConfigureTerminal(options = {}) {
   return invalidating((v) => [qk.gatewayAdmin.terminal(v.terminalId)])({ mutationFn: api.configureTerminal, ...options });

@@ -33,8 +33,8 @@ function expireSession(error) {
   sessionListeners.forEach((fn) => {
     try {
       fn(error);
-    } catch {
-      // bỏ qua
+    } catch (error) {
+      void error;
     }
   });
 }
@@ -104,8 +104,8 @@ client.interceptors.request.use(async (config) => {
   if (isAccessTokenExpired(state) && state.refreshToken) {
     try {
       await refreshSession();
-    } catch {
-      // bỏ qua
+    } catch (error) {
+      void error;
     }
     state = useAuthStore.getState();
   }

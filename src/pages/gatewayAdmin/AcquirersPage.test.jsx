@@ -1,4 +1,3 @@
-// Bảng acquirer: sửa phương thức/3DS/BIN ngay trên hàng, thấy acquirer đang dùng ở profile nào.
 
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";

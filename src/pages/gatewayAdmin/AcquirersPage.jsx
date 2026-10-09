@@ -1,5 +1,3 @@
-// Một bảng cho TẤT CẢ acquirer: hàng = acquirer, cột = phương thức nhận, 3DS, BIN, và "đang dùng ở" profile nào.
-// Trước đây mỗi acquirer là một thẻ riêng nên không so sánh được "ai nhận Google Pay?" hay "acquirer này có đang được route không?".
 import { useState } from "react";
 import { toast } from "sonner";
 import {
@@ -15,7 +13,6 @@ import { AsyncSection } from "./components/AdminStates";
 import { acquirerUsage, METHOD_LABEL, PAYMENT_METHODS } from "./lib";
 
 const same = (a, b) => JSON.stringify([...a].sort()) === JSON.stringify([...b].sort());
-// Tên + 5 phương thức + 3DS + BIN + đang dùng ở + nút lưu.
 const GRID = "grid grid-cols-[minmax(12rem,1.3fr)_repeat(5,4.5rem)_4rem_7.5rem_minmax(11rem,1.2fr)_5.5rem] items-center gap-x-3";
 
 export default function AcquirersPage() {

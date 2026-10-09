@@ -14,7 +14,7 @@ export default function OrganizerListPage() {
   const [busy, setBusy] = useState(null);
 
   const provision = useProvisionOrganizer({
-    onSuccess: (row) => toast.success(`${row.organizerName} → ${row.gatewayMerchantNo} / ${row.gatewayTerminalId}`),
+    onSuccess: (row) => toast.success(`${row.organizerName} → ${row.gatewayMerchantNo}`),
     onError: (e) => toast.error(e?.message ?? "Cấp phát thất bại"),
     onSettled: () => setBusy(null),
   });

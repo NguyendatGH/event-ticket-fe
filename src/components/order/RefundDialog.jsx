@@ -53,7 +53,6 @@ export function RefundDialog({
 
   const samePayer = account.trim() !== "" && account.trim() === payerAccount;
   const needsBankChoice = !payerBin;
-  // Cố ý KHÔNG nhét email vào đây: nút bị disable thì bấm cũng không hiện được lý do.
   const ready = selected.length > 0 && bin && account.trim();
 
   const submit = () => {
@@ -171,7 +170,7 @@ export function RefundDialog({
               aria-describedby={emailError ? "refund-email-error" : "refund-email-hint"}
               onChange={(e) => {
                 setEmail(e.target.value);
-                setEmailError(null);   // khách đang sửa thì bỏ lỗi cũ, đừng để chữ đỏ đứng đó gây khó chịu
+                setEmailError(null);
               }}
             />
             {emailError ? (
