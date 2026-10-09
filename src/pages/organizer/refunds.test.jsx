@@ -194,7 +194,6 @@ describe("RefundsPage — hủy hoàn tiền", () => {
     expect(table().getAllByRole("button", { name: "Hủy hoàn tiền" })).toHaveLength(2);
   });
 
-  // Các trạng thái này BE trả 409 nếu cố hủy, nên đừng hiện nút rồi để BTC ăn lỗi.
   it.each(["REQUESTED", "PROCESSING", "SUCCEEDED", "FAILED"])("trạng thái %s thì không cho hủy", (status) => {
     api.useOrganizerRefunds.mockReturnValue({ data: [refund({ status, failureCode: null })] });
     renderAt("/organizer/refunds?status=ALL");

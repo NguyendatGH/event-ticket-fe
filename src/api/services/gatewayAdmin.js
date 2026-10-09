@@ -16,8 +16,8 @@ export const createTerminal = ({ merNo, activate, ...body }) =>
 export const terminal = (terminalId) => client.get(`${base}/terminals/${enc(terminalId)}`);
 export const setTerminalStatus = ({ terminalId, status }) =>
   client.patch(`${base}/terminals/${enc(terminalId)}`, { status });
-export const setActiveTerminal = ({ merNo, terminalId }) =>
-  client.put(`${base}/merchants/${enc(merNo)}/active-terminal`, { terminalId });
+export const setDefaultTerminal = ({ merNo, terminalId }) =>
+  client.put(`${base}/merchants/${enc(merNo)}/default-terminal`, { terminalId });
 export const configureTerminal = ({ terminalId, paymentMethods, threeDsPolicy, routingProfileCode, acquirerCode }) =>
   client.put(`${base}/terminals/${enc(terminalId)}/configuration`, { paymentMethods, threeDsPolicy, routingProfileCode, acquirerCode });
 

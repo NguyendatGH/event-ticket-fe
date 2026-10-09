@@ -49,7 +49,6 @@ export function CancelRefundDialog({ refund, open, onOpenChange, onCancelled }) 
         },
         onError: (e) => {
           if (normalizeError(e).code !== "REFUND_NOT_CANCELLABLE") return;
-          // đừng báo đỏ như sự cố — nói nhẹ một câu, nạp lại danh sách cho khớp BE rồi đóng.
           toast.info("Yêu cầu này đã được hủy hoặc chốt ở nơi khác rồi. Danh sách vừa được nạp lại.");
           refreshRefunds();
           onCancelled?.();

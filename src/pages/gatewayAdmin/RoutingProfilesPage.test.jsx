@@ -1,4 +1,3 @@
-// Routing profile: mỗi method một dòng chuỗi failover, thêm acquirer tại dòng và ưu tiên tự gán.
 
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -17,7 +16,6 @@ vi.mock("@/api", () => ({
 
 const { default: RoutingProfilesPage } = await import("./RoutingProfilesPage");
 
-// Select của Radix cần mấy API mà jsdom không có.
 beforeAll(() => {
   Element.prototype.hasPointerCapture ??= () => false;
   Element.prototype.releasePointerCapture ??= () => {};

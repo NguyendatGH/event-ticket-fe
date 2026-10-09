@@ -48,11 +48,6 @@ export function acquirerUsage(profiles) {
   return usage;
 }
 
-/**
- * Chuỗi failover của MỘT method trong profile, theo thứ tự ưu tiên, kèm vấn đề của từng acquirer:
- * "missing" (không còn trong danh sách), "inactive" (đang tắt), "unsupported" (không nhận method này) hoặc null (dùng được).
- * `nextPriority` = số ưu tiên kế tiếp để thêm rule mà khỏi gõ tay (không trùng). Chưa tải xong acquirer thì chưa báo vấn đề.
- */
 export function routeChain({ routes, method, acquirers }) {
   const list = Array.isArray(acquirers) ? acquirers : null;
   const rules = [...(routes?.[method] ?? [])].sort((a, b) => a.priority - b.priority);

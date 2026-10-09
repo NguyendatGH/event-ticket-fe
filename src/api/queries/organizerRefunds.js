@@ -24,11 +24,6 @@ export const useRefundInstruction = (id, options = {}) =>
     ...options,
   });
 
-/**
- * Chốt một refund: SUCCEEDED / FAILED / RETRY, và CANCELLED (BTC hủy hẳn yêu cầu).
- * Cùng một mutation cho cả bốn vì BE cùng một endpoint POST /organizer/refunds/{id}/resolve,
- * và cache phải nạp lại y như nhau — đừng tạo hook riêng cho việc hủy.
- */
 export function useResolveRefund(options = {}) {
   const qc = useQueryClient();
   const after = (refund) => {

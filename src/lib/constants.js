@@ -132,12 +132,6 @@ export const mockBankProfile = (bank) =>
 
 export const statusLabel = (kind, status) => STATUS[kind]?.[status]?.[0] || status || "";
 
-/**
- * Mã BE ghi vào failureCode khi BTC HỦY một yêu cầu hoàn tiền.
- * BE cố ý KHÔNG thêm RefundStatus mới (bảng refunds có check constraint), nên refund bị hủy vẫn
- * mang status = "FAILED". Vì vậy FE phải tự nhận ra ca này: "Hoàn tiền thất bại" đọc lên là sự cố
- * kỹ thuật, còn đây là quyết định chủ động của BTC — sai nghĩa hẳn với cả BTC lẫn khách.
- */
 export const REFUND_CANCELLED_CODE = "CANCELLED_BY_ORGANIZER";
 
 export const isRefundCancelled = (refund) =>

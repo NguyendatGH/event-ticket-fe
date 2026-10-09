@@ -1,8 +1,3 @@
-// §15 — Routing profile là tầng trung gian giữa terminal và acquirer:
-//   Terminal → RoutingProfile → RoutingRule(method, priority) → Acquirer
-// Terminal không bao giờ trỏ thẳng vào acquirer, nên đổi bank = đổi rule, không phải sửa terminal.
-// Mỗi profile hiện đủ 5 phương thức, mỗi dòng là chuỗi failover (1 → 2 → …), để thấy ngay method nào đã có đường đi,
-// method nào còn trống và acquirer nào trong chuỗi đang hỏng.
 import { useState } from "react";
 import { toast } from "sonner";
 import {
@@ -73,7 +68,6 @@ export default function RoutingProfilesPage() {
 }
 
 function ProfileList({ list }) {
-  // Tóm tắt phương thức đã có đường đi ngay trên tiêu đề, khỏi phải mở từng profile.
   const details = useGatewayRoutingProfileDetails(list.map((p) => p.code));
   return (
     <Accordion type="multiple" className="space-y-2">

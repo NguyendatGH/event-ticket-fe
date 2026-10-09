@@ -3,8 +3,8 @@ const PENDING_ORDER_KEY = "nhip.pendingOrder";
 export function rememberPendingOrder(orderId) {
   try {
     sessionStorage.setItem(PENDING_ORDER_KEY, orderId);
-  } catch {
-    // bỏ qua
+  } catch (error) {
+    void error;
   }
 }
 
@@ -19,7 +19,7 @@ export function readPendingOrder() {
 export function clearPendingOrder() {
   try {
     sessionStorage.removeItem(PENDING_ORDER_KEY);
-  } catch {
-    // bỏ qua
+  } catch (error) {
+    void error;
   }
 }
