@@ -1,6 +1,3 @@
-// Danh sách đơn hàng của tôi, route "/me/orders?status=paid|pending|cancelled" (cần đăng nhập, nằm trong AccountLayout).
-// Dữ liệu: useMyOrders.
-
 import { Link, useSearchParams } from "react-router-dom";
 import { Receipt } from "lucide-react";
 import { flattenPages, totalOf, useMyOrders } from "@/api";

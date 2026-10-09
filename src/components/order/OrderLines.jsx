@@ -1,5 +1,3 @@
-// Tóm tắt đơn kiểu biên nhận: dòng vé, phí dịch vụ, tổng.
-
 import { AnimatePresence, motion } from "motion/react";
 import { AnimatedNumber } from "@/components/motion";
 import { DUR, EASE_IN, EASE_OUT } from "@/lib/motion";

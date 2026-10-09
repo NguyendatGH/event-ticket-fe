@@ -1,4 +1,3 @@
-// §8: secret plaintext chỉ hiện đúng một lần, ngay sau khi tạo/rotate. Không API GET nào trả lại.
 import { Button } from "@/components/ui/button";
 
 export function SecretOnce({ secret, onDismiss }) {

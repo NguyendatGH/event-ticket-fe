@@ -1,5 +1,3 @@
-// Shimmer quét ngang (transform) thay cho pulse; mọi skeleton chung nhịp 1.6s nên cả lưới quét đồng bộ.
-
 import { cn } from "@/lib/utils"
 
 function Skeleton({

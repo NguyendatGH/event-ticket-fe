@@ -1,6 +1,3 @@
-// Trang chờ kết quả thanh toán — route /checkout/return?orderId=<id>
-// Dữ liệu: useOrder.
-
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";

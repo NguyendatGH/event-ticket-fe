@@ -1,5 +1,3 @@
-// "https://www.sunrise.vn/about" → "sunrise.vn" (chỉ lấy tên miền, bỏ www). URL hỏng → giữ nguyên.
-
 import { motion } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
 import { fadeUp } from "@/lib/motion";

@@ -1,5 +1,3 @@
-// Gần giống đầu trang /organizers/:slug, cập nhật theo từng phím gõ.
-
 import { useWatch } from "react-hook-form";
 import { BadgeCheck } from "lucide-react";
 import { ImageWithFallback, UserAvatar } from "@/components/site";

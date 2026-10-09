@@ -1,5 +1,3 @@
-// Khối tóm tắt đơn: lưới 2 cột, cột phụ sự kiện, thông tin thanh toán, vé đã cấp.
-
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { motion } from "motion/react";

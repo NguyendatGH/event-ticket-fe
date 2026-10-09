@@ -1,5 +1,3 @@
-// Hook ban tổ chức: danh sách nổi bật, trang công khai, hồ sơ của tôi.
-
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as organizersApi from "../services/organizers";
 import { qk } from "./keys";

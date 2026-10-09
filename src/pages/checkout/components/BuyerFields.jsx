@@ -1,5 +1,3 @@
-// Khối "Thông tin người nhận" của trang thanh toán (memo + useFormState riêng).
-
 import { memo } from "react";
 import { useFormState } from "react-hook-form";
 import { Input } from "@/components/ui/input";

@@ -1,5 +1,3 @@
-// Chọn ảnh → POST /uploads/images → onChange(url).
-
 import { useId, useRef, useState } from "react";
 import { ImagePlus, Loader2, RefreshCw, Trash2 } from "lucide-react";
 import { toast } from "sonner";

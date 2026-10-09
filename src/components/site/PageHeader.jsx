@@ -1,5 +1,3 @@
-// Đầu trang: nhãn nhỏ, H1, mô tả, hành động, divider.
-
 import { cn } from "@/lib/utils";
 
 export function PageHeader({ eyebrow, title, description, actions, children, className, divider = true }) {

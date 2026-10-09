@@ -1,6 +1,3 @@
-// Trang chi tiết một vé — route /me/tickets/:id (cần đăng nhập, nằm trong AccountLayout).
-// Dữ liệu: useMyTicket.
-
 import { Link, useParams } from "react-router-dom";
 import { motion } from "motion/react";
 import { Ticket } from "lucide-react";

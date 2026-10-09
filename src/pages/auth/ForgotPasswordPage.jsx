@@ -1,6 +1,3 @@
-// Quên mật khẩu, route "/auth/forgot-password" → useForgotPassword (POST /auth/forgot-password).
-// Dữ liệu: useForgotPassword.
-
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";

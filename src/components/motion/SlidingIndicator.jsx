@@ -1,5 +1,3 @@
-// Đo bằng offsetLeft/offsetTop (không phụ thuộc scroll) nên dùng được cho chrome sticky: nav header, sidebar.
-
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { SPRING } from "@/lib/motion";

@@ -1,5 +1,3 @@
-// Helper cho luồng mua vé (checkout → cổng thanh toán → return → success/failed).
-
 export const RETURN_TIMEOUT_MS = 90_000;
 
 export function parseTiers(param) {

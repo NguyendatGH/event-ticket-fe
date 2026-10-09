@@ -1,5 +1,3 @@
-// Khi không có ApiError cụ thể (vd nhiều query cùng lỗi) vẫn có câu hướng dẫn.
-
 import { Reveal } from "@/components/motion";
 import { SectionTitle } from "@/components/marketplace";
 import { Container, ErrorState } from "@/components/site";

@@ -1,5 +1,3 @@
-// Reveal khi cuộn tới (once). Nội dung trên màn hình đầu: truyền `immediate` để chạy ngay khi mount.
-
 import { motion } from "motion/react";
 import { fadeUp, inView, riseSm, stagger } from "@/lib/motion";
 

@@ -50,7 +50,6 @@ export function useRotateGatewayCredential(options = {}) {
   return invalidating((merNo) => [qk.gatewayAdmin.merchant(merNo)])({ mutationFn: api.rotateCredential, ...options });
 }
 export function useCreateGatewayTerminal(options = {}) {
-  // merchants là tiền tố của merchant(merNo): activeTerminalId (badge "Encore đang dùng") cũng được tải lại.
   return invalidating(() => [qk.gatewayAdmin.merchants, qk.gatewayAdmin.organizers])({ mutationFn: api.createTerminal, ...options });
 }
 export function useSetTerminalStatus(options = {}) {

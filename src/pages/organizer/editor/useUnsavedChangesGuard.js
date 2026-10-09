@@ -1,5 +1,3 @@
-// Chặn rời trang khi form còn thay đổi chưa lưu, ở 2 tầng:
-
 import { useEffect, useRef } from "react";
 import { useBlocker } from "react-router-dom";
 

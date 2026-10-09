@@ -1,5 +1,3 @@
-// Bảng hạng vé ở trang chi tiết sự kiện (organizer).
-
 import { Link } from "react-router-dom";
 import { formatNumber, formatVND } from "@/lib/format";
 import { cn } from "@/lib/utils";

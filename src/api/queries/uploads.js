@@ -1,5 +1,3 @@
-// Hook POST /uploads/images.
-
 import { useMutation } from "@tanstack/react-query";
 import * as uploadsApi from "../services/uploads";
 

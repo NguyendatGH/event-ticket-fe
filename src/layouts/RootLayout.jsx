@@ -1,5 +1,3 @@
-// Gốc router:
-
 import { Suspense, useEffect } from "react";
 import { Outlet, ScrollRestoration } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";

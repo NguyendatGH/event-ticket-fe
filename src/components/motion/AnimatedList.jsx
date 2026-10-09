@@ -1,5 +1,3 @@
-// Key phải là id ổn định (không dùng index). Chỉ dùng cho list thực sự đổi phần tử (thêm/xóa/sắp xếp).
-
 import { AnimatePresence, motion } from "motion/react";
 import { rowItem, SPRING } from "@/lib/motion";
 import { cn } from "@/lib/utils";

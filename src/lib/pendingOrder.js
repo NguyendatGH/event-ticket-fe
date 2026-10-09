@@ -1,12 +1,10 @@
-// Nhớ "đơn đang chờ thanh toán" trong lúc người dùng ở cổng thanh toán.
-
 const PENDING_ORDER_KEY = "nhip.pendingOrder";
 
 export function rememberPendingOrder(orderId) {
   try {
     sessionStorage.setItem(PENDING_ORDER_KEY, orderId);
   } catch {
-    // storage bị chặn: bỏ qua
+    // bỏ qua
   }
 }
 
@@ -22,6 +20,6 @@ export function clearPendingOrder() {
   try {
     sessionStorage.removeItem(PENDING_ORDER_KEY);
   } catch {
-    // storage bị chặn: bỏ qua
+    // bỏ qua
   }
 }

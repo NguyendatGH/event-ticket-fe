@@ -1,5 +1,3 @@
-// Một đơn hàng trong khối "Đơn hàng" (EventOrders), 2 kiểu hiển thị cùng dữ liệu:
-
 import { motion } from "motion/react";
 import { StatusBadge } from "@/components/site";
 import { formatDateTime, formatNumber, formatVND } from "@/lib/format";

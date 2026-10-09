@@ -1,5 +1,3 @@
-// Ảnh đúng cỡ: URL Unsplash (images.unsplash.com) → đặt lại w (px), q=75, auto=format để thẻ nhỏ không tải ảnh 1600px.
-
 export function imageAt(url, width) {
   if (!url || !width || !url.startsWith("https://images.unsplash.com/")) return url;
   try {

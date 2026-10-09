@@ -1,5 +1,3 @@
-// Toàn bộ route (contract §6.2); trang tải lazy, Suspense nằm trong từng layout.
-
 import { lazy } from "react";
 import { createBrowserRouter, Navigate, useSearchParams } from "react-router-dom";
 import RootLayout from "@/layouts/RootLayout";

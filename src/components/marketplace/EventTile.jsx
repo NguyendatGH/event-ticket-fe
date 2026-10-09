@@ -1,5 +1,3 @@
-// Thẻ sự kiện ngang 16:9 cho các hàng/lưới v2.
-
 import { memo } from "react";
 import { Link } from "react-router-dom";
 import { ImageWithFallback } from "@/components/site";

@@ -1,5 +1,3 @@
-// Test hàm thuần khu sự kiện.
-
 import { describe, expect, it } from "vitest";
 import { SERVICE_FEE } from "@/lib/business";
 import { checkoutHref, purchaseState, summarize, toParagraphs } from "./lib";

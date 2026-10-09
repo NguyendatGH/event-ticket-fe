@@ -1,5 +1,3 @@
-// Form trình tạo/sửa sự kiện. Một form RHF cho cả 4 bước.
-
 import { z, v } from "@/lib/forms";
 import { CATEGORY_LABEL } from "@/lib/constants";
 import { formatNumber } from "@/lib/format";

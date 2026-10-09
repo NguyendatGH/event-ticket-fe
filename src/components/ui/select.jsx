@@ -1,5 +1,3 @@
-// Primitive shadcn/Radix: Select.
-
 import * as React from "react"
 import { cn } from "@/lib/utils"
 import { fieldClass } from "./input"

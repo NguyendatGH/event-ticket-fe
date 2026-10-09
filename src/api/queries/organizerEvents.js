@@ -1,5 +1,3 @@
-// Hook sự kiện phía organizer: danh sách, chi tiết, đơn, tạo/sửa/xuất bản/xóa.
-
 import { keepPreviousData, useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as orgEventsApi from "../services/organizerEvents";
 import { cleanParams } from "../params";

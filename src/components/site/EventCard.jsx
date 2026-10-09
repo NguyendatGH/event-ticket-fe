@@ -1,5 +1,3 @@
-// Thẻ sự kiện kiểu editorial (v1), bọc memo cho lưới dài.
-
 import { memo } from "react";
 import { Link } from "react-router-dom";
 import { formatDate } from "@/lib/format";

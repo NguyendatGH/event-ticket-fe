@@ -1,6 +1,3 @@
-// Trang thanh toán thất bại — route /checkout/failed?order=<id>&reason=<lý do>
-// Dữ liệu: useEvent, useOrder.
-
 import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { motion } from "motion/react";
 import { X } from "lucide-react";

@@ -1,7 +1,3 @@
-// Chọn vé, xác nhận tài khoản nhận tiền và email nhận thông báo.
-// Điền sẵn tài khoản đã thanh toán; giữ nguyên thì hoàn tự động, đổi sang tài khoản khác thì BTC phải duyệt.
-// Email là bắt buộc (BE @NotBlank @Email): BTC hủy yêu cầu thì hệ thống phải có chỗ để báo cho khách.
-
 import { useMemo, useState } from "react";
 import { Loader2 } from "lucide-react";
 import {
@@ -25,10 +21,8 @@ import { formatVND } from "@/lib/format";
 import { v } from "@/lib/forms";
 
 const REASON_MAX = 500;
-const EMAIL_MAX = 200;   // BE: @Size(max = 200) trên contactEmail
+const EMAIL_MAX = 200;
 
-// Dùng lại validator email của repo (lib/forms) để câu lỗi giống hệt các form khác.
-// .safeParse() trả về data đã trim -> gửi lên BE là bản đã trim, khỏi tự xử lý.
 const emailRule = v.email("Email nhận thông báo");
 
 export function RefundDialog({
@@ -51,25 +45,22 @@ export function RefundDialog({
   const [reason, setReason] = useState("");
   const [bin, setBin] = useState(payerBin);
   const [account, setAccount] = useState(payerAccount);
-  // Điền sẵn email của đơn, nhưng cho sửa: có người trả tiền bằng email khác, hoặc muốn nhận thông báo ở email khác.
   const [email, setEmail] = useState(customerEmail);
   const [emailError, setEmailError] = useState(null);
 
   const toggle = (id) => setSelected((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
   const estimate = unitPrice != null ? selected.length * unitPrice : null;
 
-  // Cùng số tài khoản = tiền về chỗ cũ, BE chạy tự động. Khác số = BTC phải duyệt trước khi chi.
   const samePayer = account.trim() !== "" && account.trim() === payerAccount;
   const needsBankChoice = !payerBin;
   // Cố ý KHÔNG nhét email vào đây: nút bị disable thì bấm cũng không hiện được lý do.
-  // Email sai để nút vẫn bấm được, bấm xong báo lỗi ngay dưới ô cho khách biết phải sửa gì.
   const ready = selected.length > 0 && bin && account.trim();
 
   const submit = () => {
     const checked = emailRule.safeParse(email);
     if (!checked.success) {
       setEmailError(checked.error.issues[0].message);
-      return;   // chặn tại FE, không gọi API
+      return;
     }
     onSubmit({
       ticketIds: selected,

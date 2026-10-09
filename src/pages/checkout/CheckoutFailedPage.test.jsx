@@ -1,5 +1,3 @@
-// Test trang thanh toán thất bại.
-
 import { render, screen } from "@testing-library/react";
 import { createMemoryRouter, RouterProvider } from "react-router-dom";
 import { describe, expect, it, vi } from "vitest";

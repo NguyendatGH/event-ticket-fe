@@ -1,5 +1,3 @@
-// Lỗi chung của form (errors.root.server), tự đăng ký useFormState riêng cho "root".
-
 import { useFormState } from "react-hook-form";
 import { motion } from "motion/react";
 import { messageIn } from "@/lib/motion";

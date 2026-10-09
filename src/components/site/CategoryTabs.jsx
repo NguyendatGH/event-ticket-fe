@@ -1,5 +1,3 @@
-// Bộ lọc danh mục dạng chữ, gạch chân xanh trượt theo mục đang chọn.
-
 import { useId } from "react";
 import { LayoutGroup, motion } from "motion/react";
 import { TabIndicator } from "@/components/motion/TabIndicator";

@@ -1,5 +1,3 @@
-// Bộ UI nhỏ dùng chung cho mọi trang khu organizer (/organizer/...):
-
 import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion, useInView } from "motion/react";
@@ -38,10 +36,6 @@ export function OrgHeader({ eyebrow, title, meta, actions, back, children, class
   );
 }
 
-/**
- * Một dòng "nhãn — giá trị" trong bảng xem lại trước khi bấm chốt (dùng trong <dl>).
- * Nằm ở đây vì cả dialog chuyển khoản tay và dialog hủy hoàn tiền đều cần đúng khối này.
- */
 export function Recap({ label, value }) {
   return (
     <div className="grid grid-cols-[120px_1fr] gap-4 border-b border-border py-2.5 last:border-b-0">

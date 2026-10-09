@@ -1,6 +1,3 @@
-// Đăng nhập, route "/auth/login" → useLogin (POST /auth/login, lưu token vào store).
-// Dữ liệu: useLogin.
-
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useLocation, useNavigate } from "react-router-dom";

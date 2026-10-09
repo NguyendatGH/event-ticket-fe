@@ -1,6 +1,3 @@
-// §15 — Routing profile là tầng trung gian giữa terminal và acquirer:
-//   Terminal → RoutingProfile → RoutingRule(method, priority) → Acquirer
-// Terminal không bao giờ trỏ thẳng vào acquirer, nên đổi bank = đổi rule, không phải sửa terminal.
 import { useState } from "react";
 import { toast } from "sonner";
 import {
@@ -139,7 +136,6 @@ function ProfileRules({ code }) {
             <SelectTrigger id={`a-${code}`}><SelectValue placeholder="Chọn acquirer" /></SelectTrigger>
             <SelectContent>
               {list.map((a) => {
-                // Route tới acquirer không nhận method này sẽ bị gateway từ chối (ACQUIRER_METHOD_NOT_SUPPORTED).
                 const accepted = a.paymentMethods ?? [];
                 const runs = a.status === "ACTIVE" && accepted.includes(method);
                 const why = a.status !== "ACTIVE" ? "đang tắt" : `chỉ nhận ${accepted.join(", ") || "—"}`;

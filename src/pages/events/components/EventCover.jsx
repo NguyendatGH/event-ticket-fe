@@ -1,5 +1,3 @@
-// Trôi chậm hơn trang khi cuộn (tối đa 60px), mờ dần vào nền ở mép dưới (::after). Reduced motion → không trôi.
-
 import { useRef } from "react";
 import {
   motion,

@@ -1,5 +1,3 @@
-// Một ô của form react-hook-form: nhãn, ô nhập, gợi ý, lỗi.
-
 import { motion } from "motion/react";
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";

@@ -1,5 +1,3 @@
-// Thẻ bo 12px cho một khối nội dung trong khu tài khoản.
-
 import { cn } from "@/lib/utils";
 
 export function AccountSection({ id, title, description, icon: Icon, actions, as: Tag = "section", className, children }) {

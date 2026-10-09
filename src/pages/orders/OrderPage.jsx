@@ -1,6 +1,3 @@
-// Dưới header có vạch chia → khoảng trên gọn hơn trang thành công/thất bại.
-// Dữ liệu: useCancelOrder, useEvent, useOrder.
-
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { motion } from "motion/react";

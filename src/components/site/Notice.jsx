@@ -1,5 +1,3 @@
-// Thông báo trong trang: vạch màu bên trái, không khung, không nền.
-
 import { cn } from "@/lib/utils";
 
 const TONE = {

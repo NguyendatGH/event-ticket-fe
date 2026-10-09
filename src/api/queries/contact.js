@@ -1,5 +1,3 @@
-// Hook POST /contact.
-
 import { useMutation } from "@tanstack/react-query";
 import * as contactApi from "../services/contact";
 

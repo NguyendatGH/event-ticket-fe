@@ -1,5 +1,3 @@
-// Một axios instance cho toàn FE.
-
 import axios from "axios";
 import { useAuthStore, isAccessTokenExpired, readPersistedSession } from "@/stores/auth";
 import { ApiError, normalizeError } from "./errors";
@@ -36,7 +34,7 @@ function expireSession(error) {
     try {
       fn(error);
     } catch {
-      /* listener lỗi không được chặn luồng */
+      // bỏ qua
     }
   });
 }
@@ -107,7 +105,7 @@ client.interceptors.request.use(async (config) => {
     try {
       await refreshSession();
     } catch {
-      /* phiên đã bị xóa (hoặc lỗi mạng): gửi tiếp, BE quyết định */
+      // bỏ qua
     }
     state = useAuthStore.getState();
   }

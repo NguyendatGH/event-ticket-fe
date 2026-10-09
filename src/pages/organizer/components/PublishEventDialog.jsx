@@ -1,5 +1,3 @@
-// EVENT_INCOMPLETE → liệt kê mục còn thiếu + link tới đúng bước của trình chỉnh sửa.
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";

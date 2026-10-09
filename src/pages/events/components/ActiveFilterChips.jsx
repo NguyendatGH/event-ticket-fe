@@ -1,5 +1,3 @@
-// Hàng chip các bộ lọc đang bật, bấm một chip để bỏ.
-
 import { AnimatePresence, motion } from "motion/react";
 import { X } from "lucide-react";
 
