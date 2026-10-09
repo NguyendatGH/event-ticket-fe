@@ -17,7 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Notice, Price } from "@/components/site";
 import { useAppConfig } from "@/api";
@@ -130,11 +130,17 @@ export function RefundDialog({
                     <SelectValue placeholder="Chọn ngân hàng" />
                   </SelectTrigger>
                   <SelectContent>
-                    {banks.map((b) => (
-                      <SelectItem key={b.bin} value={b.bin}>
-                        {b.name}
-                      </SelectItem>
+                    {banks.filter((b) => b.supported !== false).map((b) => (
+                      <SelectItem key={b.bin} value={b.bin}>{b.name}</SelectItem>
                     ))}
+                    {banks.some((b) => b.supported === false) && (
+                      <SelectGroup>
+                        <SelectLabel className="text-muted-foreground">Chưa hỗ trợ ở cổng đang dùng</SelectLabel>
+                        {banks.filter((b) => b.supported === false).map((b) => (
+                          <SelectItem key={b.bin} value={b.bin} disabled>{b.name}</SelectItem>
+                        ))}
+                      </SelectGroup>
+                    )}
                   </SelectContent>
                 </Select>
               </div>
