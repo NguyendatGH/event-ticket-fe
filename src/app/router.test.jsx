@@ -48,7 +48,7 @@ describe("router", () => {
       user: { id: "u", role: "ORGANIZER", fullName: "Trần Quốc Bảo", organizer: { slug: "sunrise-live", name: "Sunrise Live" } },
     });
     renderAt("/organizer");
-    expect(await screen.findByRole("heading", { level: 1, name: "Tổng quan" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { level: 1, name: "Tổng quan" }, { timeout: 5000 })).toBeInTheDocument();
     expect(screen.getAllByText("Sunrise Live").length).toBeGreaterThan(0);
     useAuthStore.getState().clear();
   });

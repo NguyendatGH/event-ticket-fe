@@ -50,6 +50,7 @@ export function useResolveRefund(options = {}) {
     qc.invalidateQueries({ queryKey: qk.orders.all });
     qc.invalidateQueries({ queryKey: qk.refunds.all });
     qc.invalidateQueries({ queryKey: qk.organizer.dashboard.all });
+    qc.invalidateQueries({ queryKey: qk.organizer.wallet });
     // Vé đổi trạng thái theo (CANCELLED/FAILED → vé về ACTIVE, SUCCEEDED → REFUNDED) nên bỏ luôn
     // cache "của tôi": BTC cũng là người dùng bình thường, vẫn có thể đang mở trang vé của mình.
     qc.invalidateQueries({ queryKey: qk.me.all });

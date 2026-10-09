@@ -26,6 +26,7 @@ function useAfterOrderChange() {
   return (order) => {
     if (order?.id) qc.setQueryData(qk.orders.detail(order.id), order);
     qc.invalidateQueries({ queryKey: qk.me.all });
+    qc.invalidateQueries({ queryKey: qk.me.wallet });
     qc.invalidateQueries({ queryKey: qk.events.all });
   };
 }

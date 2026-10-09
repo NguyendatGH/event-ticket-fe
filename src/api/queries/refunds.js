@@ -29,6 +29,7 @@ export function useCreateRefund(orderId, options = {}) {
     // Đơn và vé đổi trạng thái ngay trong TX tạo refund, phải nạp lại chứ không chờ poll.
     qc.invalidateQueries({ queryKey: qk.orders.all });
     qc.invalidateQueries({ queryKey: qk.me.all });
+    qc.invalidateQueries({ queryKey: qk.me.wallet });
   };
   return useMutation(
     withAfter({ mutationFn: ({ body, idempotencyKey }) => refundsApi.create(orderId, body, { idempotencyKey }), ...options }, after)

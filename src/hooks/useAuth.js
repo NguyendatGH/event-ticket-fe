@@ -2,7 +2,7 @@
 
 import { useCallback } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { useAuthStore, isOrganizerRole } from "@/stores/auth";
+import { useAuthStore, isOrganizerRole, isAdminRole } from "@/stores/auth";
 import { api } from "@/api";
 
 export function useAuth() {
@@ -21,6 +21,7 @@ export function useAuth() {
     user,
     isAuthenticated,
     isOrganizer: isAuthenticated && isOrganizerRole(user),
+    isAdmin: isAuthenticated && isAdminRole(user),
     logout,
   };
 }

@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "motion/react";
 import { Loader2, Lock } from "lucide-react";
 import { toast } from "sonner";
-import { newIdempotencyKey, useAppConfig, useCreateOrder } from "@/api";
+import { newIdempotencyKey, useAppConfig, useCreateOrder, usePublicPaymentMethods } from "@/api";
 import { BackLink, Container, ImageWithFallback, Notice } from "@/components/site";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
@@ -21,6 +21,7 @@ import { BuyerFields } from "./BuyerFields";
 import { MobilePayBar } from "./MobilePayBar";
 import { OrderLines } from "@/components/order";
 import { TierQuantityRow } from "./TierQuantityRow";
+import { paymentMethodLabel } from "@/lib/constants";
 
 const schema = z.object({
   customer: z.object({
@@ -36,6 +37,13 @@ export function CheckoutForm({ event, params, setParams, refetchEvent }) {
   const { checkoutFee } = useAppConfig();
   const [cartError, setCartError] = useState(null);
   const [redirecting, setRedirecting] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("CARD");
+  const paymentMethodsQuery = usePublicPaymentMethods(event.organizer?.id);
+  // Chỉ đoán "CARD" khi CHƯA có dữ liệu (đang tải / lỗi). BE trả mảng rỗng nghĩa là terminal đã tắt hết
+  // phương thức BTC chọn: hiện CARD lúc đó là mời khách bấm vào một nút chắc chắn bị từ chối.
+  const configuredPaymentMethods = paymentMethodsQuery.data ? paymentMethodsQuery.data.paymentMethods ?? [] : ["CARD"];
+  const paymentMethods = [...new Set([...configuredPaymentMethods, "WALLET"])]
+  const selectedPaymentMethod = paymentMethods.includes(paymentMethod) ? paymentMethod : paymentMethods[0];
 
   const tiers = useMemo(() => event.tiers || [], [event.tiers]);
   const quantities = useMemo(() => cartOf(params, tiers), [params, tiers]);
@@ -92,6 +100,7 @@ export function CheckoutForm({ event, params, setParams, refetchEvent }) {
       eventId: event.id,
       items: lines.map((l) => ({ tierId: l.key, quantity: l.quantity })),
       customer: toPayload(values.customer),
+      paymentMethod: selectedPaymentMethod,
     };
     createOrder.mutate(
       { body, idempotencyKey: newIdempotencyKey() },
@@ -187,6 +196,26 @@ export function CheckoutForm({ event, params, setParams, refetchEvent }) {
               <BuyerFields form={form} />
             </form>
           </section>
+
+          <section aria-labelledby="co-payment-method">
+            <StepTitle id="co-payment-method" num="03" title="Phương thức thanh toán" />
+            <div className="grid gap-3 sm:grid-cols-2">
+              {paymentMethods.map((method) => (
+                <label key={method} className={`flex cursor-pointer items-center gap-3 border p-4 transition-colors ${paymentMethod === method ? "border-primary bg-primary/5" : "border-border hover:border-border-hover"}`}>
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    value={method}
+                    checked={selectedPaymentMethod === method}
+                    onChange={() => setPaymentMethod(method)}
+                    disabled={busy}
+                    className="accent-primary"
+                  />
+                  <span className="text-sm font-medium text-foreground">{paymentMethodLabel(method)}</span>
+                </label>
+              ))}
+            </div>
+          </section>
         </motion.div>
 
         <motion.div variants={fadeUp} className="lg:col-span-5">
@@ -246,3 +275,4 @@ function cartOf(search, tiers) {
   const raw = parseTiers(search.get("tiers"));
   return Object.fromEntries(tiers.map((t) => [t.id, Math.min(raw[t.id] || 0, tierLimit(t))]));
 }
+

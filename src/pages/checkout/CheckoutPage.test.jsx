@@ -28,6 +28,7 @@ vi.mock("@/api", () => ({
   useCreateOrder: () => ({ mutate, isPending: false }),
   newIdempotencyKey: () => `key-${++keyN}`,
   useAppConfig: () => ({ checkoutFee: 12000 }),
+  usePublicPaymentMethods: () => ({ data: { paymentMethods: ["CARD"] }, isPending: false, isError: false }),
 }));
 
 const gateway = vi.fn();
@@ -88,6 +89,7 @@ describe("CheckoutPage", () => {
       eventId: "e1",
       items: [{ tierId: "vip", quantity: 1 }],
       customer: { name: "Lê Thu Hà", email: "ha@example.com", phone: null },
+      paymentMethod: "CARD",
     });
 
     await userEvent.click(pay);

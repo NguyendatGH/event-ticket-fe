@@ -1,7 +1,7 @@
 // Menu tài khoản trên header xanh (desktop).
 
 import { useNavigate } from "react-router-dom";
-import { ChevronDown, LayoutDashboard, LogOut, Receipt, Ticket, UserRound } from "lucide-react";
+import { ChevronDown, LayoutDashboard, LogOut, Receipt, ShieldCheck, Ticket, UserRound } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { UserAvatar } from "./UserAvatar";
 
-export function HeaderAccountMenu({ user, isOrganizer, onLogout }) {
+export function HeaderAccountMenu({ user, isOrganizer, isAdmin, onLogout }) {
   const navigate = useNavigate();
   return (
     <DropdownMenu>
@@ -45,6 +45,11 @@ export function HeaderAccountMenu({ user, isOrganizer, onLogout }) {
         {isOrganizer ? (
           <DropdownMenuItem onSelect={() => navigate("/organizer")}>
             <LayoutDashboard aria-hidden="true" /> Dashboard
+          </DropdownMenuItem>
+        ) : null}
+        {isAdmin ? (
+          <DropdownMenuItem onSelect={() => navigate("/gateway-admin/organizers")}>
+            <ShieldCheck aria-hidden="true" /> BankSim Gateway Admin
           </DropdownMenuItem>
         ) : null}
         <DropdownMenuSeparator />

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { LayoutDashboard, LogOut, Receipt, Store, Ticket, UserRound } from "lucide-react";
+import { LayoutDashboard, LogOut, Receipt, Store, Ticket, UserRound, WalletCards } from "lucide-react";
 import { toast } from "sonner";
 import { UserAvatar } from "@/components/site";
 import { useAuth } from "@/hooks/useAuth";
@@ -14,6 +14,7 @@ function navItems(isOrganizer) {
   return [
     { to: "/me/tickets", label: "Vé của tôi", short: "Vé của tôi", icon: Ticket, active: (p) => p.startsWith("/me/tickets") },
     { to: "/me/orders", label: "Đơn hàng", short: "Đơn hàng", icon: Receipt, active: (p) => p.startsWith("/me/orders") },
+    { to: "/me/wallet", label: "Ví Encore", short: "Ví Encore", icon: WalletCards, active: (p) => p.startsWith("/me/wallet") },
     { to: "/me/profile", label: "Thông tin tài khoản", short: "Tài khoản", icon: UserRound, active: (p) => p.startsWith("/me/profile") },
     isOrganizer
       ? { to: "/organizer", label: "Dashboard BTC", short: "Dashboard BTC", icon: LayoutDashboard, active: () => false }
