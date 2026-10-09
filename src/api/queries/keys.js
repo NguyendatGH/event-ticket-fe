@@ -1,5 +1,3 @@
-// Query key factory: key đi từ rộng → hẹp để invalidate theo tiền tố.
-
 export const qk = {
   gatewayAdmin: {
     all: ["gateway-admin"],

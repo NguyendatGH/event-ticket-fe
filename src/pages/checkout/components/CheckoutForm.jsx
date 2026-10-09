@@ -1,5 +1,3 @@
-// Thân trang thanh toán (CheckoutPage render sau khi đã có `event`):
-
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -39,8 +37,6 @@ export function CheckoutForm({ event, params, setParams, refetchEvent }) {
   const [redirecting, setRedirecting] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("CARD");
   const paymentMethodsQuery = usePublicPaymentMethods(event.organizer?.id);
-  // Chỉ đoán "CARD" khi CHƯA có dữ liệu (đang tải / lỗi). BE trả mảng rỗng nghĩa là terminal đã tắt hết
-  // phương thức BTC chọn: hiện CARD lúc đó là mời khách bấm vào một nút chắc chắn bị từ chối.
   const configuredPaymentMethods = paymentMethodsQuery.data ? paymentMethodsQuery.data.paymentMethods ?? [] : ["CARD"];
   const paymentMethods = [...new Set([...configuredPaymentMethods, "WALLET"])]
   const selectedPaymentMethod = paymentMethods.includes(paymentMethod) ? paymentMethod : paymentMethods[0];

@@ -1,5 +1,3 @@
-// Test axios client: gắn Bearer, refresh single-flight, đua giữa các tab, retry 401.
-
 import { AxiosError } from "axios";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { client, onSessionExpired } from "./client";

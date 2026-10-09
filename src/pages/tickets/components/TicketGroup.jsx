@@ -1,5 +1,3 @@
-// Số vé hiện sẵn mỗi sự kiện; phần còn lại nằm sau "Xem thêm N vé".
-
 import { memo, useState } from "react";
 import { Link } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";

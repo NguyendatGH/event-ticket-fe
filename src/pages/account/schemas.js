@@ -1,5 +1,3 @@
-// Schema zod cho các form của khu tài khoản. Tên field khớp DTO BE (contract §4.2).
-
 import { z, v, passwordsMatch } from "@/lib/forms";
 
 export const userProfileSchema = z.object({

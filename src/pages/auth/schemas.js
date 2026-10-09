@@ -1,5 +1,3 @@
-// Schema zod cho các form auth; tên field khớp DTO BE (contract §4.2).
-
 import { z, v, passwordsMatch } from "@/lib/forms";
 import { isOrganizerRole } from "@/stores/auth";
 

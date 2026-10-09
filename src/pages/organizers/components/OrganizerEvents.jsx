@@ -1,5 +1,3 @@
-// Lưới sự kiện của một ban tổ chức theo tab, tải thêm khi cuộn.
-
 import { Link } from "react-router-dom";
 import { CalendarX2 } from "lucide-react";
 import { flattenPages, totalOf, useOrganizerPublicEvents } from "@/api";

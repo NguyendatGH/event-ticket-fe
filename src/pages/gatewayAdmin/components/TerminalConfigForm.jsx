@@ -1,16 +1,13 @@
-// Form cấu hình terminal, dùng chung cho sửa-tại-chỗ ở trang merchant và trang terminal riêng.
-// Methods + 3DS + routing gửi trong MỘT request: gateway kiểm trên trạng thái cuối nên không còn "lưu một phần".
-// Trước đây ba thứ là ba request rời, gọi methods trước: tick QR + đổi sang profile có rule QR thì methods bị
-// kiểm theo profile CŨ (409 ROUTING_NOT_CONFIGURED), còn bỏ CARD thì bị 3DS cũ chặn (CARD_NOT_ENABLED).
 import { useState } from "react";
 import { toast } from "sonner";
-import { useConfigureTerminal, useGatewayAcquirers, useGatewayRoutingProfile, useGatewayRoutingProfiles } from "@/api";
+import {
+  useConfigureTerminal, useGatewayAcquirerConfigs, useGatewayAcquirers, useGatewayRoutingProfile, useGatewayRoutingProfiles,
+} from "@/api";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { cardRoutesWithout3ds } from "../lib";
+import { cardRoutesWithout3ds, methodPaths } from "../lib";
+import { MethodRoutes } from "./MethodRoutes";
 
-const METHODS = ["CARD", "QR", "PAYNOW", "GOOGLE_PAY", "APPLE_PAY"];
 const POLICIES = ["REQUIRED", "OPTIONAL", "DISABLED"];
 const same = (a, b) => JSON.stringify([...a].sort()) === JSON.stringify([...b].sort());
 
@@ -21,34 +18,35 @@ export function TerminalConfigForm({ terminal, onSaved }) {
     methods: terminal.paymentMethods ?? [],
     policy: terminal.threeDsPolicy ?? "",
     profile: terminal.routingProfileCode ?? "",
-    // Ban tổ chức tự chọn ngân hàng ở trang "Tài khoản nhận tiền": terminal đi thẳng một ngân hàng, không theo profile.
     bank: terminal.acquirerCode ?? "",
   };
   const [draft, setDraft] = useState(null);
   const form = draft ?? base;
   const patch = (next) => setDraft({ ...form, ...next });
 
-  // Rule của profile ĐANG CHỌN (không phải profile đang lưu), để báo thiếu route trước khi bấm Lưu.
   const selected = useGatewayRoutingProfile(form.profile);
   const saved = form.profile === base.profile ? terminal.routingProfile?.routes : undefined;
   const loaded = selected.data?.routes ?? saved;
   const routes = loaded ?? {};
   const unrouted = form.profile && loaded ? form.methods.filter((m) => !routes[m]?.length) : [];
-  // Gateway trả routableMethods = method đã tick VÀ còn route dùng được. Lệch nhau nghĩa là admin đã tắt acquirer,
-  // bỏ method khỏi acquirer… sau lúc lưu terminal: method vẫn tick nhưng khách KHÔNG thấy.
   const hidden = terminal.routableMethods
     ? (terminal.paymentMethods ?? []).filter((m) => !terminal.routableMethods.includes(m))
     : [];
 
   const hasCard = form.methods.includes("CARD");
-  // 3DS chỉ có nghĩa với CARD. Không bật CARD thì gửi null; gateway từ chối policy khác DISABLED khi thiếu CARD.
   const policy = hasCard ? form.policy || null : null;
   const acquirers = useGatewayAcquirers();
   const no3ds = cardRoutesWithout3ds({ methods: form.methods, policy, routes, acquirers: acquirers.data });
+  const configs = useGatewayAcquirerConfigs(terminal.merNo);
+  const paths = methodPaths({
+    methods: form.methods, policy, routes, acquirers: acquirers.data, connections: configs.data,
+    bank: !form.profile && base.bank ? base.bank : null,
+  });
+  const toggle = (method, on) =>
+    patch({ methods: on ? [...new Set([...form.methods, method])] : form.methods.filter((x) => x !== method) });
   const configure = useConfigureTerminal();
   const terminalId = terminal.terminalId;
   const dirty = !same(form.methods, base.methods) || (policy ?? "") !== base.policy || form.profile !== base.profile;
-  // Không chọn profile nào mà terminal đang theo ngân hàng BTC chọn: lưu là giữ nguyên ngân hàng đó.
   const keepsBank = !form.profile && Boolean(base.bank);
   const invalid = !form.methods.length || (!form.profile && !keepsBank) || (hasCard && !form.policy);
 
@@ -69,16 +67,8 @@ export function TerminalConfigForm({ terminal, onSaved }) {
   return (
     <div className="space-y-6">
       <div>
-        <p className="mb-2 text-xs font-semibold uppercase text-muted-foreground">Payment methods</p>
-        <div className="grid gap-2 sm:grid-cols-3">
-          {METHODS.map((m) => (
-            <label key={m} className="flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm">
-              <Checkbox checked={form.methods.includes(m)} onCheckedChange={(on) =>
-                patch({ methods: on ? [...form.methods, m] : form.methods.filter((x) => x !== m) })} />
-              {m}
-            </label>
-          ))}
-        </div>
+        <p className="mb-2 text-xs font-semibold uppercase text-muted-foreground">Payment methods và đường đi</p>
+        <MethodRoutes merNo={terminal.merNo} paths={paths} onToggle={toggle} />
         {!form.methods.length && <p className="mt-2 text-sm text-destructive">Bật ít nhất một phương thức.</p>}
       </div>
 
@@ -133,7 +123,6 @@ export function TerminalConfigForm({ terminal, onSaved }) {
       {unrouted.length > 0 && (
         <p role="alert" className="rounded-lg border border-destructive/40 px-3 py-2 text-sm text-destructive">
           Profile {form.profile} chưa có rule cho {unrouted.join(", ")}. Thêm rule ở trang Routing Profiles hoặc chọn profile khác.
-          Merchant cũng phải có Acquirer Connection tới acquirer của rule đó.
         </p>
       )}
       {no3ds.length > 0 && (
@@ -145,9 +134,8 @@ export function TerminalConfigForm({ terminal, onSaved }) {
 
       {hidden.length > 0 && (
         <p role="status" className="rounded-lg border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm">
-          Đang tick nhưng khách <strong>không thấy</strong>: {hidden.join(", ")}. Không còn route dùng được — acquirer
-          của route đang tắt, không nhận phương thức này hoặc không có 3DS trong khi terminal bắt buộc 3DS, hoặc merchant
-          chưa có Acquirer Connection.
+          Đang tick nhưng khách <strong>không thấy</strong>: {hidden.join(", ")}. Xem cột "Khách thấy?" ở bảng trên để biết
+          thiếu bước nào (rule, acquirer không nhận, merchant chưa nối hoặc thiếu 3DS).
         </p>
       )}
 

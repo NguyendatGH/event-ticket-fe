@@ -1,5 +1,3 @@
-// Dấu ngôn ngữ trên header (cờ + "VI"); chỉ để hiển thị, không phải nút bấm.
-
 import { cn } from "@/lib/utils";
 
 export function LanguageMark({ className }) {

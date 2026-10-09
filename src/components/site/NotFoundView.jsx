@@ -1,5 +1,3 @@
-// Nội dung 404, dùng cho route * và các trang khi BE trả 404.
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "motion/react";

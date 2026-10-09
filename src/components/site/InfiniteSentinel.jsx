@@ -1,5 +1,3 @@
-// Chân danh sách infinite: tự tải trang kế khi cuộn tới, kèm nút dự phòng.
-
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useInfiniteSentinel } from "@/hooks/useInfiniteSentinel";

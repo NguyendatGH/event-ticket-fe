@@ -1,5 +1,3 @@
-// App chỉ có giao diện tối nên không cần next-themes.
-
 import {
   CircleCheckIcon,
   InfoIcon,

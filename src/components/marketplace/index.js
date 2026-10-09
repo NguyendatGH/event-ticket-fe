@@ -1,5 +1,3 @@
-// Barrel: khối giao diện v2 marketplace.
-
 export { Carousel } from "./Carousel";
 export { SectionTitle } from "./SectionTitle";
 export { GlowWaves } from "./GlowWaves";

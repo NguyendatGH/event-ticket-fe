@@ -1,5 +1,3 @@
-// Khung chờ của từng section trang chủ, cùng hình dạng với thẻ thật để dữ liệu về không làm nhảy layout.
-
 import { Carousel } from "@/components/marketplace";
 import { Container } from "@/components/site";
 import { Skeleton } from "@/components/ui/skeleton";

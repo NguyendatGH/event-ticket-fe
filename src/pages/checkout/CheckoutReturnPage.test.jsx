@@ -1,5 +1,3 @@
-// Test trang chờ kết quả thanh toán.
-
 import { render, screen } from "@testing-library/react";
 import { createMemoryRouter, RouterProvider } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";

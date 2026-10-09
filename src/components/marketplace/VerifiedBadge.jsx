@@ -1,5 +1,3 @@
-// Dấu tích xanh "đã xác minh" cạnh tên ban tổ chức.
-
 import { cn } from "@/lib/utils";
 
 export function VerifiedBadge({ className }) {

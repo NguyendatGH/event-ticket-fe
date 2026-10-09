@@ -1,5 +1,3 @@
-// cn() gộp className; tailwind-merge được khai báo thêm token tự định nghĩa trong index.css.
-
 import { clsx } from "clsx";
 import { extendTailwindMerge } from "tailwind-merge";
 

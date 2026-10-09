@@ -1,5 +1,3 @@
-// Hộp xác nhận; onConfirm không tự đóng để trang hiện được loading và lỗi.
-
 import {
   AlertDialog,
   AlertDialogAction,

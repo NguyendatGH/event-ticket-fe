@@ -1,5 +1,3 @@
-// Các dải sóng (viewBox 1440×400). Ngoài component: không tạo lại mảng mỗi lần render.
-
 import { useId } from "react";
 import { cn } from "@/lib/utils";
 

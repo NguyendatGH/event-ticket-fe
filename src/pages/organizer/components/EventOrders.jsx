@@ -1,5 +1,3 @@
-// Khối "Đơn hàng" ở trang chi tiết sự kiện (organizer). Lọc trạng thái (?orderStatus=) + tìm kiếm (?oq=)
-
 import { useSearchParams } from "react-router-dom";
 import { flattenPages, useInfiniteOrganizerEventOrders } from "@/api";
 import { DebouncedSearch, EmptyState, ErrorState } from "@/components/site";

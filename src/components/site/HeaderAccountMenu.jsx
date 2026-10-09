@@ -1,5 +1,3 @@
-// Menu tài khoản trên header xanh (desktop).
-
 import { useNavigate } from "react-router-dom";
 import { ChevronDown, LayoutDashboard, LogOut, Receipt, ShieldCheck, Ticket, UserRound } from "lucide-react";
 import {

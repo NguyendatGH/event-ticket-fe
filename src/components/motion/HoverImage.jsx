@@ -1,5 +1,3 @@
-// Đặt trong phần tử có class `group`. Không nhấc thẻ, không shadow (design-spec).
-
 import { ImageWithFallback } from "@/components/site/ImageWithFallback";
 import { cn } from "@/lib/utils";
 

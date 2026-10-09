@@ -1,6 +1,3 @@
-// Form tạo terminal: admin chọn phương thức + 3DS + routing ngay lúc tạo (trước đây gắn cứng CARD + OPTIONAL),
-// và mặc định Encore dùng luôn terminal mới (trước đây tạo xong khách vẫn thanh toán qua terminal cũ).
-
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
@@ -29,7 +26,6 @@ vi.mock("sonner", () => ({ toast: { success: toastSuccess, error: vi.fn() } }));
 
 const { CreateTerminalForm } = await import("./CreateTerminalForm");
 
-// Select của Radix cần mấy API mà jsdom không có.
 beforeAll(() => {
   Element.prototype.hasPointerCapture ??= () => false;
   Element.prototype.releasePointerCapture ??= () => {};
@@ -52,8 +48,8 @@ describe("CreateTerminalForm", () => {
     };
   });
 
-  it("tạo terminal thẻ + QR gửi đúng phương thức đã chọn và mặc định cho Encore dùng ngay", async () => {
-    render(<CreateTerminalForm merNo="MerNo000001" activeTerminalId="TerNo000001" />);
+  it("tạo terminal thẻ + QR gửi đúng phương thức đã chọn và mặc định đặt làm terminal mặc định ngay", async () => {
+    render(<CreateTerminalForm merNo="MerNo000001" defaultTerminalId="TerNo000001" />);
 
     await userEvent.click(screen.getByRole("checkbox", { name: "QR" }));
     await fill();
@@ -66,10 +62,10 @@ describe("CreateTerminalForm", () => {
     });
   });
 
-  it("bỏ tick dùng ngay thì chỉ tạo, Encore vẫn thu qua terminal cũ", async () => {
-    render(<CreateTerminalForm merNo="MerNo000001" activeTerminalId="TerNo000001" />);
+  it("bỏ tick thì chỉ tạo, terminal mặc định vẫn là terminal cũ", async () => {
+    render(<CreateTerminalForm merNo="MerNo000001" defaultTerminalId="TerNo000001" />);
 
-    await userEvent.click(screen.getByRole("checkbox", { name: /Encore dùng terminal này ngay/ }));
+    await userEvent.click(screen.getByRole("checkbox", { name: /Đặt làm terminal mặc định ngay/ }));
     await fill();
     await userEvent.click(screen.getByRole("button", { name: "+ Create Terminal" }));
 
@@ -77,13 +73,13 @@ describe("CreateTerminalForm", () => {
   });
 
   it("merchant chưa gắn BTC nào thì không có ô dùng ngay", () => {
-    render(<CreateTerminalForm merNo="MerNo000001" activeTerminalId={null} />);
+    render(<CreateTerminalForm merNo="MerNo000001" defaultTerminalId={null} />);
 
-    expect(screen.queryByRole("checkbox", { name: /Encore dùng terminal này ngay/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole("checkbox", { name: /Đặt làm terminal mặc định ngay/ })).not.toBeInTheDocument();
   });
 
   it("chỉ QR thì khóa ô 3DS và gửi policy null", async () => {
-    render(<CreateTerminalForm merNo="MerNo000001" activeTerminalId={null} />);
+    render(<CreateTerminalForm merNo="MerNo000001" defaultTerminalId={null} />);
 
     await userEvent.click(screen.getByRole("checkbox", { name: "QR" }));
     await userEvent.click(screen.getByRole("checkbox", { name: "CARD" }));
@@ -96,7 +92,7 @@ describe("CreateTerminalForm", () => {
 
   it("profile chưa có rule cho QR thì báo trước khi tạo", async () => {
     routes.current = { CARD: [{ priority: 1, acquirerCode: "bank-a" }] };
-    render(<CreateTerminalForm merNo="MerNo000001" activeTerminalId={null} />);
+    render(<CreateTerminalForm merNo="MerNo000001" defaultTerminalId={null} />);
 
     await userEvent.click(screen.getByRole("checkbox", { name: "QR" }));
     await fill();
@@ -106,7 +102,7 @@ describe("CreateTerminalForm", () => {
 
   it("3DS REQUIRED mà route thẻ chỉ tới acquirer không có 3DS thì báo trước khi tạo", async () => {
     routes.current = { CARD: [{ priority: 1, acquirerCode: "bank-b" }] };
-    render(<CreateTerminalForm merNo="MerNo000001" activeTerminalId={null} />);
+    render(<CreateTerminalForm merNo="MerNo000001" defaultTerminalId={null} />);
 
     await userEvent.click(screen.getByRole("combobox", { name: "3D Secure Policy" }));
     await userEvent.click(await screen.findByRole("option", { name: "REQUIRED" }));
@@ -115,19 +111,19 @@ describe("CreateTerminalForm", () => {
     expect(screen.getByRole("alert")).toHaveTextContent("không acquirer nào có 3DS");
   });
 
-  it("server đã chuyển Encore sang terminal mới thì báo đang dùng", () => {
-    render(<CreateTerminalForm merNo="MerNo000001" activeTerminalId="TerNo000001" />);
+  it("server đã đặt terminal mới làm mặc định thì báo", () => {
+    render(<CreateTerminalForm merNo="MerNo000001" defaultTerminalId="TerNo000001" />);
 
-    hookOptions.current.onSuccess({ terminalId: "TerNo000009", usedByEncore: true });
+    hookOptions.current.onSuccess({ terminalId: "TerNo000009", purpose: "DEFAULT" });
 
-    expect(toastSuccess).toHaveBeenCalledWith(expect.stringContaining("Encore thu tiền qua terminal này từ giờ"));
+    expect(toastSuccess).toHaveBeenCalledWith(expect.stringContaining("đặt làm terminal mặc định"));
   });
 
-  it("không chuyển thì nhắc rằng Encore vẫn thu qua terminal cũ", () => {
-    render(<CreateTerminalForm merNo="MerNo000001" activeTerminalId="TerNo000001" />);
+  it("không đổi thì nhắc terminal mặc định vẫn là terminal cũ", () => {
+    render(<CreateTerminalForm merNo="MerNo000001" defaultTerminalId="TerNo000001" />);
 
-    hookOptions.current.onSuccess({ terminalId: "TerNo000009", usedByEncore: false });
+    hookOptions.current.onSuccess({ terminalId: "TerNo000009", purpose: "SPARE" });
 
-    expect(toastSuccess).toHaveBeenCalledWith(expect.stringContaining("Encore vẫn thu tiền qua TerNo000001"));
+    expect(toastSuccess).toHaveBeenCalledWith(expect.stringContaining("Terminal mặc định vẫn là TerNo000001"));
   });
 });

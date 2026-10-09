@@ -1,5 +1,3 @@
-// Trạng thái rỗng khu tài khoản: icon lớn trong vòng tròn xanh, tiêu đề, mô tả, CTA.
-
 import { cn } from "@/lib/utils";
 
 export function AccountEmpty({ icon: Icon, title, description, action, className }) {

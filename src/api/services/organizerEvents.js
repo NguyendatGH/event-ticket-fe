@@ -1,5 +1,3 @@
-// Quản lý sự kiện phía organizer, contract §4.4
-
 import { client } from "../client";
 import { cleanParams } from "../params";
 

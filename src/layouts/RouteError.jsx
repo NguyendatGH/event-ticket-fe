@@ -1,5 +1,3 @@
-// errorElement của router; bắt cả lỗi tải chunk lazy sau khi deploy bản mới.
-
 import { isRouteErrorResponse, Link, useRouteError } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Container, ErrorState } from "@/components/site";

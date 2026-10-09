@@ -1,5 +1,3 @@
-// Hook đơn hàng: xem (có poll), đơn của tôi, tạo (Idempotency-Key), hủy.
-
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as ordersApi from "../services/orders";
 import { qk } from "./keys";

@@ -1,5 +1,3 @@
-// Contract §4.2
-
 import { client } from "../client";
 
 export const updateMe = (body) => client.put("/users/me", body);

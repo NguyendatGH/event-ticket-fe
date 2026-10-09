@@ -1,5 +1,3 @@
-// Test khối hoàn vé trên trang đơn.
-
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi, beforeEach } from "vitest";
@@ -36,7 +34,6 @@ const order = (over) => ({
   ...over,
 });
 
-// Mở dialog hoàn vé rồi trả về chính dialog đó, vì gần như test nào cũng phải làm hai bước này.
 async function openDialog(user, over) {
   render(<RefundSection order={order(over)} />);
   await user.click(screen.getByRole("button", { name: /Yêu cầu hoàn vé/ }));
@@ -135,7 +132,6 @@ describe("RefundSection", () => {
   });
 
   it("ban tổ chức hủy yêu cầu thì khách thấy “Đã hủy”, không phải “Hoàn tiền thất bại”", () => {
-    // BE không có RefundStatus riêng cho việc hủy: refund bị hủy vẫn là FAILED, nhận ra qua failureCode.
     refunds = [
       {
         id: "r1",
@@ -152,7 +148,6 @@ describe("RefundSection", () => {
     expect(screen.getByText("Đã hủy")).toBeInTheDocument();
     expect(screen.queryByText("Hoàn tiền thất bại")).not.toBeInTheDocument();
     expect(screen.getByText(/Vé của bạn vẫn dùng được bình thường/)).toBeInTheDocument();
-    // Ghi chú nội bộ của BTC không được hiện nguyên văn cho khách.
     expect(screen.queryByText("Ngoài thời hạn hoàn vé")).not.toBeInTheDocument();
   });
 
@@ -164,7 +159,6 @@ describe("RefundSection", () => {
   });
 });
 
-// contactEmail là field BẮT BUỘC của POST /orders/{id}/refunds. Chặn ở FE để khách không phải ăn 400 từ BE.
 describe("RefundSection — email nhận thông báo", () => {
   it("điền sẵn email của đơn và nói rõ email dùng để làm gì", async () => {
     const user = userEvent.setup();
@@ -198,7 +192,6 @@ describe("RefundSection — email nhận thông báo", () => {
     expect(created).toEqual([]);
     expect(within(dialog).getByText("Email nhận thông báo là bắt buộc")).toBeInTheDocument();
     expect(input).toHaveAttribute("aria-invalid", "true");
-    // Lỗi phải được nối vào input để screen reader đọc được, không chỉ là chữ đỏ trôi nổi.
     expect(input).toHaveAttribute("aria-describedby", "refund-email-error");
   });
 
@@ -214,7 +207,7 @@ describe("RefundSection — email nhận thông báo", () => {
     expect(created).toEqual([]);
     expect(within(dialog).getByText("Email nhận thông báo không hợp lệ")).toBeInTheDocument();
 
-    await user.type(input, ".com");   // khách bắt đầu sửa -> bỏ chữ đỏ ngay
+    await user.type(input, ".com");
     expect(within(dialog).queryByText(/Email nhận thông báo không hợp lệ/)).not.toBeInTheDocument();
   });
 
@@ -226,9 +219,6 @@ describe("RefundSection — email nhận thông báo", () => {
   });
 });
 
-// BE đưa đơn về REFUND_FAILED cho CẢ hai ca: hoàn tiền chạy lỗi thật, và BTC chủ động hủy yêu cầu.
-// Nhãn vì vậy không được đọc như sự cố hệ thống, nếu không khách thấy badge refund "Đã hủy" (xám)
-// cạnh nhãn đơn màu đỏ "Hoàn tiền lỗi" -> mâu thuẫn, lo vô cớ.
 describe("nhãn trạng thái đơn REFUND_FAILED", () => {
   it("dùng câu trung tính, không phải chữ báo lỗi", () => {
     render(<StatusBadge kind="order" status="REFUND_FAILED" />);

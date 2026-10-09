@@ -1,5 +1,3 @@
-// Trạng thái đáng báo cho khách. PUBLISHED (đang bán) là bình thường nên không gắn nhãn.
-
 import { Link } from "react-router-dom";
 import { motion } from "motion/react";
 import { CalendarDays, MapPin } from "lucide-react";

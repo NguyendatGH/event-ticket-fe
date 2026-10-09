@@ -1,7 +1,3 @@
-// Hai chế độ. Cổng BankSim (account.channels có giá trị): BTC mở nhiều kênh nhận tiền, mỗi kênh một ngân hàng + phương
-// thức + tài khoản ở ngân hàng đó. Cổng khác (channels = null): BTC chỉ khai tài khoản nhận tiền, không có gì về phương thức.
-// BTC là merchant từ lúc đăng ký: nhận thanh toán được cả khi chưa khai tài khoản (tiền được giữ lại).
-
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
@@ -21,7 +17,6 @@ vi.mock("@/api", () => ({
 
 const { default: PayoutAccountPage } = await import("./PayoutAccountPage");
 
-// Select của Radix cần mấy API mà jsdom không có.
 beforeAll(() => {
   Element.prototype.hasPointerCapture ??= () => false;
   Element.prototype.releasePointerCapture ??= () => {};
@@ -103,7 +98,6 @@ const withChannels = (...channels) => ({ ...SAVED, bankBin: "970436", bankName: 
 
 async function pickBank(name) {
   await userEvent.click(screen.getByRole("combobox", { name: "Ngân hàng" }));
-  // Tên option có kèm chú thích "· bank profile A/B", nên khớp theo phần đầu.
   await userEvent.click(await screen.findByRole("option", { name: new RegExp(`^${name} ·`) }));
 }
 
@@ -200,6 +194,20 @@ describe("PayoutAccountPage — kênh nhận tiền (cổng BankSim)", () => {
     await userEvent.click(within(form).getByRole("button", { name: "Lưu kênh" }));
 
     expect(update.mock.calls[0][0]).toEqual({ id: "c-vcb", paymentMethods: ["QR"] });
+  });
+
+  it("kênh có phương thức admin bật riêng mà ngân hàng không hỗ trợ: báo rõ và chỉ gửi phần ngân hàng hỗ trợ", async () => {
+    const vtb = { id: "c-vtb", bankCode: "VTB", bankName: "VietinBank", bankBin: "970415", paymentMethods: ["CARD", "GOOGLE_PAY"],
+      routableMethods: ["CARD", "GOOGLE_PAY"], accountName: "NGUYEN VAN A", maskedAccountNumber: "******4134", primary: true };
+    state.account = withChannels(vtb);
+    render(<PayoutAccountPage />);
+
+    await userEvent.click(screen.getByRole("button", { name: "Sửa" }));
+    const form = screen.getByRole("form", { name: "Sửa kênh VietinBank" });
+    expect(within(form).getByRole("status")).toHaveTextContent("Google Pay đang bật cho kênh này nhưng VietinBank không hỗ trợ");
+    await userEvent.click(within(form).getByRole("button", { name: "Lưu kênh" }));
+
+    expect(update.mock.calls[0][0]).toEqual({ id: "c-vtb", paymentMethods: ["CARD"] });
   });
 
   it("xoá kênh: chỉ còn một kênh thì không xoá được; nhiều kênh thì hỏi lại rồi mới xoá", async () => {

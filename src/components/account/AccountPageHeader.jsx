@@ -1,5 +1,3 @@
-// Tiêu đề trang khu tài khoản: ô icon xanh + H1 + mô tả, hành động bên phải.
-
 import { cn } from "@/lib/utils";
 
 export function AccountPageHeader({ icon: Icon, title, description, actions, className }) {

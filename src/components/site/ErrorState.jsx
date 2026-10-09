@@ -1,5 +1,3 @@
-// Hiển thị ApiError kèm traceId và nút thử lại.
-
 import { RotateCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";

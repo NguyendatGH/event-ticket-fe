@@ -1,5 +1,3 @@
-// Định dạng hiển thị (vi-VN); mọi mốc thời gian theo giờ nghiệp vụ Asia/Ho_Chi_Minh.
-
 export const TIME_ZONE = "Asia/Ho_Chi_Minh";
 
 const WEEKDAYS = ["Chủ nhật", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm", "Thứ sáu", "Thứ bảy"];

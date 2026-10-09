@@ -1,5 +1,3 @@
-// Số trồi theo hướng bấm. `d` là giá trị prop custom của motion: +1 (thêm) / -1 (bớt)
-
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Minus, Plus } from "lucide-react";

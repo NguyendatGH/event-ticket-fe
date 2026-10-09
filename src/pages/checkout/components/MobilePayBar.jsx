@@ -1,5 +1,3 @@
-// Thanh thanh toán dính đáy màn hình điện thoại (ẩn từ lg).
-
 import { AnimatePresence, motion } from "motion/react";
 import { Loader2, Lock } from "lucide-react";
 import { AnimatedNumber } from "@/components/motion";

@@ -1,5 +1,3 @@
-// Gốc là BAN TỔ CHỨC, không phải merchant: merchant trên gateway luôn thuộc về một BTC,
-// nên không có chức năng "tạo merchant rời".
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
@@ -16,7 +14,7 @@ export default function OrganizerListPage() {
   const [busy, setBusy] = useState(null);
 
   const provision = useProvisionOrganizer({
-    onSuccess: (row) => toast.success(`${row.organizerName} → ${row.gatewayMerchantNo} / ${row.gatewayTerminalId}`),
+    onSuccess: (row) => toast.success(`${row.organizerName} → ${row.gatewayMerchantNo}`),
     onError: (e) => toast.error(e?.message ?? "Cấp phát thất bại"),
     onSettled: () => setBusy(null),
   });

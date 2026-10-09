@@ -1,5 +1,3 @@
-// Hook hoàn tiền: danh sách theo đơn, chi tiết (có poll), tạo yêu cầu (Idempotency-Key).
-
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as refundsApi from "../services/refunds";
 import { qk } from "./keys";
@@ -26,7 +24,6 @@ export function useCreateRefund(orderId, options = {}) {
   const qc = useQueryClient();
   const after = (refund) => {
     if (refund?.id) qc.setQueryData(qk.refunds.detail(refund.id), refund);
-    // Đơn và vé đổi trạng thái ngay trong TX tạo refund, phải nạp lại chứ không chờ poll.
     qc.invalidateQueries({ queryKey: qk.orders.all });
     qc.invalidateQueries({ queryKey: qk.me.all });
     qc.invalidateQueries({ queryKey: qk.me.wallet });

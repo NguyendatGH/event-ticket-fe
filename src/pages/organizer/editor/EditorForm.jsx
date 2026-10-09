@@ -1,5 +1,3 @@
-// Trình tạo / sửa sự kiện dạng 4 bước (EventEditorPage render sau khi đã có `event`, hoặc event rỗng khi tạo mới).
-
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { FormProvider, useForm, useWatch } from "react-hook-form";

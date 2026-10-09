@@ -1,6 +1,3 @@
-// Trang tạo / sửa sự kiện — route /organizer/events/new và /organizer/events/:id/edit (?step=1..4).
-// Dữ liệu: useOrganizerEvent.
-
 import { useParams } from "react-router-dom";
 import { useOrganizerEvent } from "@/api";
 import { Skeleton } from "@/components/ui/skeleton";

@@ -1,5 +1,3 @@
-// Gộp nhiều danh sách sự kiện, bỏ trùng theo id, giữ thứ tự xuất hiện đầu tiên.
-
 export function mergeEvents(...lists) {
   const seen = new Set();
   const out = [];

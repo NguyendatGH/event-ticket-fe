@@ -1,5 +1,3 @@
-// Hook auth: đăng nhập/đăng ký/Google lưu phiên; useMe đọc GET /auth/me.
-
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as authApi from "../services/auth";
 import { useAuthStore, hasSession } from "@/stores/auth";

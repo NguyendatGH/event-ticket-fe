@@ -1,6 +1,3 @@
-// Trang thanh toán — route /checkout/:slug?tiers=<tierId>:<số lượng>,...
-// Dữ liệu: useEvent.
-
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { useEvent } from "@/api";
 import { Container, EmptyState, ErrorState } from "@/components/site";
