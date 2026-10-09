@@ -21,3 +21,12 @@ export function RequireOrganizer({ children }) {
   if (!isOrganizer) return <Navigate to="/become-organizer" replace state={{ from: currentPath(location) }} />;
   return children ?? <Outlet />;
 }
+
+export function RequireAdmin({ children }) {
+  const { isAuthenticated, isAdmin, user } = useAuth();
+  const location = useLocation();
+  if (!isAuthenticated) return <Navigate to="/auth/login" replace state={{ from: currentPath(location) }} />;
+  if (!user) return <PageLoader />;
+  if (!isAdmin) return <Navigate to="/" replace />;
+  return children ?? <Outlet />;
+}

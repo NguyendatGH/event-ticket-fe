@@ -22,7 +22,7 @@ const barLink = ({ isActive }) =>
   );
 
 export function Header() {
-  const { user, isAuthenticated, isOrganizer, logout } = useAuth();
+  const { user, isAuthenticated, isOrganizer, logout, isAdmin } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -66,7 +66,7 @@ export function Header() {
             Vé của tôi
           </NavLink>
           {isAuthenticated ? (
-            <HeaderAccountMenu user={user} isOrganizer={isOrganizer} onLogout={handleLogout} />
+            <HeaderAccountMenu user={user} isOrganizer={isOrganizer} isAdmin={isAdmin} onLogout={handleLogout} />
           ) : (
             <p className="flex items-center gap-1.5 text-sm font-semibold">
               <Link to="/auth/login" state={loginState} className={barLink({ isActive: false })}>

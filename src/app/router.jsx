@@ -8,7 +8,8 @@ import AuthLayout from "@/layouts/AuthLayout";
 import AccountLayout from "@/layouts/AccountLayout";
 import OrganizerLayout from "@/layouts/OrganizerLayout";
 import RouteError from "@/layouts/RouteError";
-import { RequireAuth, RequireOrganizer } from "@/layouts/guards";
+import GatewayAdminLayout from "@/layouts/GatewayAdminLayout";
+import { RequireAdmin, RequireAuth, RequireOrganizer } from "@/layouts/guards";
 
 const page = (load) => {
   const Page = lazy(load);
@@ -26,6 +27,23 @@ export const routes = [
     element: <RootLayout />,
     errorElement: <RouteError />,
     children: [
+      {
+        element: <RequireAdmin />,
+        children: [
+          {
+            element: <GatewayAdminLayout />,
+            errorElement: <RouteError />,
+            children: [
+              { path: "gateway-admin", element: <Navigate to="/gateway-admin/organizers" replace /> },
+              { path: "gateway-admin/organizers", element: page(() => import("@/pages/gatewayAdmin/OrganizerListPage")) },
+              { path: "gateway-admin/merchants/:merNo", element: page(() => import("@/pages/gatewayAdmin/MerchantDetailPage")) },
+              { path: "gateway-admin/terminals/:terminalId", element: page(() => import("@/pages/gatewayAdmin/TerminalConfigPage")) },
+              { path: "gateway-admin/acquirers", element: page(() => import("@/pages/gatewayAdmin/AcquirersPage")) },
+              { path: "gateway-admin/routing-profiles", element: page(() => import("@/pages/gatewayAdmin/RoutingProfilesPage")) },
+            ],
+          },
+        ],
+      },
       {
         element: <SiteLayout />,
         children: [
@@ -58,6 +76,7 @@ export const routes = [
                     children: [
                       { path: "me/profile", element: page(() => import("@/pages/account/ProfilePage")) },
                       { path: "me/orders", element: page(() => import("@/pages/account/MyOrdersPage")) },
+                      { path: "me/wallet", element: page(() => import("@/pages/account/WalletPage")) },
                       { path: "become-organizer", element: page(() => import("@/pages/account/BecomeOrganizerPage")) },
                       { path: "me/tickets", element: page(() => import("@/pages/tickets/MyTicketsPage")) },
                       { path: "me/tickets/:id", element: page(() => import("@/pages/tickets/TicketDetailPage")) },
@@ -107,6 +126,8 @@ export const routes = [
               { path: "events/:id", element: page(() => import("@/pages/organizer/OrganizerEventDetailPage")) },
               { path: "events/:id/edit", element: page(() => import("@/pages/organizer/EventEditorPage")) },
               { path: "refunds", element: page(() => import("@/pages/organizer/RefundsPage")) },
+              { path: "wallet", element: page(() => import("@/pages/organizer/WalletPage")) },
+              { path: "payout-account", element: page(() => import("@/pages/organizer/PayoutAccountPage")) },
               { path: "profile", element: page(() => import("@/pages/organizer/OrganizerProfilePage")) },
             ],
           },

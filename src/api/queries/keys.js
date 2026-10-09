@@ -1,6 +1,18 @@
 // Query key factory: key đi từ rộng → hẹp để invalidate theo tiền tố.
 
 export const qk = {
+  gatewayAdmin: {
+    all: ["gateway-admin"],
+    organizers: ["gateway-admin", "organizers"],
+    merchants: ["gateway-admin", "merchants"],
+    merchant: (merNo) => ["gateway-admin", "merchants", merNo],
+    terminals: (merNo) => ["gateway-admin", "merchants", merNo, "terminals"],
+    terminal: (terminalId) => ["gateway-admin", "terminals", terminalId],
+    acquirerConfigs: (merNo) => ["gateway-admin", "merchants", merNo, "acquirer-configs"],
+    routingProfiles: ["gateway-admin", "routing-profiles"],
+    routingProfile: (code) => ["gateway-admin", "routing-profiles", code],
+    acquirers: ["gateway-admin", "acquirers"],
+  },
   config: ["config"],
   auth: {
     all: ["auth"],
@@ -25,6 +37,9 @@ export const qk = {
   organizer: {
     all: ["organizer"],
     profile: ["organizer", "profile"],
+    wallet: ["organizer", "wallet"],
+    payoutAccount: ["organizer", "payout-account"],
+    paymentMethods: (organizerId) => ["organizer", "payment-methods", organizerId],
     events: {
       all: ["organizer", "events"],
       list: (params) => ["organizer", "events", "list", params],
@@ -55,6 +70,7 @@ export const qk = {
   },
   me: {
     all: ["me"],
+    wallet: ["me", "wallet"],
     orders: (params) => ["me", "orders", params],
     tickets: {
       all: ["me", "tickets"],

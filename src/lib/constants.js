@@ -96,6 +96,8 @@ export const REFUND_FAILURE_LABEL = {
   PAYOUT_UNAVAILABLE: "Chưa kết nối được cổng chuyển tiền, ban tổ chức sẽ chuyển khoản thủ công.",
   INSUFFICIENT_PAYOUT_BALANCE: "Đang chờ đủ nguồn tiền để chuyển, yêu cầu của bạn vẫn giữ nguyên thứ tự.",
   PROCESSING_TIMEOUT: "Ngân hàng chưa phản hồi, ban tổ chức đang kiểm tra.",
+  INVALID_DESTINATION:
+    "Không chuyển được tiền tới ngân hàng / số tài khoản này. Tiền chưa bị trừ và vé vẫn dùng được; hãy gửi yêu cầu mới với tài khoản khác.",
   ADMIN_REJECTED: "Yêu cầu bị từ chối sau khi kiểm tra.",
   CANCELLED_BY_ORGANIZER:
     "Ban tổ chức đã hủy yêu cầu hoàn tiền này. Vé của bạn vẫn dùng được bình thường; nếu vẫn muốn hoàn, hãy liên hệ ban tổ chức rồi gửi yêu cầu mới.",
@@ -119,6 +121,33 @@ export const REFUND_FAILURE_ORG_LABEL = {
   ADMIN_REJECTED: "Đã bị từ chối sau khi kiểm tra.",
   CANCELLED_BY_ORGANIZER: "Bạn đã hủy yêu cầu này. Vé đã được trả lại trạng thái hợp lệ cho khách.",
 };
+
+/** Nhãn phương thức thanh toán cho người dùng (BTC chọn, khách bấm). Mã khớp enum PaymentMethod của gateway. */
+export const PAYMENT_METHOD_LABEL = {
+  CARD: "Thẻ ngân hàng",
+  QR: "QR / VietQR",
+  PAYNOW: "PayNow",
+  GOOGLE_PAY: "Google Pay",
+  APPLE_PAY: "Apple Pay",
+  WALLET: "Ví Encore",
+};
+
+export const paymentMethodLabel = (method) => PAYMENT_METHOD_LABEL[method] || method;
+
+/**
+ * Chú thích "ngân hàng này mô phỏng giống acquirer mẫu nào" (cổng BankSim). Mock bank chỉ có HAI kiểu xử lý thẻ và gateway
+ * chọn kiểu theo cờ 3DS của ngân hàng, không theo tên (CardBankRouter): có 3DS = như bank-a, không 3DS = như bank-b.
+ * QR / ví không gọi mock bank: khách bấm xác nhận trên trang của cổng là xong.
+ * Mỗi giá trị là [nhãn ngắn cạnh tên ngân hàng, câu giải thích cách thử].
+ */
+export const MOCK_BANK_PROFILE = {
+  A: ["bank profile A", "Thẻ đi mock bank kiểu bank-a (có 3DS): thẻ đuôi 1000 hỏi OTP 123456, đuôi 2000 duyệt thẳng, số khác bị từ chối."],
+  B: ["bank profile B", "Thẻ đi mock bank kiểu bank-b (không 3DS): thẻ đuôi 1000 được duyệt ngay, số khác bị từ chối."],
+  QR: ["chỉ QR / ví", "Không nhận thẻ, không qua mock bank."],
+};
+
+export const mockBankProfile = (bank) =>
+  MOCK_BANK_PROFILE[!bank?.paymentMethods?.includes("CARD") ? "QR" : bank.threeDsSupported ? "A" : "B"];
 
 export const statusLabel = (kind, status) => STATUS[kind]?.[status]?.[0] || status || "";
 

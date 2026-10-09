@@ -13,8 +13,12 @@ import * as tickets from "./services/tickets";
 import * as uploads from "./services/uploads";
 import * as contact from "./services/contact";
 import * as config from "./services/config";
+import * as organizerPayoutAccount from "./services/organizerPayoutAccount";
+import * as paymentMethods from "./services/paymentMethods";
+import * as organizerWallet from "./services/organizerWallet";
+import * as buyerWallet from "./services/buyerWallet";
 
-export const api = { auth, users, organizers, events, organizerEvents, organizerRefunds, dashboard, orders, refunds, tickets, uploads, contact, config };
+export const api = { auth, users, organizers, events, organizerEvents, organizerRefunds, dashboard, orders, refunds, tickets, uploads, contact, config, organizerPayoutAccount, paymentMethods, organizerWallet, buyerWallet };
 
 export { onSessionExpired, newIdempotencyKey } from "./client";
 export { ApiError, normalizeError } from "./errors";
@@ -33,3 +37,8 @@ export * from "./queries/tickets";
 export * from "./queries/uploads";
 export * from "./queries/contact";
 export * from "./queries/config";
+export * from "./queries/organizerPayoutAccount";
+export * from "./queries/paymentMethods";
+export * from "./queries/organizerWallet";
+export * from "./queries/buyerWallet";
+export * from "./queries/gatewayAdmin";

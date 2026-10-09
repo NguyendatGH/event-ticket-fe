@@ -34,6 +34,7 @@ export const isAccessTokenExpired = (state = useAuthStore.getState(), skewMs = 1
 export const hasSession = (state = useAuthStore.getState()) => Boolean(state.accessToken || state.refreshToken);
 
 export const isOrganizerRole = (user) => user?.role === "ORGANIZER" || user?.role === "ADMIN";
+export const isAdminRole = (user) => user?.role === "ADMIN";
 
 export function readPersistedSession() {
   try {

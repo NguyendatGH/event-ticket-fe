@@ -3,7 +3,7 @@
 import { Suspense, useRef, useState } from "react";
 import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useMotionValueEvent, useScroll } from "motion/react";
-import { ArrowUpRight, Building2, CalendarDays, LayoutDashboard, LogOut, Menu, RotateCcw } from "lucide-react";
+import { ArrowUpRight, Building2, CalendarDays, Landmark, LayoutDashboard, LogOut, Menu, RotateCcw, WalletCards } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Logo, PageLoader, UserAvatar } from "@/components/site";
@@ -15,6 +15,8 @@ const NAV = [
   { to: "/organizer", label: "Tổng quan", icon: LayoutDashboard, match: (p) => p === "/organizer" || p === "/organizer/" },
   { to: "/organizer/events", label: "Sự kiện", icon: CalendarDays, match: (p) => p.startsWith("/organizer/events") },
   { to: "/organizer/refunds", label: "Hoàn tiền", icon: RotateCcw, match: (p) => p.startsWith("/organizer/refunds") },
+  { to: "/organizer/wallet", label: "Ví seller", icon: WalletCards, match: (p) => p.startsWith("/organizer/wallet") },
+  { to: "/organizer/payout-account", label: "Tài khoản nhận tiền", icon: Landmark, match: (p) => p.startsWith("/organizer/payout-account") },
   { to: "/organizer/profile", label: "Hồ sơ ban tổ chức", icon: Building2, match: (p) => p.startsWith("/organizer/profile") },
 ];
 
