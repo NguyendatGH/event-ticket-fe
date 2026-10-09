@@ -1,5 +1,3 @@
-// Avatar vuông; không có ảnh thì hiện chữ viết tắt.
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import { initials } from "@/lib/format";

@@ -1,5 +1,3 @@
-// Bộ lọc của trang /events. Nguồn sự thật là URL (?q=&category=&city=&when=&from=&to=&priceMin=&priceMax=&sort=):
-
 import { categoryLabel, EVENT_SORTS, WHEN_OPTIONS } from "@/lib/constants";
 import { formatDate, formatVND } from "@/lib/format";
 

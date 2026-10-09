@@ -1,6 +1,3 @@
-// Trang tổng quan của ban tổ chức — route /organizer?range=7|30|90|custom&from=&to=&interval=day|week|month
-// Dữ liệu: useDashboardRevenue, useDashboardSales, useDashboardSummary, useDashboardTopEvents.
-
 import { Link, useSearchParams } from "react-router-dom";
 import { motion } from "motion/react";
 import { ArrowRight, Plus } from "lucide-react";

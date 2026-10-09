@@ -1,5 +1,3 @@
-// Test hàm thuần trang chủ.
-
 import { describe, expect, it } from "vitest";
 import { byStartsAt, mergeEvents, sectionStatus } from "./lib";
 

@@ -1,5 +1,3 @@
-// Hồ sơ ban tổ chức, contract §4.2 + §4.3
-
 import { client } from "../client";
 
 const enc = encodeURIComponent;

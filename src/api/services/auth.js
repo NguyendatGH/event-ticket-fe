@@ -1,5 +1,3 @@
-// Đăng ký / đăng nhập / quên mật khẩu, contract §4.1. Trả body BE nguyên shape (AuthResponse, UserResponse…).
-
 import { client } from "../client";
 
 export const register = (body) => client.post("/auth/register", body);

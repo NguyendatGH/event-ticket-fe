@@ -1,5 +1,3 @@
-// Phiên đăng nhập (persist localStorage key "nhip.auth").
-
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 

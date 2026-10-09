@@ -1,6 +1,3 @@
-// Khối hoàn tiền trên trang đơn: lịch sử yêu cầu + nút tạo yêu cầu mới.
-// Poll khi còn yêu cầu đang chạy vì tiền đi bất đồng bộ (BE trả 202).
-
 import { useState } from "react";
 import { RotateCcw } from "lucide-react";
 import { toast } from "sonner";
@@ -18,7 +15,7 @@ const OPEN_REFUND = ["REQUESTED", "AWAITING_FUNDS", "PROCESSING", "MANUAL_REVIEW
 
 export function RefundSection({ order }) {
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [dialogRun, setDialogRun] = useState(0);   // đổi key -> RefundDialog khởi tạo lại lựa chọn
+  const [dialogRun, setDialogRun] = useState(0);
   const [error, setError] = useState(null);
 
   const refundsQ = useOrderRefunds(order.id, {
@@ -44,7 +41,6 @@ export function RefundSection({ order }) {
   const canRequest = REFUNDABLE_ORDER.includes(order.status) && activeTickets.length > 0;
   if (!canRequest && refunds.length === 0) return null;
 
-  // Giá một vé chỉ suy được khi đơn chỉ có một hạng vé; nhiều hạng thì để BE tính, không đoán.
   const unitPrice = order.items?.length === 1 ? order.items[0].unitPrice : null;
 
   return (
@@ -106,7 +102,6 @@ export function RefundSection({ order }) {
         unitPrice={unitPrice}
         loading={create.isPending}
         error={error}
-        // body dialog trả về: { ticketIds, reason, destination, contactEmail } — đúng body BE mong đợi.
         onSubmit={(body) => create.mutate({ body })}
       />
     </section>

@@ -1,5 +1,3 @@
-// Lỗi 4xx (trừ 408/429) không retry: thử lại cũng ra kết quả y hệt.
-
 import { QueryClient } from "@tanstack/react-query";
 
 const shouldRetry = (failureCount, error) => {

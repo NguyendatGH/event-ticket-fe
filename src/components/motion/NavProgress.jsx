@@ -1,5 +1,3 @@
-// Hiện sau 150ms (tải nhanh không nháy), chạy tới 80% rồi chờ; unmount khi trang sẵn sàng.
-
 import { motion } from "motion/react";
 
 export function NavProgress() {

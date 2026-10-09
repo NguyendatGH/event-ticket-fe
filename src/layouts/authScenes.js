@@ -1,5 +1,3 @@
-// Mỗi màn auth một ảnh sự kiện + chú thích (ảnh Unsplash, cùng bộ ảnh với seed BE).
-
 const unsplash = (id, w = 1600) => `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&q=80`;
 
 export const AUTH_SCENES = {

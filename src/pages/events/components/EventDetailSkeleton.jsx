@@ -1,5 +1,3 @@
-// Khung chờ trang chi tiết sự kiện.
-
 import { Container } from "@/components/site";
 import { Skeleton } from "@/components/ui/skeleton";
 

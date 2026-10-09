@@ -1,5 +1,3 @@
-// Thanh nhỏ cạnh doanh thu so với sự kiện đứng đầu (sự kiện đầu = thanh đầy).
-
 import { Link } from "react-router-dom";
 import { motion } from "motion/react";
 import { ErrorState, StatusBadge } from "@/components/site";

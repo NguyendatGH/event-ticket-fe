@@ -1,9 +1,3 @@
-// Tạo terminal: chọn luôn phương thức + 3DS + routing, gateway kiểm trên đúng cấu hình đó (thiếu rule, thiếu
-// Acquirer Connection, acquirer không nhận method… đều bị từ chối kèm lý do). Trước đây form gắn cứng CARD + 3DS
-// OPTIONAL nên không tạo được terminal có QR (hay chỉ QR) trong một bước.
-// Mỗi BTC chỉ thu tiền qua MỘT terminal. Ô "Encore dùng terminal này ngay" (mặc định bật) gắn luôn terminal mới vào
-// BTC; trước đây tạo xong vẫn thu qua terminal cũ, admin tạo terminal có QR mà khách chỉ thấy thẻ. Bỏ tick = chỉ tạo,
-// đổi sau bằng "Chuyển sang dùng terminal này". Toast nói theo usedByEncore server trả về, không đoán.
 import { useState } from "react";
 import { toast } from "sonner";
 import { useCreateGatewayTerminal, useGatewayAcquirers, useGatewayRoutingProfile, useGatewayRoutingProfiles } from "@/api";
@@ -33,7 +27,6 @@ export function CreateTerminalForm({ merNo, activeTerminalId }) {
   const hasCard = methods.includes("CARD");
   const acquirers = useGatewayAcquirers();
   const no3ds = cardRoutesWithout3ds({ methods, policy, routes, acquirers: acquirers.data });
-  // Merchant chưa gắn BTC nào thì không có gì để "dùng ngay".
   const linked = Boolean(activeTerminalId);
 
   const create = useCreateGatewayTerminal({
@@ -46,7 +39,6 @@ export function CreateTerminalForm({ merNo, activeTerminalId }) {
           ? `Đã tạo ${id}. Encore vẫn thu tiền qua ${activeTerminalId} — bấm "Chuyển sang dùng terminal này" để khách dùng terminal mới.`
           : `Đã tạo ${id}.`);
     },
-    // Gateway trả code thật (ROUTING_NOT_CONFIGURED, ACQUIRER_NOT_CONFIGURED…) — hiện nguyên văn.
     onError: (e) => toast.error(e?.message ?? "Tạo terminal thất bại"),
   });
   const valid = name.trim() && profile && methods.length > 0 && (!hasCard || policy);
@@ -57,7 +49,6 @@ export function CreateTerminalForm({ merNo, activeTerminalId }) {
       onSubmit={(e) => {
         e.preventDefault();
         if (!valid) return;
-        // 3DS chỉ có nghĩa với CARD: không bật CARD thì gửi null, gateway từ chối policy khác DISABLED khi thiếu CARD.
         create.mutate({ merNo, activate: linked && activate, name: name.trim(), channel, currency,
           paymentMethods: methods, threeDsPolicy: hasCard ? policy : null, routingProfileCode: profile });
       }}

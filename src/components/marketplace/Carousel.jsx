@@ -1,5 +1,3 @@
-// Carousel ngang không thư viện: CSS scroll-snap + nút ‹ › + chấm trang (IntersectionObserver).
-
 import { Children, useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "motion/react";
 import { ChevronLeft, ChevronRight } from "lucide-react";

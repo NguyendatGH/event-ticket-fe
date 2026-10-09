@@ -1,5 +1,3 @@
-// Chân trang auth: divider + câu hỏi + link.
-
 import { Link } from "react-router-dom";
 import { motion } from "motion/react";
 import { riseSm } from "@/lib/motion";

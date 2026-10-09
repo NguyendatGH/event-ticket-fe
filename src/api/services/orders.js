@@ -1,5 +1,3 @@
-// Checkout, contract §4.6
-
 import { client, newIdempotencyKey } from "../client";
 
 export const create = (body, { idempotencyKey = newIdempotencyKey() } = {}) =>

@@ -1,5 +1,3 @@
-// Test khối giao diện v2 marketplace.
-
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it } from "vitest";

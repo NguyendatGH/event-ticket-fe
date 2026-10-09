@@ -1,5 +1,3 @@
-// Bộ đếm ký tự phần giới thiệu: leaf tự useWatch, gõ phím không render lại cả form.
-
 import { useEffect } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";

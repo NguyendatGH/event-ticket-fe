@@ -1,8 +1,3 @@
-// Acquirer = ngân hàng/đơn vị gateway gửi giao dịch tới. Năng lực của nó là DỮ LIỆU admin khai ở đây:
-// nhận phương thức nào, có trang xác thực 3DS (OTP) hay không. Thêm acquirer không cần sửa code gateway,
-// và mock bank không cần biết gì — nó chỉ duyệt hoặc từ chối.
-// Có BIN = ngân hàng BTC tự chọn được ở trang "Tài khoản nhận tiền" (tài khoản nhận tiền nằm ở chính ngân hàng đó).
-// Không BIN = chỉ dùng để admin dựng routing profile.
 import { useState } from "react";
 import { toast } from "sonner";
 import { useCreateGatewayAcquirer, useGatewayAcquirers, useUpdateGatewayAcquirer } from "@/api";
@@ -57,7 +52,6 @@ function MethodPicker({ idPrefix, methods, onChange }) {
 }
 
 function ThreeDsToggle({ id, methods, value, onChange }) {
-  // 3DS là chuyện của thẻ: không nhận CARD thì cờ này vô nghĩa.
   const hasCard = methods.includes("CARD");
   return (
     <label htmlFor={id} className="flex items-center gap-2 text-sm">

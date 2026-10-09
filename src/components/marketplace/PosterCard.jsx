@@ -1,5 +1,3 @@
-// Poster dọc 3:4 cho hàng "Sự kiện đặc biệt".
-
 import { memo } from "react";
 import { Link } from "react-router-dom";
 import { ImageWithFallback } from "@/components/site";

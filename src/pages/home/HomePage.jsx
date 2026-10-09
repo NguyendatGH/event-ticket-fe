@@ -1,5 +1,3 @@
-// Trang chủ, route "/" (design-spec.md mục v2 — marketplace). Header xanh + thanh danh mục đen + footer do SiteLayout lo.
-
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { CategoryRows } from "./components/CategoryRows";
 import { DestinationsSection } from "./components/DestinationsSection";

@@ -1,5 +1,3 @@
-// Truyền `images` (2-4 ảnh) thay cho `image` để làm ô ghép lưới 2×2 ("Vị trí khác").
-
 import { Link } from "react-router-dom";
 import { ImageWithFallback } from "@/components/site";
 import { imageAt } from "@/lib/image";

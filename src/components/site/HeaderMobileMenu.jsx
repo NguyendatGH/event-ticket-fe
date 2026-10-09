@@ -1,5 +1,3 @@
-// Danh mục nằm ở CategoryNav, không lặp trong menu này.
-
 import { Link, NavLink } from "react-router-dom";
 import { motion } from "motion/react";
 import { Menu } from "lucide-react";

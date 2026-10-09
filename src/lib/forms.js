@@ -1,5 +1,3 @@
-// Helper form: schema zod với thông điệp tiếng Việt + đổ lỗi từ BE (ApiError.errors) vào react-hook-form.
-
 import { z } from "zod";
 import { formatNumber } from "@/lib/format";
 

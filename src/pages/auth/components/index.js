@@ -1,5 +1,3 @@
-// Barrel component riêng của các trang auth, kèm AUTH_STAGGER.
-
 import { staggerOf } from "@/lib/motion";
 
 export { AuthHeading } from "./AuthHeading";

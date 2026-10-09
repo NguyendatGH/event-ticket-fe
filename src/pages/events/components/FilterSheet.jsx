@@ -1,5 +1,3 @@
-// Bộ lọc dưới lg: ngăn trượt chứa cùng FilterPanel như cột trái desktop.
-
 import { SlidersHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {

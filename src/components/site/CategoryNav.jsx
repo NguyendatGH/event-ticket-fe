@@ -1,5 +1,3 @@
-// Không dính (chỉ Header dính) để không ăn thêm chiều cao màn hình khi cuộn.
-
 import { useLayoutEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { CATEGORIES } from "@/lib/constants";

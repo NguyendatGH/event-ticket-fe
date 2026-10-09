@@ -1,5 +1,3 @@
-// Các hàng theo nhóm danh mục; mỗi nhóm gộp tối đa 2 danh mục của BE.
-
 import { useMemo } from "react";
 import { useEvents } from "@/api";
 import { Carousel, EventTile } from "@/components/marketplace";

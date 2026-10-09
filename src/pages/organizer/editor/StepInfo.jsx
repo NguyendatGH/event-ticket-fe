@@ -1,5 +1,3 @@
-// Đọc/ghi field qua useFormContext (form nằm ở EditorForm). disabled = sự kiện đã hủy, chỉ xem.
-
 import { Controller, useFormContext, useWatch } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";

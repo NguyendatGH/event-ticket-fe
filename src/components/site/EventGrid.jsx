@@ -1,5 +1,3 @@
-// Lưới sự kiện 4/2/1 cột, có skeleton khi đang tải.
-
 import { motion } from "motion/react";
 import { fadeUp, stagger } from "@/lib/motion";
 import { cn } from "@/lib/utils";

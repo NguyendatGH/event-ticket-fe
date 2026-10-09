@@ -1,5 +1,3 @@
-// Helper phân trang PageResponse cho useInfiniteQuery.
-
 export const DEFAULT_PAGE_SIZE = 12;
 
 const getNextPageParam = (last) => (last && last.number + 1 < last.totalPages ? last.number + 1 : undefined);

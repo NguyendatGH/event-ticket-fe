@@ -1,5 +1,3 @@
-// Providers toàn app: TanStack Query, MotionConfig, Tooltip, Router, Toaster.
-
 import { useState } from "react";
 import { RouterProvider } from "react-router-dom";
 import { QueryClientProvider } from "@tanstack/react-query";

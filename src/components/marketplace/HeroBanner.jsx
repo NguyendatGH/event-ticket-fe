@@ -1,5 +1,3 @@
-// Cả banner là một link tới /events/:slug (nút "Xem chi tiết" chỉ là hình ảnh của link, không phải control thứ hai).
-
 import { memo } from "react";
 import { Link } from "react-router-dom";
 import { ImageWithFallback } from "@/components/site";

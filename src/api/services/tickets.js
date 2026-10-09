@@ -1,5 +1,3 @@
-// Vé của tôi, contract §4.6
-
 import { client } from "../client";
 
 export const mine = (params) => client.get("/me/tickets", { params });

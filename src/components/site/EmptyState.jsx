@@ -1,5 +1,3 @@
-// Trạng thái rỗng: không khung, chỉ chữ và khoảng trắng.
-
 import { cn } from "@/lib/utils";
 
 export function EmptyState({ icon: Icon, title, description, action, className }) {

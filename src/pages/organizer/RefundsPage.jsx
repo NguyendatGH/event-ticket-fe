@@ -1,6 +1,3 @@
-// Trang "Hoàn tiền" của ban tổ chức — route /organizer/refunds?status=
-// Dữ liệu: useOrganizerRefunds (lấy tất cả, tự poll khi còn yêu cầu đang chạy), useAppConfig (tên ngân hàng).
-
 import { useId, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { motion } from "motion/react";
@@ -30,12 +27,11 @@ export default function RefundsPage() {
   useDocumentTitle("Hoàn tiền");
   const [params, setParams] = useSearchParams();
   const raw = params.get("status") || "";
-  const tab = TABS.find((t) => t.value === raw) ?? TABS[0]; // ?status= lạ thì về tab mặc định
-  const [resolving, setResolving] = useState(null);   // refund đang mở hướng dẫn chuyển khoản tay
-  const [cancelling, setCancelling] = useState(null); // refund đang mở hộp thoại hủy
+  const tab = TABS.find((t) => t.value === raw) ?? TABS[0];
+  const [resolving, setResolving] = useState(null);
+  const [cancelling, setCancelling] = useState(null);
   const tabGroup = useId();
 
-  // Ghi filter vào URL để BTC bookmark / F5 mà không mất bộ lọc đang xem.
   const setParam = (value) =>
     setParams(
       (p) => {
@@ -82,7 +78,6 @@ export default function RefundsPage() {
             />
           ))}
         </ul>
-        {/* Màn hẹp dùng danh sách ở trên; bảng chỉ hiện từ md và vẫn cuộn ngang được nếu cửa sổ hẹp. */}
         <div className="overflow-x-auto max-md:hidden">
           <table className="w-full min-w-250 text-sm">
             <thead>
@@ -186,8 +181,6 @@ export default function RefundsPage() {
         />
       ) : null}
 
-      {/* Render có điều kiện (không truyền open={false}) để mỗi lần mở là một dialog mới:
-          lý do hủy và bước xác nhận được reset sạch, không dính của yêu cầu trước. */}
       {cancelling ? (
         <CancelRefundDialog
           refund={cancelling}

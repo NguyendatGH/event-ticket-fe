@@ -1,6 +1,3 @@
-// Form tạo terminal: admin chọn phương thức + 3DS + routing ngay lúc tạo (trước đây gắn cứng CARD + OPTIONAL),
-// và mặc định Encore dùng luôn terminal mới (trước đây tạo xong khách vẫn thanh toán qua terminal cũ).
-
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
@@ -29,7 +26,6 @@ vi.mock("sonner", () => ({ toast: { success: toastSuccess, error: vi.fn() } }));
 
 const { CreateTerminalForm } = await import("./CreateTerminalForm");
 
-// Select của Radix cần mấy API mà jsdom không có.
 beforeAll(() => {
   Element.prototype.hasPointerCapture ??= () => false;
   Element.prototype.releasePointerCapture ??= () => {};

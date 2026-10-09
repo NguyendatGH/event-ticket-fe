@@ -1,5 +1,3 @@
-// Bước 3 trình sửa sự kiện: hạng vé; đã bán/giữ thì khóa giá và không cho xóa.
-
 import { useFieldArray, useFormContext, useWatch } from "react-hook-form";
 import { Lock, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";

@@ -1,5 +1,3 @@
-// Giá VND. `from` → "Từ 800.000đ"; 0 → "Miễn phí".
-
 import { formatVND } from "@/lib/format";
 import { cn } from "@/lib/utils";
 

@@ -1,5 +1,3 @@
-// Menu khu tài khoản: thẻ bên trái từ lg, hàng pill cuộn ngang khi hẹp hơn.
-
 import { useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { LayoutDashboard, LogOut, Receipt, Store, Ticket, UserRound, WalletCards } from "lucide-react";

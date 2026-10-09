@@ -1,5 +1,3 @@
-// Ví buyer mô phỏng (BE: /api/v1/me/wallet).
-
 import { client, newIdempotencyKey } from "../client";
 
 export const get = () => client.get("/me/wallet");

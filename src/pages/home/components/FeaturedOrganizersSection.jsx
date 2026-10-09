@@ -1,5 +1,3 @@
-// Section "Ban tổ chức nổi bật" trên nền sóng sáng.
-
 import { Star } from "lucide-react";
 import { useFeaturedOrganizers } from "@/api";
 import { Carousel, FeaturedOrganizerCard, GlowWaves } from "@/components/marketplace";

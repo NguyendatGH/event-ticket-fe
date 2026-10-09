@@ -1,5 +1,3 @@
-// Nút hành động của trình sửa sự kiện (hiện 2 chỗ: thanh bước trên desktop, thanh dính đáy trên điện thoại).
-
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 

@@ -1,5 +1,3 @@
-// Section "Sự kiện đặc biệt": poster dọc, gộp sự kiện nổi bật + sắp diễn ra, bỏ trùng.
-
 import { useMemo } from "react";
 import { useFeaturedEvents, useUpcomingEvents } from "@/api";
 import { Carousel, PosterCard } from "@/components/marketplace";

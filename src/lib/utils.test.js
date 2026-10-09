@@ -1,5 +1,3 @@
-// Test cn() và tailwind-merge với token tự định nghĩa.
-
 import { describe, expect, it } from "vitest";
 import { cn } from "./utils";
 

@@ -1,24 +1,19 @@
-// §9/§10/§14 — hai việc KHÁC NHAU nên tách thành hai tab:
-//   Terminals          = điểm chấp nhận thanh toán (channel, 3DS, routing)
-//   Acquirer Connections = hợp đồng với ngân hàng thu hộ (MID/TID)
-// Trộn chung một trang làm người dùng tưởng phải khai acquirer khi tạo terminal.
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import {
-  useAddGatewayAcquirerConfig, useGatewayAcquirerConfigs, useGatewayAcquirers,
+  useGatewayAcquirerConfigs,
   useGatewayMerchant, useGatewayTerminals, useRotateGatewayCredential,
   useSetActiveTerminal, useSetTerminalStatus, useUpdateGatewayMerchant,
 } from "@/api";
 import { BackLink, Container, PageHeader } from "@/components/site";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { AsyncSection } from "./components/AdminStates";
 import { SecretOnce } from "./components/SecretOnce";
+import { AddAcquirerForm } from "./components/AddAcquirerForm";
 import { CreateTerminalForm } from "./components/CreateTerminalForm";
 import { TerminalConfigForm } from "./components/TerminalConfigForm";
 
@@ -40,8 +35,6 @@ export default function MerchantDetailPage() {
 
   const m = merchant.data;
   const suspended = m?.status === "INACTIVE";
-  // Gateway cho phép nhiều terminal ACTIVE cùng lúc. Encore thu tiền qua các KÊNH nhận tiền BTC mở (mỗi kênh một terminal);
-  // BTC chưa mở kênh nào thì qua terminal mặc định (activeTerminalId).
   const activeTerminalId = m?.activeTerminalId ?? null;
   const channelTerminalIds = m?.channelTerminalIds ?? [];
 
@@ -52,8 +45,6 @@ export default function MerchantDetailPage() {
 
       <SecretOnce secret={secret} onDismiss={() => setSecret(null)} />
 
-      {/* Merchant (BTC) tự khai trên Encore; admin chỉ xem. Settlement của merchant = tài khoản kênh chính; terminal của
-          mỗi kênh có settlement riêng (xem từng terminal). */}
       <p className="mt-4 text-sm text-muted-foreground">
         Tài khoản nhận tiền của merchant (settlement mặc định):{" "}
         {m?.settlementAccount
@@ -72,6 +63,8 @@ export default function MerchantDetailPage() {
           {suspended ? "Activate merchant" : "Suspend merchant"}
         </Button>
       </div>
+
+      <Readiness terminals={terminals.data} />
 
       <Tabs defaultValue="terminals" className="mt-8">
         <TabsList>
@@ -147,10 +140,28 @@ export default function MerchantDetailPage() {
               </ul>
             )}
           </AsyncSection>
-          <AddAcquirerForm merNo={merNo} />
+          <AddAcquirerForm merNo={merNo} terminals={terminals.data} />
         </TabsContent>
       </Tabs>
     </Container>
+  );
+}
+
+function Readiness({ terminals }) {
+  if (!Array.isArray(terminals) || terminals.length === 0) return null;
+  const problems = terminals
+    .filter((t) => t.status === "ACTIVE" && t.routableMethods)
+    .map((t) => ({ id: t.terminalId, hidden: (t.paymentMethods ?? []).filter((m) => !t.routableMethods.includes(m)) }))
+    .filter((t) => t.hidden.length > 0);
+  return problems.length === 0 ? (
+    <p className="mt-4 rounded-lg border border-border px-4 py-3 text-sm text-muted-foreground">
+      Mọi phương thức đã bật trên các terminal đang chạy đều có route dùng được.
+    </p>
+  ) : (
+    <p role="status" className="mt-4 rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm">
+      {problems.length} terminal có phương thức khách <strong>không thấy</strong>:{" "}
+      {problems.map((t) => `${t.id} (${t.hidden.join(", ")})`).join("; ")}. Mở terminal bên dưới, xem cột "Khách thấy?".
+    </p>
   );
 }
 
@@ -194,48 +205,5 @@ function TerminalActions({ terminal, merNo, activeTerminalId, isChannel = false,
             : "Bật nhưng Encore chưa dùng — không có đơn nào chạy qua đây."}
       </span>
     </div>
-  );
-}
-
-function AddAcquirerForm({ merNo }) {
-  const acquirers = useGatewayAcquirers();
-  const list = Array.isArray(acquirers.data) ? acquirers.data : [];
-  const [code, setCode] = useState("");
-  const [mid, setMid] = useState("");
-  const [tid, setTid] = useState("");
-  const add = useAddGatewayAcquirerConfig({
-    onSuccess: () => { setCode(""); setMid(""); setTid(""); toast.success("Đã thêm acquirer connection"); },
-    onError: (e) => toast.error(e?.message ?? "Thêm thất bại"),
-  });
-  return (
-    <form
-      className="mt-6 grid gap-3 rounded-lg border border-dashed border-border p-4 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_auto]"
-      onSubmit={(e) => { e.preventDefault(); if (code) add.mutate({ merNo, acquirerCode: code, mid, tid }); }}
-    >
-      <div>
-        <label className="mb-1 block text-xs font-medium" htmlFor="a-code">Acquirer</label>
-        <Select value={code} onValueChange={setCode}>
-          <SelectTrigger id="a-code"><SelectValue placeholder="Chọn acquirer" /></SelectTrigger>
-          <SelectContent>
-            {list.map((a) => (
-              <SelectItem key={a.code} value={a.code}>
-                {a.code} — {a.name} ({a.paymentMethods?.join(", ") || "chưa nhận method nào"})
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-      <div>
-        <label className="mb-1 block text-xs font-medium" htmlFor="a-mid">Acquirer Merchant ID (MID)</label>
-        <Input id="a-mid" value={mid} onChange={(e) => setMid(e.target.value)} />
-      </div>
-      <div>
-        <label className="mb-1 block text-xs font-medium" htmlFor="a-tid">Acquirer Terminal ID (TID)</label>
-        <Input id="a-tid" value={tid} onChange={(e) => setTid(e.target.value)} />
-      </div>
-      <div className="flex items-end">
-        <Button type="submit" disabled={add.isPending || !code}>Add Acquirer Connection</Button>
-      </div>
-    </form>
   );
 }

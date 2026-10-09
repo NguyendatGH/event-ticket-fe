@@ -1,5 +1,3 @@
-// Chưa đăng nhập → /auth/login với state.from = "/me/tickets?scope=past" (chuỗi path).
-
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { PageLoader } from "@/components/site";
 import { useAuth } from "@/hooks/useAuth";

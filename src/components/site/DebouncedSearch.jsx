@@ -1,5 +1,3 @@
-// Ô tìm kiếm "gõ xong mới tìm"; bản nháp giữ ở component lá nên gõ phím không render lại cả trang.
-
 import { useEffect, useState } from "react";
 import { useDebounce } from "@/hooks/useDebounce";
 import { SearchInput } from "./SearchInput";

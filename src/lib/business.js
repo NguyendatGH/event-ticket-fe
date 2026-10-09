@@ -1,5 +1,3 @@
-// Hằng số nghiệp vụ dùng chung. Phí dịch vụ thật đọc từ BE qua useAppConfig()
-
 export const SERVICE_FEE = 12000;
 
 export function tierLimit(tier) {

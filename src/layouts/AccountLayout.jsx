@@ -1,5 +1,3 @@
-// Trang con không tự bọc Container; tiêu đề trang dùng AccountPageHeader (@/components/account).
-
 import { Suspense } from "react";
 import { Outlet } from "react-router-dom";
 import { AccountNav } from "@/components/account";

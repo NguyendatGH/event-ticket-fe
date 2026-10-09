@@ -1,5 +1,3 @@
-// Bản nháp giữ trong component lá này nên gõ phím không render lại cả Header.
-
 import { useState } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
 import { SearchInput } from "./SearchInput";

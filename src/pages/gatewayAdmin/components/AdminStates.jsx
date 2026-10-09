@@ -1,4 +1,3 @@
-// Trạng thái dùng chung cho mọi trang Gateway Admin (spec §30): loading / empty / error.
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function LoadingRows({ rows = 3 }) {
@@ -33,7 +32,6 @@ export function ErrorState({ error, onRetry }) {
   );
 }
 
-/** Gói loading/error/empty để trang không phải lặp ba nhánh này. */
 export function AsyncSection({ query, empty, children, rows }) {
   if (query.isPending) return <LoadingRows rows={rows} />;
   if (query.isError) return <ErrorState error={query.error} onRetry={query.refetch} />;

@@ -1,5 +1,3 @@
-// Ô tìm kiếm dạng Sheet cho màn hình nhỏ.
-
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/components/ui/sheet";
 import { HeaderSearch } from "./HeaderSearch";
 

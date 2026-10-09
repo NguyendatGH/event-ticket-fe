@@ -1,5 +1,3 @@
-// Hàng sự kiện gợi ý ở cuối trang chi tiết.
-
 import { motion } from "motion/react";
 import { EventCard, EventGrid, SectionHeader } from "@/components/site";
 import { fadeUp, inView as reveal } from "@/lib/motion";

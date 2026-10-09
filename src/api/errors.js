@@ -1,5 +1,3 @@
-// Chuẩn hóa mọi lỗi axios (mạng, timeout, 4xx, 5xx) thành ApiError.
-
 export class ApiError extends Error {
   constructor({ status = 0, code = "UNKNOWN", message = "Có lỗi xảy ra.", traceId = null, errors = [], cause } = {}) {
     super(message);

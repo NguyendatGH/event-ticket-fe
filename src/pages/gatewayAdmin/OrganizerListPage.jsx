@@ -1,5 +1,3 @@
-// Gốc là BAN TỔ CHỨC, không phải merchant: merchant trên gateway luôn thuộc về một BTC,
-// nên không có chức năng "tạo merchant rời".
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
