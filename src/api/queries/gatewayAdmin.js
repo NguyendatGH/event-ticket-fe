@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as api from "../services/gatewayAdmin";
 import { qk } from "./keys";
 
@@ -22,6 +22,11 @@ export const useGatewayAcquirerConfigs = (merNo, options) =>
 
 export const useGatewayRoutingProfiles = (options) =>
   useQuery({ queryKey: qk.gatewayAdmin.routingProfiles, queryFn: api.routingProfiles, ...options });
+
+// Chi tiết (rule) của NHIỀU profile một lúc, cùng key với useGatewayRoutingProfile nên dùng chung cache và tự làm mới
+// khi thêm rule. Dùng để vẽ toàn cảnh "acquirer nào đang được route ở profile nào".
+export const useGatewayRoutingProfileDetails = (codes = []) =>
+  useQueries({ queries: codes.map((code) => ({ queryKey: qk.gatewayAdmin.routingProfile(code), queryFn: () => api.routingProfile(code) })) });
 
 export const useGatewayRoutingProfile = (code, options) =>
   useQuery({ queryKey: qk.gatewayAdmin.routingProfile(code), queryFn: () => api.routingProfile(code), enabled: Boolean(code), ...options });
