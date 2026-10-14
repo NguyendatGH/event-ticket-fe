@@ -1,5 +1,3 @@
-// Nhãn nút mua: đóng bán → lý do (Đã hết vé…); chưa chọn → nhắc chọn; đã chọn → "Mua N vé".
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";

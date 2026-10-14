@@ -1,5 +1,3 @@
-// Schema form hồ sơ ban tổ chức — body của PUT /organizer/profile (contract §4.2).
-
 import { v, z } from "@/lib/forms";
 
 export const organizerProfileSchema = z.object({

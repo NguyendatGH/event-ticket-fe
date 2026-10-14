@@ -1,5 +1,3 @@
-// Ô tìm kiếm vuông vức, controlled, submit bằng Enter.
-
 import { useId } from "react";
 import { Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";

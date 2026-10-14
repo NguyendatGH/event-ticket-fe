@@ -1,6 +1,3 @@
-// Một yêu cầu hoàn tiền trong trang Hoàn tiền, 2 kiểu hiển thị cùng dữ liệu:
-// RefundRow = <tr> cho màn rộng, RefundItem = <li> cho màn hẹp (giống cặp EventOrderRow/EventOrderItem).
-
 import { motion } from "motion/react";
 import { RefundStatusBadge } from "@/components/site";
 import { Button } from "@/components/ui/button";
@@ -16,10 +13,6 @@ const rowIn = (index) => ({
   animate: { ...rowItem.animate, transition: { ...rowItem.animate.transition, delay: Math.min(index, 9) * 0.03 } },
 });
 
-/**
- * BE chỉ trả orderId (UUID), chưa trả mã đơn ngắn, nên hiện 6 ký tự cuối cho dễ đối chiếu
- * và để id đầy đủ trong title + sr-only cho người dùng screen reader / copy tay.
- */
 function OrderRef({ orderId }) {
   const id = String(orderId ?? "");
   return (
@@ -30,7 +23,6 @@ function OrderRef({ orderId }) {
   );
 }
 
-/** Tài khoản nhận tiền: BE đã che, chỉ còn 4 số cuối. */
 function Destination({ refund: r, bankName }) {
   return (
     <>
@@ -44,12 +36,6 @@ function Destination({ refund: r, bankName }) {
   );
 }
 
-/**
- * Việc BTC làm được với một yêu cầu, gom vào một chỗ cho bảng và danh sách dùng chung:
- * - "Xử lý" (mở hướng dẫn chuyển khoản tay) chỉ có nghĩa với MANUAL_REVIEW.
- * - "Hủy hoàn tiền" có với cả MANUAL_REVIEW và AWAITING_FUNDS, trừ khi cổng đã nhận lệnh chi.
- * Trạng thái không làm được gì thì ô hành động để trống, không hiện nút chết.
- */
 function RowActions({ refund: r, onResolve, onCancel, className }) {
   const canResolve = r.status === "MANUAL_REVIEW";
   const blocker = refundCancelBlocker(r);

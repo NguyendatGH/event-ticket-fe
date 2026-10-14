@@ -1,6 +1,3 @@
-// Trang hồ sơ ban tổ chức — route /organizer/profile
-// Dữ liệu: useMyOrganizerProfile, useUpdateOrganizerProfile.
-
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";

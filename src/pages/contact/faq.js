@@ -1,5 +1,3 @@
-// Câu hỏi thường gặp hiện cuối trang Liên hệ. Số liệu (phí 12.000đ) khớp @/lib/business.
-
 export const FAQ = [
   {
     q: "Mua xong, vé của tôi nằm ở đâu?",

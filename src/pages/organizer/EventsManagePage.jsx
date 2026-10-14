@@ -1,6 +1,3 @@
-// Trang "Quản lý sự kiện" của ban tổ chức — route /organizer/events?status=&q=
-// Dữ liệu: useDashboardSummary, useDeleteOrganizerEvent, useInfiniteOrganizerEvents.
-
 import { useId, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { motion } from "motion/react";

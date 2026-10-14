@@ -1,5 +1,3 @@
-// Các dòng đếm sự kiện: `key` là field trong summary.events, `status` để lọc danh sách khi bấm vào.
-
 import { Link } from "react-router-dom";
 import { AnimatedNumber } from "@/components/motion";
 import { formatNumber } from "@/lib/format";

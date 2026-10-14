@@ -1,5 +1,3 @@
-// Test trang Hoàn tiền của ban tổ chức + ô "Hoàn tiền" có badge ở trang Tổng quan.
-
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -54,7 +52,6 @@ function renderAt(path, els = routes) {
   return router;
 }
 
-/** Bảng (màn rộng) và danh sách (màn hẹp) render cùng dữ liệu, nên luôn hỏi trong đúng một cái. */
 const table = () => within(screen.getByRole("table"));
 
 beforeEach(() => {
@@ -71,7 +68,7 @@ describe("RefundsPage", () => {
     });
     renderAt("/organizer/refunds");
 
-    expect(table().getAllByRole("row")).toHaveLength(3); // 1 dòng tiêu đề + 2 refund cần xử lý
+    expect(table().getAllByRole("row")).toHaveLength(3);
     expect(table().getByText("Chờ duyệt thủ công")).toBeInTheDocument();
     expect(table().getByText("Đang chờ nguồn tiền")).toBeInTheDocument();
     expect(table().queryByText("Đã hoàn tiền")).not.toBeInTheDocument();
@@ -119,7 +116,6 @@ describe("RefundsPage", () => {
     expect(within(dialog).getByText("HOAN VE 12345")).toBeInTheDocument();
     expect(within(dialog).getByRole("button", { name: /Copy số tài khoản/ })).toBeInTheDocument();
 
-    // Bước 1 chỉ mở bước xác nhận, chưa được gọi API vì đây là tiền thật.
     await user.click(within(dialog).getByRole("button", { name: "Đã chuyển xong" }));
     expect(resolve.mutate).not.toHaveBeenCalled();
     expect(within(dialog).getByText("Xác nhận đã chuyển tiền cho khách?")).toBeInTheDocument();
@@ -198,7 +194,6 @@ describe("RefundsPage — hủy hoàn tiền", () => {
     expect(table().getAllByRole("button", { name: "Hủy hoàn tiền" })).toHaveLength(2);
   });
 
-  // Các trạng thái này BE trả 409 nếu cố hủy, nên đừng hiện nút rồi để BTC ăn lỗi.
   it.each(["REQUESTED", "PROCESSING", "SUCCEEDED", "FAILED"])("trạng thái %s thì không cho hủy", (status) => {
     api.useOrganizerRefunds.mockReturnValue({ data: [refund({ status, failureCode: null })] });
     renderAt("/organizer/refunds?status=ALL");
@@ -223,12 +218,11 @@ describe("RefundsPage — hủy hoàn tiền", () => {
 
     await user.click(cancelBtn());
     const dialog = screen.getByRole("alertdialog");
-    expect(within(dialog).getByRole("button", { name: "Tiếp tục" })).toBeDisabled(); // chưa có lý do
+    expect(within(dialog).getByRole("button", { name: "Tiếp tục" })).toBeDisabled();
 
     await user.type(within(dialog).getByLabelText("Lý do hủy"), "Ngoài thời hạn hoàn vé");
     await user.click(within(dialog).getByRole("button", { name: "Tiếp tục" }));
 
-    // Bước 1 chỉ mở panel xác nhận: hủy là quyết định về tiền và không undo được.
     expect(resolve.mutate).not.toHaveBeenCalled();
     expect(screen.getByText("Xác nhận hủy yêu cầu hoàn tiền?")).toBeInTheDocument();
     expect(screen.getByText("Ngoài thời hạn hoàn vé")).toBeInTheDocument();
@@ -261,7 +255,6 @@ describe("RefundsPage — hủy hoàn tiền", () => {
 
   it("yêu cầu đã được chốt ở nơi khác (409 REFUND_NOT_CANCELLABLE): nói nhẹ, không báo đỏ", async () => {
     const user = userEvent.setup();
-    // Dữ liệu trên màn còn cũ nên BTC vẫn thấy nút hủy, nhưng BE đã chốt yêu cầu này rồi.
     const conflict = { response: { status: 409, data: { code: "REFUND_NOT_CANCELLABLE", detail: "not cancellable" } } };
     const resolve = { mutate: vi.fn((_vars, opts) => opts.onError(conflict)), isPending: false, error: null };
     api.useResolveRefund.mockReturnValue(resolve);
@@ -289,7 +282,6 @@ describe("RefundsPage — hủy hoàn tiền", () => {
 
     expect(table().getByText("Đã hủy")).toBeInTheDocument();
     expect(table().getByText("Hoàn tiền thất bại")).toBeInTheDocument();
-    // BE lưu note nguyên văn vào failureReason, hiện thẳng cho BTC đọc lại vì sao mình đã hủy.
     expect(table().getByText("Ngoài thời hạn hoàn vé")).toBeInTheDocument();
   });
 });

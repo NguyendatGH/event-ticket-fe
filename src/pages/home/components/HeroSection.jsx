@@ -1,5 +1,3 @@
-// Tối đa số banner trong hero (GET /events/featured thường chỉ vài sự kiện).
-
 import { useRef, useState } from "react";
 import { useReducedMotion } from "motion/react";
 import { Pause, Play } from "lucide-react";

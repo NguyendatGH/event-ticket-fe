@@ -1,5 +1,3 @@
-// Trả giá trị trễ `delay` ms.
-
 import { useEffect, useState } from "react";
 
 export function useDebounce(value, delay = 300) {

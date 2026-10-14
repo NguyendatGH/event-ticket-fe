@@ -1,5 +1,3 @@
-// Sự kiện public, contract §4.3
-
 import { client } from "../client";
 import { cleanParams } from "../params";
 

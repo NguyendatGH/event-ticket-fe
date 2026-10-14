@@ -1,5 +1,3 @@
-// Barrel: component form dùng chung.
-
 export { Field } from "./Field";
 export { PasswordField } from "./PasswordField";
 export { CityInput } from "./CityInput";

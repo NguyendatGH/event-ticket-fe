@@ -1,5 +1,3 @@
-// Test router: route chính và guard RequireAuth giữ lại URL đang dở.
-
 import { QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import { createMemoryRouter, RouterProvider } from "react-router-dom";

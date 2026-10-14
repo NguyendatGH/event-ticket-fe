@@ -1,5 +1,3 @@
-// Test schema zod dùng chung và applyApiErrors.
-
 import { describe, expect, it, vi } from "vitest";
 import { applyApiErrors, toFormPath, toPayload, v, z } from "./forms";
 import { ApiError } from "@/api/errors";

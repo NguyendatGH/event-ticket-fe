@@ -5,7 +5,6 @@ import { qk } from "./keys";
 export const useOrganizerPayoutAccount = (options) =>
   useQuery({ queryKey: qk.organizer.payoutAccount, queryFn: payoutAccountApi.get, ...options });
 
-// Mọi thao tác trả lại cấu hình mới: ghi thẳng vào cache, và phương thức khách thấy có thể đổi theo.
 function usePayoutMutation(mutationFn, options = {}) {
   const qc = useQueryClient();
   return useMutation({

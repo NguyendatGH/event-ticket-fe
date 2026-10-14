@@ -1,6 +1,3 @@
-// Trang chi tiết một sự kiện của ban tổ chức — route /organizer/events/:id
-// Dữ liệu: useOrganizerEvent.
-
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { motion } from "motion/react";

@@ -1,5 +1,3 @@
-// Chữ trên nền footer: text-footer-foreground / text-footer-muted (≥ 7:1 / 5.6:1).
-
 import { Link } from "react-router-dom";
 import { ArrowRight, Clock, Mail } from "lucide-react";
 import { BRAND } from "@/lib/constants";

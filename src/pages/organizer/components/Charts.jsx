@@ -1,5 +1,3 @@
-// Màu SVG trỏ thẳng vào token trong index.css (thuộc tính fill/stroke nhận var()), không lặp mã hex.
-
 import { memo, useState } from "react";
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { motion, useReducedMotion } from "motion/react";

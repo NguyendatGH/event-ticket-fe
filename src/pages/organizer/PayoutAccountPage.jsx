@@ -1,8 +1,3 @@
-// BTC cấu hình thanh toán của chính mình ở đây.
-// Cổng BankSim (account.channels có giá trị): BTC mở các KÊNH nhận tiền, mỗi kênh một ngân hàng của cổng + phương thức
-// khách được dùng + tài khoản nhận tiền tại chính ngân hàng đó (xem components/PaymentChannels).
-// Cổng khác (PayOS, account.channels = null): chỉ khai một tài khoản nhận tiền, ngân hàng nào trong danh mục cũng được.
-// BTC nhận thanh toán được ngay từ lúc đăng ký; chưa có tài khoản / kênh thì tiền được cổng giữ lại, có rồi là chuyển về.
 import { useState } from "react";
 import { AlertTriangle, CheckCircle2, Loader2, Save } from "lucide-react";
 import { toast } from "sonner";
@@ -65,7 +60,6 @@ function PayoutAccountForm({ account }) {
   const { banks = [] } = useAppConfig();
   const { submit, isPending } = useSubmit();
   const hasAccount = Boolean(account.bankBin);
-  // Số tài khoản cũ chỉ còn bản đã che, nên đổi tài khoản là gõ lại cả số.
   const [form, setForm] = useState({ bankBin: account.bankBin ?? "", accountName: account.accountName ?? "", accountNumber: "" });
   const patch = (next) => setForm((current) => ({ ...current, ...next }));
   const valid = form.bankBin && form.accountName.trim() && form.accountNumber.length >= 6;

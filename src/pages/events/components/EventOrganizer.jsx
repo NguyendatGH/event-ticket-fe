@@ -1,5 +1,3 @@
-// Khối "Ban tổ chức" trên trang chi tiết sự kiện.
-
 import { Link } from "react-router-dom";
 import { ArrowRight, BadgeCheck } from "lucide-react";
 import { UserAvatar } from "@/components/site";

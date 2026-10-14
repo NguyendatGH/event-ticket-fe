@@ -1,6 +1,3 @@
-// Kênh nhận tiền (cổng BankSim): BTC mở nhiều kênh, mỗi kênh = một ngân hàng của cổng + các phương thức khách trả qua
-// ngân hàng đó + tài khoản nhận tiền TẠI ngân hàng đó. Khách chọn phương thức nào thì tiền về tài khoản của kênh có
-// phương thức đó, nên một phương thức chỉ thuộc một kênh và một ngân hàng chỉ là một kênh (BE kiểm lại cả hai).
 import { useState } from "react";
 import { Loader2, Pencil, Plus, Save, Trash2 } from "lucide-react";
 import { toast } from "sonner";
@@ -16,7 +13,6 @@ import { OrgFormSection } from "./OrgFormSection";
 
 export function PaymentChannels({ account }) {
   const channels = account.channels;
-  // Chưa có kênh nào thì mở sẵn form: đó là việc duy nhất BTC cần làm ở trang này.
   const [adding, setAdding] = useState(channels.length === 0);
   const [editing, setEditing] = useState(null);
   const freeBanks = account.banks.filter((bank) => !channels.some((c) => c.bankCode === bank.code));
@@ -62,7 +58,6 @@ export function PaymentChannels({ account }) {
 function ChannelCard({ channel, bank, onlyOne, onEdit }) {
   const remove = useRemovePaymentChannel();
   const [confirming, setConfirming] = useState(false);
-  // Đang bật mà khách không trả được (admin đổi ngân hàng / cấu hình cổng sau đó): nói rõ thay vì để BTC tưởng là có.
   const broken = channel.paymentMethods.filter((m) => !channel.routableMethods.includes(m));
   const onRemove = () => remove.mutate(channel.id, {
     onSuccess: () => toast.success(`Đã xoá kênh ${channel.bankName}.`),
@@ -114,10 +109,6 @@ function ChannelCard({ channel, bank, onlyOne, onEdit }) {
   );
 }
 
-/**
- * Thêm kênh (channel = null) hoặc sửa kênh. Sửa thì ngân hàng cố định (tài khoản phải nằm ở đúng ngân hàng đó) và để trống
- * cả hai ô tài khoản là giữ tài khoản cũ. Phương thức đã thuộc kênh khác thì khoá, kèm tên kênh đang giữ nó.
- */
 function ChannelForm({ account, channel = null, onDone }) {
   const add = useAddPaymentChannel();
   const update = useUpdatePaymentChannel();
@@ -130,15 +121,16 @@ function ChannelForm({ account, channel = null, onDone }) {
   const [accountName, setAccountName] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
   const bank = account.banks.find((b) => b.code === bankCode);
+  const outside = bank ? methods.filter((m) => !bank.paymentMethods.includes(m)) : [];
+  const sendable = bank ? methods.filter((m) => bank.paymentMethods.includes(m)) : methods;
   const typed = accountName.trim() || accountNumber;
   const accountValid = accountName.trim() && accountNumber.length >= 6;
-  const valid = bank && methods.length > 0 && (channel && !typed ? true : accountValid);
+  const valid = bank && sendable.length > 0 && (channel && !typed ? true : accountValid);
   const pending = add.isPending || update.isPending;
   const idPrefix = channel ? `channel-${channel.id}` : "new-channel";
 
   const chooseBank = (code) => {
     setBankCode(code);
-    // Ngân hàng mới: bật sẵn mọi phương thức nó hỗ trợ mà chưa kênh nào giữ, BTC tự bỏ cái không muốn.
     setMethods((account.banks.find((b) => b.code === code)?.paymentMethods ?? []).filter((m) => !takenBy[m]));
   };
   const toggle = (method, on) => setMethods((current) => (on ? [...current, method] : current.filter((m) => m !== method)));
@@ -153,10 +145,9 @@ function ChannelForm({ account, channel = null, onDone }) {
       },
       onError: (error) => toast.error(error.message),
     };
-    // Sửa mà để trống tài khoản thì không gửi: BE hiểu là giữ tài khoản cũ.
     const newAccount = typed ? { accountName: accountName.trim(), accountNumber } : {};
-    if (channel) update.mutate({ id: channel.id, paymentMethods: methods, ...newAccount }, callbacks);
-    else add.mutate({ bankCode, paymentMethods: methods, ...newAccount }, callbacks);
+    if (channel) update.mutate({ id: channel.id, paymentMethods: sendable, ...newAccount }, callbacks);
+    else add.mutate({ bankCode, paymentMethods: sendable, ...newAccount }, callbacks);
   };
 
   return (
@@ -193,7 +184,13 @@ function ChannelForm({ account, channel = null, onDone }) {
               </label>
             ))}
           </div>
-          {methods.length === 0 && <p role="alert" className="text-sm text-destructive">Chọn ít nhất một phương thức.</p>}
+          {outside.length > 0 && (
+            <p role="status" className="text-sm text-warning">
+              {outside.map(paymentMethodLabel).join(", ")} đang bật cho kênh này nhưng {bank.name} không hỗ trợ (do quản trị cổng
+              cấu hình riêng). Lưu kênh sẽ bỏ {outside.length > 1 ? "các phương thức" : "phương thức"} này.
+            </p>
+          )}
+          {sendable.length === 0 && <p role="alert" className="text-sm text-destructive">Chọn ít nhất một phương thức.</p>}
         </fieldset>
       )}
       <div className="grid gap-4 sm:grid-cols-2">

@@ -1,5 +1,3 @@
-// Primitive shadcn/Radix: AlertDialog.
-
 import * as React from "react"
 import { cn } from "@/lib/utils"
 import { AlertDialog as AlertDialogPrimitive } from "radix-ui"

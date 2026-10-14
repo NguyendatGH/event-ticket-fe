@@ -1,5 +1,3 @@
-// Mọi thông số chuyển động của app nằm ở đây (package `motion`, import từ "motion/react").
-
 export const EASE_OUT = [0.16, 1, 0.3, 1];
 export const EASE_IN = [0.4, 0, 1, 1];
 export const EASE_INOUT = [0.65, 0, 0.35, 1];

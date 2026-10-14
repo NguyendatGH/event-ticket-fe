@@ -1,5 +1,3 @@
-// Bảng ẩn cho trình đọc màn hình (dữ liệu biểu đồ).
-
 import { ErrorState } from "@/components/site";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";

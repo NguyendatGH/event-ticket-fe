@@ -1,5 +1,3 @@
-// Dải bìa đầu trang ban tổ chức, mờ dần vào nền trang ở mép dưới. Ưu tiên:
-
 import { motion } from "motion/react";
 import { ImageWithFallback } from "@/components/site";
 import { imageSettle } from "@/lib/motion";

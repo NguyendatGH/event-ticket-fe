@@ -1,5 +1,3 @@
-// Khung QR hiện ra (scale .96 → 1) rồi một vạch quét xanh 1px chạy qua đúng một lần: "vé này đang hiệu lực".
-
 import { motion, useReducedMotion } from "motion/react";
 import { DUR, EASE_INOUT, EASE_OUT } from "@/lib/motion";
 import { cn } from "@/lib/utils";

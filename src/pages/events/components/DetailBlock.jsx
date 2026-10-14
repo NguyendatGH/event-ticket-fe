@@ -1,5 +1,3 @@
-// Một khối nội dung của trang chi tiết sự kiện.
-
 import { motion } from "motion/react";
 import { fadeUp, inView as reveal } from "@/lib/motion";
 

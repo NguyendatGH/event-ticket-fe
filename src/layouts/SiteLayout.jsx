@@ -1,5 +1,3 @@
-// Tải sớm GET /api/v1/config (phí dịch vụ) để form có số thật ngay khi mở. Không render gì.
-
 import { Suspense } from "react";
 import { Outlet } from "react-router-dom";
 import { CategoryNav, Footer, Header, PageLoader } from "@/components/site";

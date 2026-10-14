@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as api from "../services/gatewayAdmin";
 import { qk } from "./keys";
 
@@ -22,6 +22,9 @@ export const useGatewayAcquirerConfigs = (merNo, options) =>
 
 export const useGatewayRoutingProfiles = (options) =>
   useQuery({ queryKey: qk.gatewayAdmin.routingProfiles, queryFn: api.routingProfiles, ...options });
+
+export const useGatewayRoutingProfileDetails = (codes = []) =>
+  useQueries({ queries: codes.map((code) => ({ queryKey: qk.gatewayAdmin.routingProfile(code), queryFn: () => api.routingProfile(code) })) });
 
 export const useGatewayRoutingProfile = (code, options) =>
   useQuery({ queryKey: qk.gatewayAdmin.routingProfile(code), queryFn: () => api.routingProfile(code), enabled: Boolean(code), ...options });
@@ -50,16 +53,15 @@ export function useRotateGatewayCredential(options = {}) {
   return invalidating((merNo) => [qk.gatewayAdmin.merchant(merNo)])({ mutationFn: api.rotateCredential, ...options });
 }
 export function useCreateGatewayTerminal(options = {}) {
-  // merchants là tiền tố của merchant(merNo): activeTerminalId (badge "Encore đang dùng") cũng được tải lại.
   return invalidating(() => [qk.gatewayAdmin.merchants, qk.gatewayAdmin.organizers])({ mutationFn: api.createTerminal, ...options });
 }
 export function useSetTerminalStatus(options = {}) {
   return invalidating((v) => [qk.gatewayAdmin.terminals(v.merNo), qk.gatewayAdmin.terminal(v.terminalId)])({
     mutationFn: api.setTerminalStatus, ...options });
 }
-export function useSetActiveTerminal(options = {}) {
-  return invalidating((v) => [qk.gatewayAdmin.merchant(v.merNo), qk.gatewayAdmin.organizers])({
-    mutationFn: api.setActiveTerminal, ...options });
+export function useSetDefaultTerminal(options = {}) {
+  return invalidating((v) => [qk.gatewayAdmin.merchant(v.merNo), qk.gatewayAdmin.terminals(v.merNo)])({
+    mutationFn: api.setDefaultTerminal, ...options });
 }
 export function useConfigureTerminal(options = {}) {
   return invalidating((v) => [qk.gatewayAdmin.terminal(v.terminalId)])({ mutationFn: api.configureTerminal, ...options });

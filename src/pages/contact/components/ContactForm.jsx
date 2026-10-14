@@ -1,5 +1,3 @@
-// Dấu tick tự vẽ (vòng tròn rồi nét tick), 40px, hiện khi gửi xong.
-
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";

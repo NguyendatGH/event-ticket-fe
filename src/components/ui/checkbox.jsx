@@ -1,5 +1,3 @@
-// Primitive shadcn/Radix: Checkbox.
-
 import * as React from "react"
 import { cn } from "@/lib/utils"
 import { CheckIcon } from "lucide-react"

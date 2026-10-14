@@ -1,5 +1,3 @@
-// Là WAI-ARIA tabs thật (Radix): mũi tên trái/phải chuyển tab, nội dung nằm trong tabpanel.
-
 import { useEffect, useId, useRef } from "react";
 import { Tabs as TabsPrimitive } from "radix-ui";
 import { LayoutGroup } from "motion/react";

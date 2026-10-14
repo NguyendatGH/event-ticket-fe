@@ -1,5 +1,3 @@
-// Cửa duy nhất để gọi BE. Mọi nơi khác (page, component, layout, hook) import từ "@/api".
-
 import * as auth from "./services/auth";
 import * as users from "./services/users";
 import * as organizers from "./services/organizers";

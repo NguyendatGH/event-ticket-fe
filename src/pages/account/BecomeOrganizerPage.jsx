@@ -1,6 +1,3 @@
-// Nâng tài khoản khách thành ban tổ chức, route "/become-organizer" (cần đăng nhập, nằm trong AccountLayout).
-// Dữ liệu: useBecomeOrganizer.
-
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Navigate, useNavigate } from "react-router-dom";

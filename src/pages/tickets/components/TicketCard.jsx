@@ -1,5 +1,3 @@
-// Vé điện tử trong TicketDetailPage, hình cuống vé (thẻ bo 12px, khuyết tròn ở đường xé):
-
 import { Link } from "react-router-dom";
 import { ArrowRight, CalendarDays, MapPin } from "lucide-react";
 import { Perforation } from "@/components/account";

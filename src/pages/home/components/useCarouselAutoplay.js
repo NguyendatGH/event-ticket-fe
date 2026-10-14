@@ -1,5 +1,3 @@
-// Tự cuộn <Carousel> sang trang kế sau mỗi `interval` ms, hết thì quay về đầu.
-
 import { useEffect } from "react";
 
 export function useCarouselAutoplay(rootRef, { enabled = true, interval = 6000 } = {}) {

@@ -1,5 +1,3 @@
-// Thẻ "Ban tổ chức nổi bật": avatar tròn viền phát sáng, tên, dấu xác minh.
-
 import { memo } from "react";
 import { Link } from "react-router-dom";
 import { ImageWithFallback } from "@/components/site";

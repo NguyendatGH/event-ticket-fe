@@ -1,5 +1,3 @@
-// Từ md: lưới 6 cột (GRID, dùng chung với hàng tiêu đề của trang). Điện thoại: ảnh | nội dung | nút "…".
-
 import { memo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, MoreHorizontal, Pencil, Rocket, SquareArrowOutUpRight, Trash2 } from "lucide-react";

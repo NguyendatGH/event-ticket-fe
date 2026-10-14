@@ -1,5 +1,3 @@
-// Khung nội dung 1320px, lề theo breakpoint.
-
 import { cn } from "@/lib/utils";
 
 export function Container({ as: Tag = "div", className, ...props }) {

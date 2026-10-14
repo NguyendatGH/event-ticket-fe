@@ -1,5 +1,3 @@
-// Đặt trong phần tử có class `group` (tên đổi màu khi hover thẻ).
-
 import { formatDate } from "@/lib/format";
 import { Price, StatusBadge } from "@/components/site";
 import { cn } from "@/lib/utils";

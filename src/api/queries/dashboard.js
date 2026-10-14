@@ -1,5 +1,3 @@
-// Hook số liệu dashboard organizer: summary, sales, revenue, top-events.
-
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import * as dashboardApi from "../services/dashboard";
 import { cleanParams } from "../params";

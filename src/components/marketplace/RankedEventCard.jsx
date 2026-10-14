@@ -1,5 +1,3 @@
-// Số thứ hạng chỉ để trang trí (aria-hidden); thứ hạng đọc ra qua "Hạng N:" ẩn.
-
 import { memo } from "react";
 import { Link } from "react-router-dom";
 import { ImageWithFallback } from "@/components/site";

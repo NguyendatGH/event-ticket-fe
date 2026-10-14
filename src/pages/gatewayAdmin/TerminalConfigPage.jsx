@@ -1,5 +1,3 @@
-// Trang riêng cho một terminal — chủ yếu để chia sẻ link. Việc cấu hình thường ngày làm
-// ngay tại trang merchant (sửa tại chỗ), dùng chung TerminalConfigForm nên không lệch logic.
 import { useParams } from "react-router-dom";
 import { useGatewayTerminal } from "@/api";
 import { BackLink, Container, PageHeader } from "@/components/site";

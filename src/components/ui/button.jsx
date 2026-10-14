@@ -1,5 +1,3 @@
-// Nút theo design-spec: radius 4px, cao 40/48px, không shadow.
-
 import { cva } from "class-variance-authority";
 import { cn } from "@/lib/utils"
 import { Slot } from "radix-ui"

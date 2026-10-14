@@ -1,5 +1,3 @@
-// Màn auth chia đôi: ảnh sự kiện (7/12) + form (5/12). Trang auth chỉ render form (max-w 420px đã có sẵn).
-
 import { Suspense } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";

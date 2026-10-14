@@ -1,6 +1,3 @@
-// Trang "Vé của tôi" — route /me/tickets?scope=upcoming|past (cần đăng nhập, nằm trong AccountLayout).
-// Dữ liệu: useMyTickets.
-
 import { useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Ticket, TicketCheck } from "lucide-react";

@@ -1,5 +1,3 @@
-// Một hạng vé dạng dòng, có nút −/+ và vạch xanh khi đang chọn.
-
 import { memo, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Minus, Plus } from "lucide-react";

@@ -1,5 +1,3 @@
-// Test chuẩn hóa mọi lỗi thành ApiError.
-
 import { AxiosError } from "axios";
 import { describe, expect, it } from "vitest";
 import { ApiError, normalizeError } from "./errors";

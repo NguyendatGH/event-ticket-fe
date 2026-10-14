@@ -1,5 +1,3 @@
-// Hook GET /config (phí dịch vụ, Google client id, danh mục ngân hàng kèm cờ supported), cache suốt phiên.
-
 import { useQuery } from "@tanstack/react-query";
 import * as configApi from "../services/config";
 import { qk } from "./keys";

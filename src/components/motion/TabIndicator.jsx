@@ -1,5 +1,3 @@
-// Gạch chân trượt theo layoutId cho danh sách tab trong luồng trang (không sticky).
-
 import { motion } from "motion/react";
 import { SPRING } from "@/lib/motion";
 import { cn } from "@/lib/utils";

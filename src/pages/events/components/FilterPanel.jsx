@@ -1,5 +1,3 @@
-// Một nhóm lọc có tiêu đề (Danh mục, Thành phố…).
-
 import { useId, useState } from "react";
 import { LayoutGroup, motion } from "motion/react";
 import { Skeleton } from "@/components/ui/skeleton";

@@ -1,5 +1,3 @@
-// Khác `FormSection` của @/components/form (auth/account: nhãn nhỏ + divider, xếp dọc).
-
 import { cn } from "@/lib/utils";
 
 export function OrgFormSection({ title, description, children, className }) {

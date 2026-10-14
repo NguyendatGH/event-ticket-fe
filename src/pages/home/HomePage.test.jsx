@@ -1,5 +1,3 @@
-// Test trang chủ: mỗi section tự tải, section lỗi không kéo sập cả trang.
-
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";

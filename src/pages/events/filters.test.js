@@ -1,5 +1,3 @@
-// Test đọc/ghi bộ lọc của /events trên URL.
-
 import { describe, expect, it } from "vitest";
 import {
   activeChips,

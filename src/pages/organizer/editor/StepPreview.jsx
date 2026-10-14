@@ -1,5 +1,3 @@
-// Bước 4 trình sửa sự kiện: checklist xuất bản + xem trước.
-
 import { useWatch } from "react-hook-form";
 import { Check, Circle } from "lucide-react";
 import { ImageWithFallback, KeyValueList, Price } from "@/components/site";

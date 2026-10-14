@@ -1,5 +1,3 @@
-// Khung chờ trang thông tin tài khoản.
-
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function ProfileSkeleton() {

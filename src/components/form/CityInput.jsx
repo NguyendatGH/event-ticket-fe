@@ -1,5 +1,3 @@
-// Ô thành phố: gõ tự do, có gợi ý sẵn.
-
 import { useId } from "react";
 import { Input } from "@/components/ui/input";
 import { CITIES } from "@/lib/constants";

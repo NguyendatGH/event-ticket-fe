@@ -1,5 +1,3 @@
-// Thẻ cha phải `relative overflow-hidden` để hai khuyết tròn bị cắt còn nửa. Trang trí (aria-hidden).
-
 import { cn } from "@/lib/utils";
 
 export function Perforation({ orientation = "horizontal", className }) {

@@ -1,5 +1,3 @@
-// <img> có ảnh dự phòng khi src trống/lỗi, hiện dần khi tải xong.
-
 import { useState } from "react";
 import { FALLBACK_EVENT_IMAGE } from "@/lib/constants";
 import { cn } from "@/lib/utils";

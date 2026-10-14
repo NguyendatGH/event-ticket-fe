@@ -1,5 +1,3 @@
-// Nút gửi form có trạng thái đang xử lý.
-
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 

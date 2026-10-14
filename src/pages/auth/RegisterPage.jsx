@@ -1,6 +1,3 @@
-// Tạo tài khoản khách, route "/auth/register" → useRegister (POST /auth/register, đăng nhập luôn).
-// Dữ liệu: useRegister.
-
 import { useForm, useFormState } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useLocation, useNavigate } from "react-router-dom";

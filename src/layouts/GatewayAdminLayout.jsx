@@ -1,4 +1,3 @@
-// Khu quản trị BankSim Gateway. Tách hẳn khỏi Organizer UI (spec §6) — người dùng khác, quyền khác.
 import { Suspense } from "react";
 import { Link, NavLink, Outlet } from "react-router-dom";
 import { PageLoader } from "@/components/site";

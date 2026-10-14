@@ -1,5 +1,3 @@
-// Lỗi validate từ BE → field của form trình sửa sự kiện.
-
 import { applyApiErrors, toFormPath } from "@/lib/forms";
 
 export function normalizeServerField(field) {

@@ -1,5 +1,3 @@
-// Primitive shadcn: cầu nối react-hook-form (FormField, FormControl…).
-
 import * as React from "react"
 import { cn } from "@/lib/utils"
 import { Slot } from "radix-ui"

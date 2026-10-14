@@ -1,5 +1,3 @@
-// POST /contact {name(1-200), email, subject?(≤200), message(10-5000)} (contract §4.2)
-
 import { z, v } from "@/lib/forms";
 
 export const contactSchema = z.object({

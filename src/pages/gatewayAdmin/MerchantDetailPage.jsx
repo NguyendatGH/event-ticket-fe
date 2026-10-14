@@ -1,24 +1,19 @@
-// §9/§10/§14 — hai việc KHÁC NHAU nên tách thành hai tab:
-//   Terminals          = điểm chấp nhận thanh toán (channel, 3DS, routing)
-//   Acquirer Connections = hợp đồng với ngân hàng thu hộ (MID/TID)
-// Trộn chung một trang làm người dùng tưởng phải khai acquirer khi tạo terminal.
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import {
-  useAddGatewayAcquirerConfig, useGatewayAcquirerConfigs, useGatewayAcquirers,
+  useGatewayAcquirerConfigs,
   useGatewayMerchant, useGatewayTerminals, useRotateGatewayCredential,
-  useSetActiveTerminal, useSetTerminalStatus, useUpdateGatewayMerchant,
+  useSetDefaultTerminal, useSetTerminalStatus, useUpdateGatewayMerchant,
 } from "@/api";
 import { BackLink, Container, PageHeader } from "@/components/site";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { AsyncSection } from "./components/AdminStates";
 import { SecretOnce } from "./components/SecretOnce";
+import { AddAcquirerForm } from "./components/AddAcquirerForm";
 import { CreateTerminalForm } from "./components/CreateTerminalForm";
 import { TerminalConfigForm } from "./components/TerminalConfigForm";
 
@@ -40,9 +35,7 @@ export default function MerchantDetailPage() {
 
   const m = merchant.data;
   const suspended = m?.status === "INACTIVE";
-  // Gateway cho phép nhiều terminal ACTIVE cùng lúc. Encore thu tiền qua các KÊNH nhận tiền BTC mở (mỗi kênh một terminal);
-  // BTC chưa mở kênh nào thì qua terminal mặc định (activeTerminalId).
-  const activeTerminalId = m?.activeTerminalId ?? null;
+  const defaultTerminalId = m?.defaultTerminalId ?? null;
   const channelTerminalIds = m?.channelTerminalIds ?? [];
 
   return (
@@ -52,8 +45,6 @@ export default function MerchantDetailPage() {
 
       <SecretOnce secret={secret} onDismiss={() => setSecret(null)} />
 
-      {/* Merchant (BTC) tự khai trên Encore; admin chỉ xem. Settlement của merchant = tài khoản kênh chính; terminal của
-          mỗi kênh có settlement riêng (xem từng terminal). */}
       <p className="mt-4 text-sm text-muted-foreground">
         Tài khoản nhận tiền của merchant (settlement mặc định):{" "}
         {m?.settlementAccount
@@ -73,6 +64,8 @@ export default function MerchantDetailPage() {
         </Button>
       </div>
 
+      <Readiness terminals={terminals.data} />
+
       <Tabs defaultValue="terminals" className="mt-8">
         <TabsList>
           <TabsTrigger value="terminals">Terminals</TabsTrigger>
@@ -82,8 +75,9 @@ export default function MerchantDetailPage() {
         <TabsContent value="terminals" className="mt-6">
           <p className="mb-3 text-sm text-muted-foreground">
             Điểm chấp nhận thanh toán: web, app, hay quầy POS. Terminal có thể có tài khoản nhận tiền riêng
-            (không có thì dùng của merchant). Đơn hàng trên Encore chạy qua các terminal đánh dấu <strong>Kênh của BTC</strong>
-            (BTC tự mở ở trang Tài khoản nhận tiền); BTC chưa mở kênh nào thì qua terminal <strong>Encore đang dùng</strong>.
+            (không có thì dùng của merchant). Đơn hàng chạy qua các terminal đánh dấu <strong>Kênh của BTC</strong>
+            (BTC tự mở ở trang Tài khoản nhận tiền, gateway tự chọn theo phương thức); BTC chưa mở kênh nào thì qua
+            <strong>terminal mặc định</strong>.
           </p>
           <AsyncSection query={terminals} empty="No terminals configured." rows={2}>
             {(list) => (
@@ -96,8 +90,9 @@ export default function MerchantDetailPage() {
                         <span className="font-mono text-sm">{t.terminalId}</span>
                         <span className="text-sm font-medium">{t.name}</span>
                         <Badge variant={t.status === "ACTIVE" ? "default" : "secondary"}>{t.status}</Badge>
-                        {t.terminalId === activeTerminalId && <Badge>Encore đang dùng</Badge>}
+                        {t.terminalId === defaultTerminalId && <Badge>Terminal mặc định</Badge>}
                         {channelTerminalIds.includes(t.terminalId) && <Badge variant="info">Kênh của BTC</Badge>}
+                        {t.retired && <Badge variant="secondary">Kênh đã xóa</Badge>}
                         <span className="text-xs text-muted-foreground">
                           {t.channel} · {t.currency} · 3DS {t.threeDsPolicy ?? "—"} · {t.routingProfileCode ?? "—"}
                           {" · "}{(t.paymentMethods ?? []).join(", ") || "chưa bật phương thức nào"}
@@ -106,7 +101,8 @@ export default function MerchantDetailPage() {
                       </div>
                     </AccordionTrigger>
                     <AccordionContent className="pt-2 pb-5">
-                      <TerminalActions terminal={t} merNo={merNo} activeTerminalId={activeTerminalId}
+                      <TerminalActions terminal={t} merNo={merNo} defaultTerminalId={defaultTerminalId}
+                        hasChannels={channelTerminalIds.length > 0}
                         isChannel={channelTerminalIds.includes(t.terminalId)}
                         onDone={() => { terminals.refetch(); merchant.refetch(); }} />
                       <TerminalConfigForm terminal={t} onSaved={() => terminals.refetch()} />
@@ -120,7 +116,7 @@ export default function MerchantDetailPage() {
               </Accordion>
             )}
           </AsyncSection>
-          <CreateTerminalForm merNo={merNo} activeTerminalId={activeTerminalId} />
+          <CreateTerminalForm merNo={merNo} defaultTerminalId={defaultTerminalId} />
         </TabsContent>
 
         <TabsContent value="acquirers" className="mt-6">
@@ -147,95 +143,67 @@ export default function MerchantDetailPage() {
               </ul>
             )}
           </AsyncSection>
-          <AddAcquirerForm merNo={merNo} />
+          <AddAcquirerForm merNo={merNo} terminals={terminals.data} />
         </TabsContent>
       </Tabs>
     </Container>
   );
 }
 
-/**
- * Hai việc khác nhau, cố ý tách làm hai nút:
- *   Chuyển sang dùng  = đổi terminal Encore thu tiền qua (sửa binding bên Encore)
- *   Tắt / Bật         = trạng thái của chính terminal trên gateway
- * Tắt terminal đang được dùng bị BE chặn (TERMINAL_IN_USE) nên nút đó disable luôn cho khỏi bấm nhầm.
- */
-function TerminalActions({ terminal, merNo, activeTerminalId, isChannel = false, onDone }) {
-  const inUse = terminal.terminalId === activeTerminalId;
+function Readiness({ terminals }) {
+  if (!Array.isArray(terminals) || terminals.length === 0) return null;
+  const problems = terminals
+    .filter((t) => t.status === "ACTIVE" && t.routableMethods)
+    .map((t) => ({ id: t.terminalId, hidden: (t.paymentMethods ?? []).filter((m) => !t.routableMethods.includes(m)) }))
+    .filter((t) => t.hidden.length > 0);
+  return problems.length === 0 ? (
+    <p className="mt-4 rounded-lg border border-border px-4 py-3 text-sm text-muted-foreground">
+      Mọi phương thức đã bật trên các terminal đang chạy đều có route dùng được.
+    </p>
+  ) : (
+    <p role="status" className="mt-4 rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm">
+      {problems.length} terminal có phương thức khách <strong>không thấy</strong>:{" "}
+      {problems.map((t) => `${t.id} (${t.hidden.join(", ")})`).join("; ")}. Mở terminal bên dưới, xem cột "Khách thấy?".
+    </p>
+  );
+}
+
+function TerminalActions({ terminal, merNo, defaultTerminalId, hasChannels = false, isChannel = false, onDone }) {
+  const isDefault = terminal.terminalId === defaultTerminalId;
+  const defaultInUse = isDefault && !hasChannels;
   const off = terminal.status !== "ACTIVE";
 
-  const setActive = useSetActiveTerminal({
-    onSuccess: () => { toast.success(`Encore sẽ thu tiền qua ${terminal.terminalId}`); onDone(); },
-    onError: (e) => toast.error(e?.message ?? "Không chuyển được"),
+  const setDefault = useSetDefaultTerminal({
+    onSuccess: () => { toast.success(`${terminal.terminalId} là terminal mặc định`); onDone(); },
+    onError: (e) => toast.error(e?.message ?? "Không đổi được terminal mặc định"),
   });
   const setStatus = useSetTerminalStatus({
     onSuccess: (_d, v) => { toast.success(v.status === "ACTIVE" ? "Đã bật terminal" : "Đã tắt terminal"); onDone(); },
     onError: (e) => toast.error(e?.message ?? "Không đổi được trạng thái"),
   });
-  const busy = setActive.isPending || setStatus.isPending;
+  const busy = setDefault.isPending || setStatus.isPending;
 
   return (
     <div className="mb-4 flex flex-wrap items-center gap-2 rounded-lg border border-border bg-muted/30 p-3">
-      <Button size="sm" variant="secondary" disabled={busy || inUse || off}
-        onClick={() => setActive.mutate({ merNo, terminalId: terminal.terminalId })}>
-        {inUse ? "Đang dùng cho Encore" : "Chuyển sang dùng terminal này"}
+      <Button size="sm" variant="secondary" disabled={busy || isDefault || off || isChannel}
+        onClick={() => setDefault.mutate({ merNo, terminalId: terminal.terminalId })}>
+        {isDefault ? "Đang là terminal mặc định" : "Đặt làm terminal mặc định"}
       </Button>
-      <Button size="sm" variant="secondary" disabled={busy || ((inUse || isChannel) && !off)}
+      <Button size="sm" variant="secondary" disabled={busy || ((defaultInUse || isChannel) && !off)}
         onClick={() => setStatus.mutate({ merNo, terminalId: terminal.terminalId, status: off ? "ACTIVE" : "INACTIVE" })}>
         {off ? "Bật terminal" : "Tắt terminal"}
       </Button>
       <span className="text-xs text-muted-foreground">
         {isChannel && !off
           ? "Là kênh nhận tiền ban tổ chức đang mở — họ phải xóa kênh trước rồi mới tắt được."
-          : inUse
-          ? "Đang nhận đơn của ban tổ chức này — chuyển sang terminal khác rồi mới tắt được."
+          : defaultInUse && !off
+          ? "Đang nhận đơn vì ban tổ chức chưa mở kênh nào — đặt terminal mặc định khác rồi mới tắt được."
           : off
             ? "Đang tắt: mọi lệnh thu tiền qua terminal này bị gateway từ chối."
-            : "Bật nhưng Encore chưa dùng — không có đơn nào chạy qua đây."}
+            : isDefault
+              ? "Là terminal mặc định nhưng ban tổ chức đã có kênh nên chưa nhận đơn nào."
+              : "Bật nhưng không nhận đơn mới."}
       </span>
     </div>
-  );
-}
-
-function AddAcquirerForm({ merNo }) {
-  const acquirers = useGatewayAcquirers();
-  const list = Array.isArray(acquirers.data) ? acquirers.data : [];
-  const [code, setCode] = useState("");
-  const [mid, setMid] = useState("");
-  const [tid, setTid] = useState("");
-  const add = useAddGatewayAcquirerConfig({
-    onSuccess: () => { setCode(""); setMid(""); setTid(""); toast.success("Đã thêm acquirer connection"); },
-    onError: (e) => toast.error(e?.message ?? "Thêm thất bại"),
-  });
-  return (
-    <form
-      className="mt-6 grid gap-3 rounded-lg border border-dashed border-border p-4 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_auto]"
-      onSubmit={(e) => { e.preventDefault(); if (code) add.mutate({ merNo, acquirerCode: code, mid, tid }); }}
-    >
-      <div>
-        <label className="mb-1 block text-xs font-medium" htmlFor="a-code">Acquirer</label>
-        <Select value={code} onValueChange={setCode}>
-          <SelectTrigger id="a-code"><SelectValue placeholder="Chọn acquirer" /></SelectTrigger>
-          <SelectContent>
-            {list.map((a) => (
-              <SelectItem key={a.code} value={a.code}>
-                {a.code} — {a.name} ({a.paymentMethods?.join(", ") || "chưa nhận method nào"})
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-      <div>
-        <label className="mb-1 block text-xs font-medium" htmlFor="a-mid">Acquirer Merchant ID (MID)</label>
-        <Input id="a-mid" value={mid} onChange={(e) => setMid(e.target.value)} />
-      </div>
-      <div>
-        <label className="mb-1 block text-xs font-medium" htmlFor="a-tid">Acquirer Terminal ID (TID)</label>
-        <Input id="a-tid" value={tid} onChange={(e) => setTid(e.target.value)} />
-      </div>
-      <div className="flex items-end">
-        <Button type="submit" disabled={add.isPending || !code}>Add Acquirer Connection</Button>
-      </div>
-    </form>
   );
 }

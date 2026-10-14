@@ -1,5 +1,3 @@
-// POST /uploads/images (multipart) → 201 {url, contentType, bytes}
-
 import { client } from "../client";
 
 export const uploadImage = (file, { folder, onProgress, signal } = {}) => {

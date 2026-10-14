@@ -1,5 +1,3 @@
-// Chỉ MỘT chỗ mỗi trang (hero home, scene auth). Đặt trong khung `relative overflow-hidden`.
-
 import { motion, useReducedMotion } from "motion/react";
 import { ImageWithFallback } from "@/components/site/ImageWithFallback";
 import { DUR } from "@/lib/motion";

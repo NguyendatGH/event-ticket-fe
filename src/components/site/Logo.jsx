@@ -1,5 +1,3 @@
-// Đổi tên thương hiệu ở src/lib/constants.js.
-
 import { Link } from "react-router-dom";
 import { BRAND } from "@/lib/constants";
 import { cn } from "@/lib/utils";

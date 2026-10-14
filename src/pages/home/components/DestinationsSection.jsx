@@ -1,5 +1,3 @@
-// Ảnh cố định cho từng thành phố (Unsplash, đã kiểm tra đúng địa danh; imageAt trong CityTile đặt lại cỡ).
-
 import { MapPin } from "lucide-react";
 import { useEventFacets } from "@/api";
 import { CityTile } from "@/components/marketplace";

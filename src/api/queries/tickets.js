@@ -1,5 +1,3 @@
-// Hook vé của tôi: danh sách theo scope, chi tiết kèm lịch sử.
-
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import * as ticketsApi from "../services/tickets";
 import { qk } from "./keys";

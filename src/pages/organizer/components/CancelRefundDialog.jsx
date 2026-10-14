@@ -1,9 +1,3 @@
-// Hộp thoại "Hủy hoàn tiền": BTC bỏ hẳn một yêu cầu hoàn tiền của khách (khách đòi hoàn nhưng BTC
-// quyết không hoàn, hoặc yêu cầu kẹt chờ ví chi mãi không đi được).
-//
-// Xác nhận HAI bước (nhập lý do → xem lại hệ quả → mới gọi API) giống RefundInstructionDialog:
-// đây là quyết định về tiền của khách và không undo được, nên không để bấm một cái là xong.
-
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
@@ -26,12 +20,6 @@ import { Recap } from "./OrgUi";
 
 const NOTE_MAX = 500;
 
-/**
- * Câu tiếng Việt cho từng mã lỗi BE trả về khi hủy. normalizeError chỉ có câu mặc định theo HTTP
- * status ("Dữ liệu gửi lên không hợp lệ.", "Dữ liệu đã thay đổi hoặc xung đột.") — đọc xong BTC
- * vẫn không biết phải làm gì, nên dịch từng mã ra việc cần làm.
- * REFUND_NOT_CANCELLABLE không có ở đây: nó được xử lý riêng trong onError (xem bên dưới).
- */
 const CANCEL_ERROR = {
   REFUND_CANCEL_NOTE_REQUIRED: "Phải có lý do hủy. Bấm “Quay lại” để nhập rồi thử lại.",
   REFUND_ALREADY_AT_PROVIDER:
@@ -41,14 +29,12 @@ const CANCEL_ERROR = {
 
 export function CancelRefundDialog({ refund, open, onOpenChange, onCancelled }) {
   const [note, setNote] = useState("");
-  const [confirming, setConfirming] = useState(false); // false = bước 1 (nhập lý do), true = bước 2 (xác nhận)
-  // Hủy cũng đi qua endpoint resolve như mọi lựa chọn chốt khác, chỉ khác outcome — dùng lại hook cũ.
+  const [confirming, setConfirming] = useState(false);
   const resolve = useResolveRefund();
   const refreshRefunds = useRefreshOrganizerRefunds();
   const err = resolve.error ? normalizeError(resolve.error) : null;
   const errorMessage = err ? CANCEL_ERROR[err.code] || err.message : null;
 
-  // BE trả 400 nếu CANCELLED mà thiếu note. Chặn ngay ở FE để BTC không phải bấm rồi mới ăn lỗi server.
   const reason = note.trim();
   const noteMissing = !reason;
 
@@ -62,11 +48,7 @@ export function CancelRefundDialog({ refund, open, onOpenChange, onCancelled }) 
           onOpenChange(false);
         },
         onError: (e) => {
-          // Mã khác thì để nguyên: câu lỗi hiện đỏ ngay trong panel xác nhận, BTC sửa rồi bấm lại.
           if (normalizeError(e).code !== "REFUND_NOT_CANCELLABLE") return;
-          // Còn 409 REFUND_NOT_CANCELLABLE nghĩa là dữ liệu trên màn đã cũ (mở hai tab, hoặc poll
-          // chưa kịp chạy): yêu cầu này đã được hủy / chốt ở nơi khác rồi. BTC không làm gì sai nên
-          // đừng báo đỏ như sự cố — nói nhẹ một câu, nạp lại danh sách cho khớp BE rồi đóng.
           toast.info("Yêu cầu này đã được hủy hoặc chốt ở nơi khác rồi. Danh sách vừa được nạp lại.");
           refreshRefunds();
           onCancelled?.();
@@ -93,7 +75,6 @@ export function CancelRefundDialog({ refund, open, onOpenChange, onCancelled }) 
               <Recap label="Lý do hủy" value={reason || "(chưa nhập)"} />
             </dl>
 
-            {/* Nói thẳng ba hệ quả, vì cả ba đều là thứ BTC sẽ bị khách hỏi lại. */}
             <ul className="list-disc space-y-1.5 pl-5 text-sm leading-relaxed text-secondary-foreground">
               <li>Yêu cầu chuyển sang “Đã hủy”, hệ thống không chi tiền nữa.</li>
               <li>Vé của khách quay về trạng thái hợp lệ — khách giữ vé và vẫn vào được sự kiện.</li>

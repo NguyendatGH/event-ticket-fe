@@ -1,5 +1,3 @@
-// Test định dạng hiển thị, cố định theo giờ VN bất kể múi giờ máy chạy test.
-
 import { describe, expect, it } from "vitest";
 import {
   addDaysISO,

@@ -1,5 +1,3 @@
-// Danh sách nhãn/giá trị ngăn bằng divider.
-
 import { cn } from "@/lib/utils";
 
 export function KeyValueList({ items = [], className, labelWidth = "sm:grid-cols-[180px_1fr]" }) {

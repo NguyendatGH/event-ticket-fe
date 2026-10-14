@@ -1,5 +1,3 @@
-// Khung chờ trang ban tổ chức.
-
 import { Container } from "@/components/site";
 import { Skeleton } from "@/components/ui/skeleton";
 

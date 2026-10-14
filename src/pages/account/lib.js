@@ -1,5 +1,3 @@
-// Hàm thuần danh sách đơn: bộ lọc trạng thái, đếm vé, gom theo tháng, ô lịch.
-
 import { formatDayMonth, TIME_ZONE } from "@/lib/format";
 
 export const ORDER_FILTERS = [

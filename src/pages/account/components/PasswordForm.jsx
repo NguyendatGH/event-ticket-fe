@@ -1,5 +1,3 @@
-// Đổi mật khẩu → PUT /users/me/password. WRONG_PASSWORD gắn vào ô mật khẩu hiện tại.
-
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";

@@ -1,5 +1,3 @@
-// Trang Liên hệ, route "/contact": thông tin hỗ trợ, form gửi tin nhắn (ContactForm → POST /contact) và FAQ.
-
 import { Link } from "react-router-dom";
 import { motion } from "motion/react";
 import { ArrowRight } from "lucide-react";

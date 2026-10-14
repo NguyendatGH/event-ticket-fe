@@ -1,5 +1,3 @@
-// Hằng số dùng chung. Nhãn tiếng Việt cho mọi enum BE (contract §1, §3).
-
 export const BRAND = {
   name: "Encore",
   wordmark: "ENCORE",
@@ -58,9 +56,6 @@ export const STATUS = {
     REFUND_PROCESSING: ["Đang hoàn tiền", "info"],
     REFUNDED: ["Đã hoàn tiền", "muted"],
     PARTIALLY_REFUNDED: ["Hoàn tiền một phần", "info"],
-    // Một trạng thái BE, hai câu chuyện: hoàn tiền chạy không xong THẬT, và BTC chủ động hủy yêu cầu.
-    // Nên nhãn phải trung tính cho cả hai, và tone warning (không phải destructive) vì vé đã về ACTIVE,
-    // khách vẫn dùng vé được hoặc gửi lại yêu cầu hoàn được — không có gì hỏng để khách phải lo.
     REFUND_FAILED: ["Chưa hoàn được tiền", "warning"],
     EXPIRED: ["Hết hạn", "muted"],
     CANCELLED: ["Đã hủy", "muted"],
@@ -90,7 +85,6 @@ export const STATUS = {
   },
 };
 
-/** Lý do refund không tự chạy mà chờ người xử lý, viết lại cho khách hiểu. */
 export const REFUND_FAILURE_LABEL = {
   PAYOUT_DISABLED: "Kênh chuyển tiền đang tạm dừng, ban tổ chức sẽ chuyển khoản thủ công.",
   PAYOUT_UNAVAILABLE: "Chưa kết nối được cổng chuyển tiền, ban tổ chức sẽ chuyển khoản thủ công.",
@@ -103,12 +97,6 @@ export const REFUND_FAILURE_LABEL = {
     "Ban tổ chức đã hủy yêu cầu hoàn tiền này. Vé của bạn vẫn dùng được bình thường; nếu vẫn muốn hoàn, hãy liên hệ ban tổ chức rồi gửi yêu cầu mới.",
 };
 
-/**
- * Cùng mã lý do, nhưng viết cho BAN TỔ CHỨC đọc (trang /organizer/refunds): họ là người phải làm gì đó,
- * nên câu chữ nói rõ việc cần làm. REFUND_FAILURE_LABEL ở trên là bản viết cho khách.
- * Mã lấy từ BE: RefundService (INSUFFICIENT_PAYOUT_BALANCE, AWAITING_FUNDS_TIMEOUT, PROCESSING_TIMEOUT...)
- * và Refund.holdForDestinationReview (DESTINATION_REVIEW).
- */
 export const REFUND_FAILURE_ORG_LABEL = {
   INSUFFICIENT_PAYOUT_BALANCE: "Ví chi không đủ tiền. Nạp thêm vào ví chi là hệ thống tự gửi lại.",
   AWAITING_FUNDS_TIMEOUT: "Chờ ví đủ tiền quá lâu nên hệ thống dừng tự động. Cần chuyển khoản tay.",
@@ -122,7 +110,6 @@ export const REFUND_FAILURE_ORG_LABEL = {
   CANCELLED_BY_ORGANIZER: "Bạn đã hủy yêu cầu này. Vé đã được trả lại trạng thái hợp lệ cho khách.",
 };
 
-/** Nhãn phương thức thanh toán cho người dùng (BTC chọn, khách bấm). Mã khớp enum PaymentMethod của gateway. */
 export const PAYMENT_METHOD_LABEL = {
   CARD: "Thẻ ngân hàng",
   QR: "QR / VietQR",
@@ -134,12 +121,6 @@ export const PAYMENT_METHOD_LABEL = {
 
 export const paymentMethodLabel = (method) => PAYMENT_METHOD_LABEL[method] || method;
 
-/**
- * Chú thích "ngân hàng này mô phỏng giống acquirer mẫu nào" (cổng BankSim). Mock bank chỉ có HAI kiểu xử lý thẻ và gateway
- * chọn kiểu theo cờ 3DS của ngân hàng, không theo tên (CardBankRouter): có 3DS = như bank-a, không 3DS = như bank-b.
- * QR / ví không gọi mock bank: khách bấm xác nhận trên trang của cổng là xong.
- * Mỗi giá trị là [nhãn ngắn cạnh tên ngân hàng, câu giải thích cách thử].
- */
 export const MOCK_BANK_PROFILE = {
   A: ["bank profile A", "Thẻ đi mock bank kiểu bank-a (có 3DS): thẻ đuôi 1000 hỏi OTP 123456, đuôi 2000 duyệt thẳng, số khác bị từ chối."],
   B: ["bank profile B", "Thẻ đi mock bank kiểu bank-b (không 3DS): thẻ đuôi 1000 được duyệt ngay, số khác bị từ chối."],
@@ -151,30 +132,14 @@ export const mockBankProfile = (bank) =>
 
 export const statusLabel = (kind, status) => STATUS[kind]?.[status]?.[0] || status || "";
 
-/**
- * Mã BE ghi vào failureCode khi BTC HỦY một yêu cầu hoàn tiền.
- * BE cố ý KHÔNG thêm RefundStatus mới (bảng refunds có check constraint), nên refund bị hủy vẫn
- * mang status = "FAILED". Vì vậy FE phải tự nhận ra ca này: "Hoàn tiền thất bại" đọc lên là sự cố
- * kỹ thuật, còn đây là quyết định chủ động của BTC — sai nghĩa hẳn với cả BTC lẫn khách.
- */
 export const REFUND_CANCELLED_CODE = "CANCELLED_BY_ORGANIZER";
 
 export const isRefundCancelled = (refund) =>
   refund?.status === "FAILED" && refund?.failureCode === REFUND_CANCELLED_CODE;
 
-/**
- * [nhãn, tone] để vẽ badge cho MỘT refund — khác statusLabel("refund", status) ở chỗ nó nhìn cả
- * failureCode. Gom điều kiện "đã hủy" vào đúng một chỗ, để không phải rải `if` ở từng component.
- * Tone muted (nhạt) chứ không destructive: hủy là việc BTC chủ động làm, không phải lỗi hệ thống.
- */
 export const refundStatusBadge = (refund) =>
   isRefundCancelled(refund) ? ["Đã hủy", "muted"] : STATUS.refund[refund?.status] || [refund?.status || "", "outline"];
 
-/**
- * Lý do một refund đang chờ người xử lý (hoặc đã bị hủy), ưu tiên câu dành cho BTC rồi mới tới câu BE trả về.
- * Ngoại lệ: refund bị BTC hủy thì failureReason CHÍNH LÀ ghi chú BTC đã nhập — BE lưu nguyên văn,
- * không thêm tiền tố nào — nên hiện thẳng nó, hữu ích hơn một câu mô tả chung.
- */
 export const refundReasonForOrganizer = (refund) =>
   (isRefundCancelled(refund) ? refund.failureReason : null) ||
   REFUND_FAILURE_ORG_LABEL[refund?.failureCode] ||

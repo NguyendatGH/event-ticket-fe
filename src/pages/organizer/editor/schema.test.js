@@ -1,5 +1,3 @@
-// Test schema và checklist xuất bản của trình sửa sự kiện.
-
 import { describe, expect, it } from "vitest";
 import {
   draftSchema,

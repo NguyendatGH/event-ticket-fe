@@ -1,5 +1,3 @@
-// Barrel: primitive chuyển động dùng chung.
-
 export { LayoutGroup } from "motion/react";
 export { PageTransition } from "./PageTransition";
 export { Reveal, RevealGroup, RevealItem } from "./Reveal";

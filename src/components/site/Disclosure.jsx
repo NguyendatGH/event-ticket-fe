@@ -1,5 +1,3 @@
-// Khối thu gọn/mở rộng cho chi tiết kỹ thuật của đơn.
-
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";

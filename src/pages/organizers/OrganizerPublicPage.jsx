@@ -1,6 +1,3 @@
-// Trang công khai của ban tổ chức, route "/organizers/:slug".
-// Dữ liệu: useOrganizer, useOrganizerPublicEvents.
-
 import { useParams, useSearchParams } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";
 import { BadgeCheck } from "lucide-react";

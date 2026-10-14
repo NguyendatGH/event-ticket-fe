@@ -1,5 +1,3 @@
-// "Tạo sự kiện" chỉ còn ở nút topbar (bỏ trùng CTA trong sidebar).
-
 import { Suspense, useRef, useState } from "react";
 import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useMotionValueEvent, useScroll } from "motion/react";

@@ -1,5 +1,3 @@
-// Chỉ dùng qua HeaderSearch variant="shell" (bản nháp giữ ở đó để gõ phím không render lại Header).
-
 import { useId } from "react";
 import { Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";

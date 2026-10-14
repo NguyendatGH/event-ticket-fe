@@ -1,5 +1,3 @@
-// Bộ chọn khoảng thời gian của trang tổng quan: 7/30/90 ngày + tùy chọn (from/to), gộp theo ngày/tuần/tháng.
-
 import { useId, useState } from "react";
 import { LayoutGroup } from "motion/react";
 import { TabIndicator } from "@/components/motion";

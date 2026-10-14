@@ -1,5 +1,3 @@
-// Tiêu đề màn auth: H1 + mô tả ngắn.
-
 import { motion } from "motion/react";
 import { riseSm } from "@/lib/motion";
 

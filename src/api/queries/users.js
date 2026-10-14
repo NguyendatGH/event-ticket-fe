@@ -1,5 +1,3 @@
-// Hook cập nhật hồ sơ và đổi mật khẩu.
-
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import * as usersApi from "../services/users";
 import { qk } from "./keys";

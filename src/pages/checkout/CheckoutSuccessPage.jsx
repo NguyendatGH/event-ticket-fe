@@ -1,6 +1,3 @@
-// Trang thanh toán thành công — route /checkout/success?order=<orderId>
-// Dữ liệu: useEvent, useOrder.
-
 import { Link, useSearchParams } from "react-router-dom";
 import { motion } from "motion/react";
 import { useEvent, useOrder } from "@/api";

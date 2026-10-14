@@ -1,5 +1,3 @@
-// Nhóm field có nhãn nhỏ và divider.
-
 import { motion } from "motion/react";
 import { riseSm } from "@/lib/motion";
 import { cn } from "@/lib/utils";

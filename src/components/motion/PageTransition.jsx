@@ -1,5 +1,3 @@
-// Chuyển trang: chỉ có enter (fade + nhích y), key theo pathname.
-
 import { useLocation } from "react-router-dom";
 import { motion, useReducedMotion } from "motion/react";
 import { DIST, DUR, EASE_OUT } from "@/lib/motion";

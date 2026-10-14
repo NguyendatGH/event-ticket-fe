@@ -1,5 +1,3 @@
-// Thanh danh mục đen (CategoryNav) nằm ngay dưới, không dính, do SiteLayout đặt.
-
 import { useRef, useState } from "react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useMotionValueEvent, useScroll } from "motion/react";

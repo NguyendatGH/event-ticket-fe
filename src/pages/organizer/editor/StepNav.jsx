@@ -1,5 +1,3 @@
-// Thanh 4 bước của trình sửa sự kiện (nằm trong thanh dính dưới topbar).
-
 import { useEffect, useId, useRef } from "react";
 import { LayoutGroup, motion } from "motion/react";
 import { ArrowLeft, ArrowRight, Check } from "lucide-react";

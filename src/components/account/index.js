@@ -1,5 +1,3 @@
-// Barrel: khối giao diện khu tài khoản.
-
 export { AccountNav } from "./AccountNav";
 export { AccountPageHeader } from "./AccountPageHeader";
 export { AccountSection } from "./AccountSection";

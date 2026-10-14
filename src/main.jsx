@@ -1,5 +1,3 @@
-// Điểm vào: nạp font + index.css rồi render <App /> vào #root.
-
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "@fontsource/be-vietnam-pro/400.css";

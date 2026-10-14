@@ -1,5 +1,3 @@
-// Hàm thuần khu sự kiện: trạng thái mua vé, tổng tiền giỏ, link checkout, mô tả.
-
 import { SERVICE_FEE } from "@/lib/business";
 
 export function purchaseState(status) {

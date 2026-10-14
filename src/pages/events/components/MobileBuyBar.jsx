@@ -1,5 +1,3 @@
-// Thanh mua vé cố định đáy màn hình (chỉ dưới lg), hiện khi khối chọn vé (#chon-ve) đã cuộn lên khỏi màn hình.
-
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Price } from "@/components/site";

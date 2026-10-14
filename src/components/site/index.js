@@ -1,5 +1,3 @@
-// Barrel: khối giao diện dùng chung cho nhiều trang.
-
 export { Container } from "./Container";
 export { Header } from "./Header";
 export { CategoryNav } from "./CategoryNav";

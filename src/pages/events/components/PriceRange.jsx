@@ -1,5 +1,3 @@
-// Khoảng giá tự nhập (Từ / Đến), chỉ áp dụng khi bấm nút hoặc Enter (không lọc theo từng phím gõ).
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { MiniField } from "./MiniField";

@@ -1,5 +1,3 @@
-// Hằng số ngoài component: object params giữ nguyên tham chiếu giữa các lần render.
-
 import { Flame } from "lucide-react";
 import { useEvents } from "@/api";
 import { Carousel, RankedEventCard } from "@/components/marketplace";

@@ -1,5 +1,3 @@
-// Số rất lớn (≥ 10 tỷ): from={value * 0.85} cho gọn.
-
 import { useEffect, useRef } from "react";
 import { animate, motion, useInView, useMotionValue, useReducedMotion, useTransform } from "motion/react";
 import { DUR, EASE_OUT } from "@/lib/motion";

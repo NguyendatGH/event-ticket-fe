@@ -1,5 +1,3 @@
-// Giờ bắt đầu/kết thúc theo giờ Việt Nam. Đọc/ghi field qua useFormContext. disabled = sự kiện đã hủy, chỉ xem.
-
 import { useFieldArray, useFormContext, useWatch } from "react-hook-form";
 import { Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";

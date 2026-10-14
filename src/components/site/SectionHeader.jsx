@@ -1,5 +1,3 @@
-// Tiêu đề section v1 kèm link "Xem tất cả".
-
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";

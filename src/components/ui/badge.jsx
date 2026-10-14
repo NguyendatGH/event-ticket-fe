@@ -1,5 +1,3 @@
-// Nhãn trạng thái nhỏ (ĐANG BÁN, BẢN NHÁP…): radius 2px, chữ hoa 11px, màu nền pha nhẹ, không pill to.
-
 import { cva } from "class-variance-authority";
 import { cn } from "@/lib/utils"
 import { Slot } from "radix-ui"

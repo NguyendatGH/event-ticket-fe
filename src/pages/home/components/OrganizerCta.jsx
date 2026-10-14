@@ -1,5 +1,3 @@
-// Nút theo vai trò: đã là organizer → trang quản lý; đã đăng nhập → /become-organizer; khách → đăng ký organizer.
-
 import { Link } from "react-router-dom";
 import { ArrowRight, BarChart3, QrCode, Ticket } from "lucide-react";
 import { Reveal } from "@/components/motion";

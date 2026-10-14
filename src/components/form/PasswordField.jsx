@@ -1,5 +1,3 @@
-// Nút hiện/ẩn: memo để gõ phím (Input đổi value) không render lại AnimatePresence của icon.
-
 import { memo, useState } from "react";
 import { useWatch } from "react-hook-form";
 import { AnimatePresence, motion } from "motion/react";

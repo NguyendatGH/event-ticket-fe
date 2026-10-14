@@ -1,5 +1,3 @@
-// Trạng thái đăng nhập cho component: user, isAuthenticated, isOrganizer, logout.
-
 import { useCallback } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuthStore, isOrganizerRole, isAdminRole } from "@/stores/auth";

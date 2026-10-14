@@ -1,5 +1,3 @@
-// Nút "Đăng nhập với Google". Luồng:
-
 import { useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
 import { useAppConfig, useGoogleLogin } from "@/api";

@@ -1,5 +1,3 @@
-// Cùng kích thước với EventCard để không nhảy layout.
-
 import { NavProgress } from "@/components/motion/NavProgress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";

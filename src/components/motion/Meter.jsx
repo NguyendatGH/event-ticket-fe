@@ -1,5 +1,3 @@
-// Thanh tỉ lệ (đã bán / tổng, doanh thu tương đối) vẽ bằng scaleX thay vì width.
-
 import { useRef } from "react";
 import { motion, useInView } from "motion/react";
 import { DUR, EASE_OUT, HAS_IO, VIEWPORT } from "@/lib/motion";

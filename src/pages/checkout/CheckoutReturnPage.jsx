@@ -1,12 +1,9 @@
-// Trang chờ kết quả thanh toán — route /checkout/return?orderId=<id>
-// Dữ liệu: useOrder.
-
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Check } from "lucide-react";
 import { useOrder } from "@/api";
-import { Container, EmptyState, ErrorState, Notice } from "@/components/site";
+import { Container, EmptyState, ErrorState, NotFoundView, Notice } from "@/components/site";
 import { Button } from "@/components/ui/button";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { formatVND } from "@/lib/format";
@@ -53,6 +50,17 @@ export default function CheckoutReturnPage() {
           }
         />
       </Container>
+    );
+  }
+
+  // BE trả 404 cả khi đơn tồn tại nhưng thuộc tài khoản khác (Order.requireOwner), để không lộ đơn của người khác.
+  // Hay gặp khi thanh toán ở tab/trình duyệt khác rồi đăng nhập nhầm tài khoản.
+  if (orderQ.isError && orderQ.error?.isNotFound && !order) {
+    return (
+      <NotFoundView
+        title="Không tìm thấy đơn hàng"
+        description="Đơn hàng không tồn tại hoặc không thuộc tài khoản đang đăng nhập. Nếu bạn vừa thanh toán, hãy đăng nhập đúng tài khoản đã đặt vé để xem vé, hoặc kiểm tra email xác nhận."
+      />
     );
   }
 

@@ -23,7 +23,6 @@ import { Recap } from "./OrgUi";
 
 const NOTE_MAX = 500;
 
-/** Ba lựa chọn chốt của BE (ResolveRefundRequest.Outcome), kèm câu xác nhận riêng cho từng cái. */
 const OUTCOMES = {
   SUCCEEDED: {
     label: "Đã chuyển xong",
@@ -54,12 +53,11 @@ const OUTCOMES = {
 
 export function RefundInstructionDialog({ refund, open, onOpenChange, onResolved }) {
   const [note, setNote] = useState("");
-  const [outcome, setOutcome] = useState(null); // null = đang ở bước 1 (xem hướng dẫn)
+  const [outcome, setOutcome] = useState(null);
   const instructionQ = useRefundInstruction(refund?.id);
   const resolve = useResolveRefund();
   const error = resolve.error ? normalizeError(resolve.error) : null;
 
-  // Provider đã nhận lệnh thì RETRY sẽ bị BE chặn (REFUND_ALREADY_AT_PROVIDER) vì dễ chi hai lần.
   const canRetry = !refund?.providerRefundId;
   const step2 = outcome ? OUTCOMES[outcome] : null;
   const noteMissing = Boolean(step2?.noteRequired) && !note.trim();
@@ -136,7 +134,6 @@ export function RefundInstructionDialog({ refund, open, onOpenChange, onResolved
               />
             </div>
 
-            {/* Ba lựa chọn nằm trong body (không dùng AlertDialogFooter) để thứ tự trên mobile và desktop giống nhau. */}
             <div className="grid gap-2 border-t border-border pt-4">
               <Button onClick={() => setOutcome("SUCCEEDED")}>{OUTCOMES.SUCCEEDED.label}</Button>
               {canRetry ? (
@@ -164,7 +161,6 @@ export function RefundInstructionDialog({ refund, open, onOpenChange, onResolved
   );
 }
 
-/** Khối QR + thông tin chuyển khoản. Lỗi thì nói rõ phải làm gì, không để trắng trang. */
 function Instruction({ query }) {
   if (query.isPending) {
     return (
@@ -177,8 +173,6 @@ function Instruction({ query }) {
   }
 
   if (query.isError) {
-    // 409 REFUND_DESTINATION_UNKNOWN: refund không có ngân hàng/số tài khoản hợp lệ nên BE
-    // từ chối dựng QR (dựng sai còn tệ hơn). BTC vẫn chốt được "Không chuyển được".
     if (query.error?.code === "REFUND_DESTINATION_UNKNOWN") {
       return (
         <Notice tone="danger" title="Chưa dựng được QR cho yêu cầu này">
@@ -215,7 +209,6 @@ function Instruction({ query }) {
   );
 }
 
-/** Số tài khoản và nội dung gõ tay rất dễ sai một ký tự, nên cho copy. */
 function CopyRow({ label, value, copyable = true }) {
   const copy = async () => {
     try {

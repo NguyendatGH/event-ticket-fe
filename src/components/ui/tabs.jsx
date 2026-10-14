@@ -1,5 +1,3 @@
-// Tab chữ + gạch chân xanh 2px trượt theo tab đang chọn (design-spec: không nền bo tròn cho mục đang chọn).
-
 import * as React from "react"
 import { LayoutGroup, motion } from "motion/react"
 import { cn } from "@/lib/utils"

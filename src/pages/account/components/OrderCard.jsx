@@ -1,5 +1,3 @@
-// Một đơn trong /me/orders, cả thẻ là link tới /orders/:id. Ô lịch = ngày đặt.
-
 import { memo } from "react";
 import { Link } from "react-router-dom";
 import { ChevronRight } from "lucide-react";

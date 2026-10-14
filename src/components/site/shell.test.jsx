@@ -1,5 +1,3 @@
-// Test khung trang: Header, CategoryNav, Footer.
-
 import { render, screen, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";

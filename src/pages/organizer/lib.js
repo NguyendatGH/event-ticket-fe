@@ -1,5 +1,3 @@
-// Helper thuần (không React) của khu organizer:
-
 import { TIME_ZONE, addDaysISO, formatDate, formatDayMonth, todayISODate } from "@/lib/format";
 
 const localParts = new Intl.DateTimeFormat("en-CA", {
@@ -79,27 +77,10 @@ export function formatBucketLabel(date, interval) {
 
 export const percentOf = (part, total) => (total > 0 ? Math.min(100, Math.max(0, (part / total) * 100)) : 0);
 
-/**
- * Hai trạng thái refund mà BAN TỔ CHỨC phải ra tay:
- * - MANUAL_REVIEW: hệ thống bó tay, BTC chuyển khoản tay rồi chốt kết quả.
- * - AWAITING_FUNDS: ví chi thiếu tiền, BTC phải nạp ví (hệ thống tự gửi lại khi đủ).
- * Dùng chung cho badge ở Tổng quan và tab mặc định của trang Hoàn tiền.
- */
 export const REFUND_NEEDS_ACTION = ["MANUAL_REVIEW", "AWAITING_FUNDS"];
 
-/**
- * Hai trạng thái mà BTC được HỦY hẳn yêu cầu hoàn tiền (BE: outcome=CANCELLED): tiền chưa đi đâu
- * cả nên còn quay đầu được. Trạng thái khác (đang chạy hoặc đã chốt) BE trả 409, nên FE không hiện nút.
- */
 export const REFUND_CANCELLABLE = ["AWAITING_FUNDS", "MANUAL_REVIEW"];
 
-/**
- * Vì sao KHÔNG hủy được yêu cầu này — trả null nghĩa là hủy được.
- * - "status": trạng thái không cho hủy → không hiện gì, đừng cho bấm rồi để BE trả 409.
- * - "provider": cổng thanh toán đã nhận lệnh chi (providerRefundId != null) nên tiền CÓ THỂ đã đi.
- *   Hủy lúc này là mất dấu tiền, BE chặn bằng 409 REFUND_ALREADY_AT_PROVIDER — giống y hệt lý do
- *   nút "Gửi lại qua cổng" bị ẩn. FE chặn trước để BTC không phải ăn lỗi server mới biết.
- */
 export function refundCancelBlocker(refund) {
   if (!REFUND_CANCELLABLE.includes(refund?.status)) return "status";
   if (refund?.providerRefundId) return "provider";

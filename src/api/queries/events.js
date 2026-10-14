@@ -1,5 +1,3 @@
-// Hook sự kiện public: danh sách infinite, nổi bật, sắp diễn ra, facets, chi tiết, gợi ý.
-
 import { keepPreviousData, useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import * as eventsApi from "../services/events";
 import { cleanParams } from "../params";

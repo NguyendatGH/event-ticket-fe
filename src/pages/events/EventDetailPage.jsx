@@ -1,6 +1,3 @@
-// Trang chi tiết sự kiện, route "/events/:slug".
-// Dữ liệu: useEvent, useMoreFromOrganizer, useRelatedEvents.
-
 import { useParams } from "react-router-dom";
 import { motion } from "motion/react";
 import { ArrowUpRight } from "lucide-react";

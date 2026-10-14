@@ -1,5 +1,3 @@
-// Lịch sử vé (TicketHistoryItem[] cũ → mới) dạng timeline dọc, mới nhất ở trên.
-
 import { motion } from "motion/react";
 import { TICKET_HISTORY_LABEL } from "@/lib/constants";
 import { formatDateTime, formatVND } from "@/lib/format";

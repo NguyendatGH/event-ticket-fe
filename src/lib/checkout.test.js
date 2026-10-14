@@ -1,5 +1,3 @@
-// Test helper luồng mua vé: parse/serialize giỏ, kết quả đơn, link mua lại.
-
 import { describe, expect, it } from "vitest";
 import { failureReason, orderOutcome, parseTiers, retryHref, serializeTiers } from "./checkout";
 

@@ -1,5 +1,3 @@
-// Test khối chọn hạng vé và tổng tiền.
-
 import { render, screen } from "@testing-library/react";
 import { vi } from "vitest";
 

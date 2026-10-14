@@ -1,5 +1,3 @@
-// Test helper khu organizer.
-
 import { describe, expect, it } from "vitest";
 import { REFUND_NEEDS_ACTION, countRefunds, countRefundsNeedingAction, formatRangeLabel, isoToLocalInput, localInputToIso, refundCancelBlocker, resolveRange } from "./lib";
 

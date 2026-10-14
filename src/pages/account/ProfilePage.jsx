@@ -1,6 +1,3 @@
-// Thông tin tài khoản, route "/me/profile" (cần đăng nhập, nằm trong AccountLayout).
-// Dữ liệu: useMe.
-
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "motion/react";
 import { ArrowRight, KeyRound, LogOut, Store, UserRound, UserRoundPen } from "lucide-react";
