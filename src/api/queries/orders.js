@@ -10,7 +10,10 @@ export const useOrder = (id, { poll = false, pollInterval = 2000, ...options } =
     queryKey: qk.orders.detail(id),
     queryFn: () => ordersApi.get(id),
     enabled: Boolean(id),
-    refetchInterval: (query) => (poll && !ordersApi.isSettled(query.state.data) ? pollInterval : false),
+    // 404 (đơn không có / không thuộc tài khoản này) thì dừng poll. Chưa từng có data mà refetch thì React Query đưa
+    // query về pending, trang đổi từ "không tìm thấy" sang "đang tải" rồi lại 404 mỗi 2 giây, nhìn như bị giật.
+    refetchInterval: (query) =>
+      poll && !query.state.error?.isNotFound && !ordersApi.isSettled(query.state.data) ? pollInterval : false,
     ...options,
   });
 

@@ -3,7 +3,8 @@ import { createMemoryRouter, RouterProvider } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 let order = null;
-vi.mock("@/api", () => ({ useOrder: () => ({ data: order, isError: false, refetch: vi.fn() }) }));
+let error = null;
+vi.mock("@/api", () => ({ useOrder: () => ({ data: order, isError: !!error, error, refetch: vi.fn() }) }));
 const { default: CheckoutReturnPage } = await import("./CheckoutReturnPage");
 
 const renderAt = (path) => {
@@ -20,7 +21,18 @@ const renderAt = (path) => {
 };
 
 describe("CheckoutReturnPage", () => {
-  beforeEach(() => sessionStorage.clear());
+  beforeEach(() => {
+    sessionStorage.clear();
+    error = null;
+  });
+
+  it("404 (đơn không có hoặc thuộc tài khoản khác) → trang không tìm thấy đơn", async () => {
+    order = null;
+    error = { status: 404, isNotFound: true };
+    renderAt("/checkout/return?orderId=o9");
+    expect(await screen.findByRole("heading", { name: "Không tìm thấy đơn hàng" })).toBeInTheDocument();
+    expect(screen.getByText("Lỗi 404")).toBeInTheDocument();
+  });
 
   it("PAID → success, xóa pending order", async () => {
     sessionStorage.setItem("nhip.pendingOrder", "o1");
